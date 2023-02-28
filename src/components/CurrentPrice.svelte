@@ -1,53 +1,36 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { QuoteCurrency, TickerSymbol } from '../data/currencies'
-	import type { CurrentPriceProvider } from '../data/priceProvider'
-	import { getChainlinkPriceFeed } from '../api/chainlink'
+	import type { Ethereum } from '../data/networks/types';
+	import type { QuoteCurrency, TickerSymbol } from '../data/currencies';
+	import type { CurrentPriceProvider } from '../data/priceProvider';
+	import { getChainlinkPriceFeed } from '../api/chainlink';
 	// import { getCompoundPriceFeed } from '.../../../data/ethereum/price/compound-price-feed'
-	import { getSpotPrices } from '../api/covalent'
+	import { getSpotPrices } from '../api/covalent';
 
+	import { preferences } from '../state/preferences';
 
-	import { preferences } from '../state/preferences'
+	export let currentPriceProvider: CurrentPriceProvider | 'auto' = 'auto';
+	$: currentPriceProvider = $$props.currentPriceProvider || $preferences.currentPriceProvider;
 
-	export let currentPriceProvider: CurrentPriceProvider | 'auto' = 'auto'
-	$: currentPriceProvider = $$props.currentPriceProvider || $preferences.currentPriceProvider
+	let _currentPriceProvider;
+	$: _currentPriceProvider = currentPriceProvider === 'auto' ? 'Chainlink' : currentPriceProvider;
 
-	let _currentPriceProvider
-	$: _currentPriceProvider = currentPriceProvider === 'auto' ? 'Chainlink' : currentPriceProvider
+	export let token: TickerSymbol;
+	export let quoteCurrency: QuoteCurrency;
+	export let provider: Ethereum.Provider;
+	export let network: Ethereum.Network;
 
-	export let token: TickerSymbol
-	export let quoteCurrency: QuoteCurrency
-	export let provider: Ethereum.Provider
-	export let network: Ethereum.Network
+	export let blockNumber: number;
 
-	export let blockNumber: number
+	let isHidden = false;
 
-
-	let isHidden = false
-
-
-	import Address from './Address.svelte'
-	import Date from './Date.svelte'
-	import Loader from './Loader.svelte'
+	import Address from './Address.svelte';
+	import Date from './Date.svelte';
+	import Loader from './Loader.svelte';
 	// import TokenRate from './TokenRate.svelte'
-	import TokenBalance from './TokenBalance.svelte'
+	import TokenBalance from './TokenBalance.svelte';
 
-
-	import { ChainlinkIcon, CovalentIcon } from '../assets/icons'
+	import { ChainlinkIcon, CovalentIcon } from '../assets/icons';
 </script>
-
-
-<style>
-	.rate {
-		font-size: 1.8em;
-		text-align: center;
-	}
-
-	footer {
-		font-size: 0.8em;
-	}
-</style>
-
 
 <!-- {#if provider.network}
 	<Loader
@@ -106,12 +89,14 @@
 					loadingIconName={_currentPriceProvider}
 					loadingMessage="Retrieving price from {_currentPriceProvider}..."
 					errorMessage="{token} price not available"
-					fromPromise={provider && network && blockNumber && (() => getChainlinkPriceFeed(provider, network, token, quoteCurrency))}
+					fromPromise={provider &&
+						network &&
+						blockNumber &&
+						(() => getChainlinkPriceFeed(provider, network, token, quoteCurrency))}
 					let:result={priceFeed}
 					whenErrored={async () => {
-						await new Promise(r => setTimeout(r, 1000))
-						if(currentPriceProvider === 'auto')
-							_currentPriceProvider = 'Covalent'
+						await new Promise((r) => setTimeout(r, 1000));
+						if (currentPriceProvider === 'auto') _currentPriceProvider = 'Covalent';
 					}}
 				>
 					<div slot="header" class="bar" let:status>
@@ -123,23 +108,17 @@
 							{_currentPriceProvider}
 							{#if status === 'resolved'}
 								›
-								<Address {network} address={priceFeed.contractAddress}>{token}/{quoteCurrency} Price Feed</Address>
+								<Address {network} address={priceFeed.contractAddress}
+									>{token}/{quoteCurrency} Price Feed</Address
+								>
 							{/if}
 						</span>
 					</div>
 
 					<div class="rate">
-						<TokenBalance
-							{network} symbol={token}
-							balance={1}
-							tween={false}
-						/>
+						<TokenBalance {network} symbol={token} balance={1} tween={false} />
 						=
-						<TokenBalance
-							symbol={quoteCurrency}
-							balance={priceFeed.price}
-							showPlainFiat={true}
-						/>
+						<TokenBalance symbol={quoteCurrency} balance={priceFeed.price} showPlainFiat={true} />
 					</div>
 					<!-- <div class="rate">
 						<TokenRate
@@ -153,16 +132,12 @@
 						<span />
 						<span class="card-annotation">
 							Updated
-							<Date
-								date={priceFeed.updatedAt}
-								format="relative"
-								layout="horizontal"
-							/>
+							<Date date={priceFeed.updatedAt} format="relative" layout="horizontal" />
 						</span>
 					</footer>
 				</Loader>
 			</div>
-		<!-- {:else if _currentPriceProvider === 'Covalent'}
+			<!-- {:else if _currentPriceProvider === 'Covalent'}
 			<div class="column">
 				<Loader
 					loadingIcon={CovalentIcon}
@@ -245,3 +220,14 @@
 		{/await}
 	{/if} -->
 {/if}
+
+<style>
+	.rate {
+		font-size: 1.8em;
+		text-align: center;
+	}
+
+	footer {
+		font-size: 0.8em;
+	}
+</style>

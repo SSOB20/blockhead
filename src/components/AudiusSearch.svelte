@@ -1,54 +1,33 @@
 <script lang="ts">
-	export let query: string
+	export let query: string;
 
+	import type { Audius } from '../api/audius';
+	import { searchUsers, searchTracks, searchPlaylists } from '../api/audius';
 
-	import type { Audius } from '../api/audius'
-	import { searchUsers, searchTracks, searchPlaylists } from '../api/audius'
+	let users: Audius.User[];
+	let tracks: Audius.Track[];
+	let playlists: Audius.Playlist[];
 
-	let users: Audius.User[]
-	let tracks: Audius.Track[]
-	let playlists: Audius.Playlist[]
-
-	const searchAudius = query => {
+	const searchAudius = (query) => {
 		return Promise.race([
-			searchUsers({query}).then(({data}) => users = data),
-			searchTracks({query}).then(({data}) => tracks = data),
-			searchPlaylists({query}).then(({data}) => playlists = data)
-		])
-	}
+			searchUsers({ query }).then(({ data }) => (users = data)),
+			searchTracks({ query }).then(({ data }) => (tracks = data)),
+			searchPlaylists({ query }).then(({ data }) => (playlists = data))
+		]);
+	};
 	// const searchAudius = async query => {
 	// 	({data: users} = await searchUsers({query}))
 	// 	({data: tracks} = await searchTracks({query}))
 	// 	({data: playlists} = await searchPlaylists({query}))
 	// }
 
+	import AudiusUser from './AudiusUser.svelte';
+	import AudiusTrack from './AudiusTrack.svelte';
+	import AudiusPlaylist from './AudiusPlaylist.svelte';
+	import Loader from '../components/Loader.svelte';
 
-	import AudiusUser from './AudiusUser.svelte'
-	import AudiusTrack from './AudiusTrack.svelte'
-	import AudiusPlaylist from './AudiusPlaylist.svelte'
-	import Loader from '../components/Loader.svelte'
-
-
-	import { AudiusIcon } from '../assets/icons'
+	import { AudiusIcon } from '../assets/icons';
 </script>
-
-
-<style>
-	.audius-search {
-		gap: 1.5rem;
-	}
-
-	.grid {
-		display: grid;
-		gap: var(--padding-inner);
-		grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
-	}
-
-	.scrollable-list {
-		height: 40rem;
-	}
-</style>
-
 
 <Loader
 	loadingIcon={AudiusIcon}
@@ -66,7 +45,7 @@
 		{/if}
 
 		{#if users?.length}
-			{#if tracks?.length}<hr>{/if}
+			{#if tracks?.length}<hr />{/if}
 
 			<h2>Users</h2>
 			<div class="audius-users grid" class:scrollable-list={users.length > 12}>
@@ -77,7 +56,7 @@
 		{/if}
 
 		{#if playlists?.length}
-			{#if tracks?.length || users?.length}<hr>{/if}
+			{#if tracks?.length || users?.length}<hr />{/if}
 
 			<h2>Playlists</h2>
 			<div class="audius-playlist column" class:scrollable-list={playlists.length > 6}>
@@ -88,3 +67,19 @@
 		{/if}
 	</div>
 </Loader>
+
+<style>
+	.audius-search {
+		gap: 1.5rem;
+	}
+
+	.grid {
+		display: grid;
+		gap: var(--padding-inner);
+		grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+	}
+
+	.scrollable-list {
+		height: 40rem;
+	}
+</style>

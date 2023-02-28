@@ -1,38 +1,29 @@
 <script lang="ts">
-	import { preferences, preferencesConfig, resetPreferences } from '../state/preferences'
-	import { triggerEvent } from '../events/triggerEvent'
+	import { preferences, preferencesConfig, resetPreferences } from '../state/preferences';
+	import { triggerEvent } from '../events/triggerEvent';
 
+	export let relevantPreferences = [];
 
-	export let relevantPreferences = []
+	export let isShowingAll = false;
 
-	export let isShowingAll = false
+	const isShowingPreference = ({ id }) =>
+		isShowingAll || !(relevantPreferences.length && !relevantPreferences.includes(id));
 
-	const isShowingPreference = ({id}) => isShowingAll || !(relevantPreferences.length && !relevantPreferences.includes(id))
+	const resolveName = (name) => (typeof name === 'function' ? name($preferences) : name);
 
-
-	const resolveName = name =>
-		typeof name === 'function'
-			? name($preferences)
-			: name
-
-
-	import { expoOut } from 'svelte/easing'
-	import { flip } from 'svelte/animate'
-	import { scale } from 'svelte/transition'
+	import { expoOut } from 'svelte/easing';
+	import { flip } from 'svelte/animate';
+	import { scale } from 'svelte/transition';
 </script>
-
 
 <form class="preferences" class:is-showing-all={isShowingAll}>
 	<header class="column">
 		<label for="preferences-button"><h3>Preferences</h3></label>
 
 		{#if isShowingAll}
-			<button
-				type="button"
-				class="small destructive"
-				data-before="↻"
-				on:click={resetPreferences}
-			>Reset All</button>
+			<button type="button" class="small destructive" data-before="↻" on:click={resetPreferences}
+				>Reset All</button
+			>
 		{/if}
 	</header>
 	<!-- <label class="header">
@@ -40,60 +31,67 @@
 		<button type="button" class="medium" on:click={() => isShowingAll = !isShowingAll}>{isShowingAll ? 'Show Less' : 'Show All'}</button>
 	</label> -->
 
-	{#each isShowingAll
-		? preferencesConfig
-		: (relevantPreferences, preferencesConfig.filter(preferencesSection => preferencesSection.preferences.some(isShowingPreference)))
-		as
-		preferencesSection, i (preferencesSection.id)
-	}
+	{#each isShowingAll ? preferencesConfig : (relevantPreferences, preferencesConfig.filter( (preferencesSection) => preferencesSection.preferences.some(isShowingPreference) )) as preferencesSection, i (preferencesSection.id)}
 		<!-- <section class="preference-section" transition:scale={{duration: 200, opacity: 0, delay: i * 20, easing: expoOut}} animate:flip={{duration: 250}}> -->
 		<section class="preference-section">
 			{#if isShowingAll}
-				<h4 in:scale={{duration: 300, easing: expoOut, /* delay: i * 20 */}}>{preferencesSection.name}</h4>
+				<h4 in:scale={{ duration: 300, easing: expoOut /* delay: i * 20 */ }}>
+					{preferencesSection.name}
+				</h4>
 			{/if}
-			{#each
-				preferencesSection.preferences.filter(isShowingPreference)
-				as {id, name, type, options}, j (id)
-			}
-				<label class="preference" transition:scale={{duration: 200, opacity: 0, /* delay: i * 20 + j * 10, */ easing: expoOut}} animate:flip={{duration: 250, easing: expoOut}}>
+			{#each preferencesSection.preferences.filter(isShowingPreference) as { id, name, type, options }, j (id)}
+				<label
+					class="preference"
+					transition:scale={{
+						duration: 200,
+						opacity: 0,
+						/* delay: i * 20 + j * 10, */ easing: expoOut
+					}}
+					animate:flip={{ duration: 250, easing: expoOut }}
+				>
 					<span>{name}</span>
 					{#if type === 'multiple'}
 						<select
 							multiple
 							bind:value={$preferences[id]}
-							on:change={(e) => triggerEvent('Preferences/Change', { preferenceKey: id, preferenceValue: e.target.value })}
+							on:change={(e) =>
+								triggerEvent('Preferences/Change', {
+									preferenceKey: id,
+									preferenceValue: e.target.value
+								})}
 						>
-							{#each options as {id, name, options, value, disabled} (id)}
+							{#each options as { id, name, options, value, disabled } (id)}
 								{#if options}
 									<optgroup label={name}>
-										{#each options as {id, name, value, disabled} (id)}
-											<option value={value || id} disabled={disabled}>{resolveName(name)}</option>
+										{#each options as { id, name, value, disabled } (id)}
+											<option value={value || id} {disabled}>{resolveName(name)}</option>
 										{/each}
 									</optgroup>
 								{:else}
-									<option value={value || id} disabled={disabled}>{resolveName(name)}</option>
+									<option value={value || id} {disabled}>{resolveName(name)}</option>
 								{/if}
 							{/each}
 						</select>
 					{:else}
 						<select
 							bind:value={$preferences[id]}
-							on:change={(e) => triggerEvent('Preferences/Change', {
-								preferenceSectionKey: preferencesSection.id,
-								preferenceKey: id,
-								preferenceValue: e.target.value
-							})}
+							on:change={(e) =>
+								triggerEvent('Preferences/Change', {
+									preferenceSectionKey: preferencesSection.id,
+									preferenceKey: id,
+									preferenceValue: e.target.value
+								})}
 						>
-						<!--  multiple={type === 'multiple'} -->
-							{#each options as {id, name, options, value, disabled} (id)}
+							<!--  multiple={type === 'multiple'} -->
+							{#each options as { id, name, options, value, disabled } (id)}
 								{#if options}
 									<optgroup label={name}>
-										{#each options as {id, name, value, disabled} (id)}
-											<option value={value || id} disabled={disabled}>{resolveName(name)}</option>
+										{#each options as { id, name, value, disabled } (id)}
+											<option value={value || id} {disabled}>{resolveName(name)}</option>
 										{/each}
 									</optgroup>
 								{:else}
-									<option value={value || id} disabled={disabled}>{resolveName(name)}</option>
+									<option value={value || id} {disabled}>{resolveName(name)}</option>
 								{/if}
 							{/each}
 						</select>
@@ -116,11 +114,10 @@
 			type="button"
 			class="medium"
 			data-before={isShowingAll ? '✓' : '· · ·'}
-			on:click={() => isShowingAll = !isShowingAll}
+			on:click={() => (isShowingAll = !isShowingAll)}
 		/>
 	</footer>
 </form>
-
 
 <style>
 	.preferences {
@@ -140,7 +137,7 @@
 		gap: var(--padding-inner);
 		justify-content: start;
 		align-content: start; */
-		
+
 		gap: 1.5em;
 		align-items: stretch;
 
@@ -168,7 +165,6 @@
 		min-width: max-content;
 	}
 
-
 	/* .header, .footer {
 		transition: margin 0.3s;
 	} */
@@ -184,7 +180,8 @@
 
 		/* background: linear-gradient(to right, rgba(var(--rgb-light-dark), 0.2) calc(100% - var(--padding-outer)), transparent); */
 		background-color: rgba(var(--rgb-light-dark), 0.42);
-		box-shadow: 0 0 var(--padding-outer) calc(var(--padding-outer) / 2) rgba(var(--rgb-light-dark), 0.5);
+		box-shadow: 0 0 var(--padding-outer) calc(var(--padding-outer) / 2)
+			rgba(var(--rgb-light-dark), 0.5);
 		left: calc(-1 * var(--padding-outer));
 		margin: calc(-1 * var(--padding-outer));
 		padding: var(--padding-outer);
@@ -203,10 +200,11 @@
 		right: 0;
 		z-index: 1;
 	}
-	.preferences:not(.is-showing-all) > footer {		
+	.preferences:not(.is-showing-all) > footer {
 		/* background: linear-gradient(to left, rgba(var(--rgb-light-dark), 0.2) calc(100% - var(--padding-outer)), transparent); */
 		background-color: rgba(var(--rgb-light-dark), 0.42);
-		box-shadow: 0 0 var(--padding-outer) calc(var(--padding-outer) / 2) rgba(var(--rgb-light-dark), 0.5);
+		box-shadow: 0 0 var(--padding-outer) calc(var(--padding-outer) / 2)
+			rgba(var(--rgb-light-dark), 0.5);
 		right: calc(-1 * var(--padding-outer));
 		margin: calc(-1 * var(--padding-outer));
 		padding: var(--padding-outer);
@@ -253,7 +251,6 @@
 		text-align: right;
 	} */
 
-
 	/* label {
 		display: grid;
 		gap: 0.2em;
@@ -276,7 +273,6 @@
 		font-size: 0.8em;
 		text-transform: uppercase;
 	} */
-
 
 	select[multiple] {
 		height: 1.8em;

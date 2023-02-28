@@ -1,14 +1,11 @@
 <script lang="ts">
-	import type { QuoteCurrency } from '../data/currencies'
+	import type { QuoteCurrency } from '../data/currencies';
 
+	import { fiatQuoteCurrencies } from '../data/currencies';
 
-	import { fiatQuoteCurrencies } from '../data/currencies'
-
-
-	export let tokenBalanceFormat: 'original' | 'converted' | 'both' = 'original'
-	export let quoteCurrency: QuoteCurrency
+	export let tokenBalanceFormat: 'original' | 'converted' | 'both' = 'original';
+	export let quoteCurrency: QuoteCurrency;
 </script>
-
 
 <select bind:value={tokenBalanceFormat}>
 	<option value="original">Amount</option>

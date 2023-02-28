@@ -1,94 +1,52 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import { preferences } from '../state/preferences'
+	import type { Ethereum } from '../data/networks/types';
+	import { preferences } from '../state/preferences';
 
+	export let network: Ethereum.Network;
+	export let blockNumber: Ethereum.BlockNumber;
+	export let transactionProvider;
+	export let provider: Ethereum.Provider;
+	export let quoteCurrency;
+	$: transactionProvider = $$props.transactionProvider || $preferences.transactionProvider;
 
-	export let network: Ethereum.Network
-	export let blockNumber: Ethereum.BlockNumber
-	export let transactionProvider
-	export let provider: Ethereum.Provider
-	export let quoteCurrency
-	$: transactionProvider = $$props.transactionProvider || $preferences.transactionProvider
-	
-	
-	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed'
-	export let tokenBalanceFormat: 'original' | 'converted' | 'both' = 'original'
-	export let showFees = false
-	export let showTransactions = false
+	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed';
+	export let tokenBalanceFormat: 'original' | 'converted' | 'both' = 'original';
+	export let showFees = false;
+	export let showTransactions = false;
 
+	import { availableNetworks } from '../data/networks';
+	import { updatesByNetwork } from '../data/networks/updates';
 
-	import { availableNetworks } from '../data/networks'
-	import { updatesByNetwork } from '../data/networks/updates'
+	import { parallelLoaderStore } from '../utils/parallelLoaderStore';
 
+	let block;
 
-	import { parallelLoaderStore } from '../utils/parallelLoaderStore'
+	$: lastUpdate =
+		block &&
+		updatesByNetwork.get(network)?.find((upgrade) => block?.blockNumber >= upgrade.blockNumber);
 
+	import { useQuery } from '@sveltestack/svelte-query';
 
-	let block
+	import { getBlock } from '../api/covalent';
 
-	$: lastUpdate = block && updatesByNetwork.get(network)?.find(upgrade => block?.blockNumber >= upgrade.blockNumber)
+	import { chainCodeFromNetwork, MoralisWeb3Api } from '../api/moralis/web3Api';
 
-	
-	import { useQuery } from '@sveltestack/svelte-query'
+	import Date from './Date.svelte';
+	import EthereumBlock from './EthereumBlock.svelte';
+	import EthereumBlockNavigation from './EthereumBlockNavigation.svelte';
+	import EthereumBlockNumber from './EthereumBlockNumber.svelte';
+	import Loader from './Loader.svelte';
+	import NetworkIcon from './NetworkIcon.svelte';
 
-	import { getBlock } from '../api/covalent'
-
-	import { chainCodeFromNetwork, MoralisWeb3Api } from '../api/moralis/web3Api'
-
-
-	import Date from './Date.svelte'
-	import EthereumBlock from './EthereumBlock.svelte'
-	import EthereumBlockNavigation from './EthereumBlockNavigation.svelte'
-	import EthereumBlockNumber from './EthereumBlockNumber.svelte'
-	import Loader from './Loader.svelte'
-	import NetworkIcon from './NetworkIcon.svelte'
-
-
-	import { CovalentIcon, MoralisIcon } from '../assets/icons'
+	import { CovalentIcon, MoralisIcon } from '../assets/icons';
 </script>
-
-
-<style>
-	.navigation {
-		--padding-inner: 0.25em;
-
-		/* margin: 0 calc(-1 * var(--padding-outer)); */
-		margin-top: auto;
-		padding: var(--padding-outer);
-
-		background-color: rgba(0, 0, 0, 0.25);
-		-webkit-backdrop-filter: var(--overlay-backdrop-filter);
-		backdrop-filter: var(--overlay-backdrop-filter);
-		border-radius: var(--card-border-radius);
-		margin: 0 calc(-1 * var(--padding-outer));
-	}
-	.navigation.currentNetwork {
-		position: sticky;
-		bottom: 4rem;
-		/* bottom: 0; */
-		z-index: 1;
-	}
-	.navigation.otherNetworks {
-		font-size: 0.8em;
-	}
-	/* .navigation {
-		position: sticky;
-		top: calc(100% - 8rem);
-		bottom: 3.5rem;
-
-		transition: 0.3s;
-	}
-	.navigation:not(:hover):not(:focus-within) {
-		transform: translateY(calc(100% - 1em - var(--padding-outer) * 2));
-	} */
-</style>
-
 
 <div class="block card">
 	<div class="bar">
 		<h2><EthereumBlockNumber {network} {blockNumber} /></h2>
 		<span class="card-annotation">
-			{network.name} {blockNumber == 0 ? 'Genesis Block' : 'Block'}
+			{network.name}
+			{blockNumber == 0 ? 'Genesis Block' : 'Block'}
 
 			{#if lastUpdate}(<a href={lastUpdate.links[0]} target="_blank">{lastUpdate.name}</a>){/if}
 		</span>
@@ -101,29 +59,28 @@
 			loadingMessage="Retrieving block data from {transactionProvider}..."
 			errorMessage="Error retrieving block data from {transactionProvider}"
 			fromUseQuery={useQuery({
-				queryKey: ['Block', {
-					chainID: network.chainId,
-					blockNumber
-				}],
-				queryFn: async () => (
-					(await getBlock({
+				queryKey: [
+					'Block',
+					{
 						chainID: network.chainId,
 						blockNumber
-					}))
-						.items.map(({
-							height,
-							signed_at
-						}) => ({
-							blockNumber: height,
-							timestamp: signed_at
-						}))
-						?.[0]
-				)
+					}
+				],
+				queryFn: async () =>
+					(
+						await getBlock({
+							chainID: network.chainId,
+							blockNumber
+						})
+					).items.map(({ height, signed_at }) => ({
+						blockNumber: height,
+						timestamp: signed_at
+					}))?.[0]
 			})}
 			bind:result={block}
 			let:result={block}
 		>
-			<hr>
+			<hr />
 
 			<div class="footer bar">
 				<span />
@@ -163,7 +120,6 @@
 				</EthereumTransactionsLoader>
 			{/each} -->
 		</Loader>
-
 	{:else if transactionProvider === 'Moralis'}
 		<Loader
 			loadingIcon={MoralisIcon}
@@ -171,61 +127,70 @@
 			loadingMessage="Retrieving block data from {transactionProvider}..."
 			errorMessage="Error retrieving block data from {transactionProvider}"
 			fromUseQuery={useQuery({
-				queryKey: ['Block', {
-					chainID: network.chainId,
-					blockNumber
-				}],
-				queryFn: async () => (
-					MoralisWeb3Api.block.getBlock({
-						chain: chainCodeFromNetwork(network),
-						blockNumberOrHash: blockNumber
-					}).then(({
-						timestamp,
-						number,
-						hash,
-						parent_hash,
-						nonce,
-						sha3_uncles,
-						logs_bloom,
-						transactions_root,
-						state_root,
-						receipts_root,
-						miner,
-						difficulty,
-						total_difficulty,
-						size,
-						extra_data,
-						gas_limit,
-						gas_used,
-						transaction_count,
-						transactions
-					}) => ({
-						hash: hash,
-						parentHash: parent_hash,
-						blockNumber: number,
-						timestamp: timestamp,
-						nonce,
+				queryKey: [
+					'Block',
+					{
+						chainID: network.chainId,
+						blockNumber
+					}
+				],
+				queryFn: async () =>
+					MoralisWeb3Api.block
+						.getBlock({
+							chain: chainCodeFromNetwork(network),
+							blockNumberOrHash: blockNumber
+						})
+						.then(
+							({
+								timestamp,
+								number,
+								hash,
+								parent_hash,
+								nonce,
+								sha3_uncles,
+								logs_bloom,
+								transactions_root,
+								state_root,
+								receipts_root,
+								miner,
+								difficulty,
+								total_difficulty,
+								size,
+								extra_data,
+								gas_limit,
+								gas_used,
+								transaction_count,
+								transactions
+							}) => ({
+								hash: hash,
+								parentHash: parent_hash,
+								blockNumber: number,
+								timestamp: timestamp,
+								nonce,
 
-						difficulty,
-						totalDifficulty: total_difficulty,
-						gasLimit: gas_limit,
-						gasUsed: gas_used,
+								difficulty,
+								totalDifficulty: total_difficulty,
+								gasLimit: gas_limit,
+								gasUsed: gas_used,
 
-						minerAddress: miner,
-						extraData: extra_data,
+								minerAddress: miner,
+								extraData: extra_data,
 
-						transactions: transactions.sort((transaction1, transaction2) => transaction1.indexInBlock - transaction2.indexInBlock)
-					}))
-					.catch((e) => {
-						throw new Error(`Moralis hasn't yet indexed ${network.name} block #${blockNumber}.`) 
-					})
-				)
+								transactions: transactions.sort(
+									(transaction1, transaction2) =>
+										transaction1.indexInBlock - transaction2.indexInBlock
+								)
+							})
+						)
+						.catch((e) => {
+							throw new Error(`Moralis hasn't yet indexed ${network.name} block #${blockNumber}.`);
+						})
 			})}
 			bind:result={block}
-			showIf={block => block}
+			showIf={(block) => block}
 			let:result={block}
 		>
-			<hr>
+			<hr />
 
 			<EthereumBlock
 				{network}
@@ -239,41 +204,49 @@
 				{showTransactions}
 			/>
 		</Loader>
-
 	{:else if transactionProvider === 'RPC Provider'}
 		<Loader
 			loadingIconName={transactionProvider}
 			loadingMessage="Retrieving block data from {transactionProvider}..."
 			errorMessage="Error retrieving block data from {transactionProvider}"
-			fromUseQuery={provider && useQuery({
-				queryKey: ['Block', {
-					chainID: network.chainId,
-					blockNumber
-				}],
-				queryFn: async () =>  {
-					// for(let block; !block; block = await provider.getBlockWithTransactions(toHex(blockNumber)));
-					// console.log('block', block)
-					try {
-						const block = await provider.getBlockWithTransactions(blockNumber)
-						return block
-					}catch(e){
-						console.dir(e)
-						if(e.body){
-							const { error } = JSON.parse(e.body)
-							// console.error(e, error)
-							throw error.message + Object.entries(error.data).map(([k, v]) => `\n${k}: ${v}`).join('')
-						}else{
-							throw e
+			fromUseQuery={provider &&
+				useQuery({
+					queryKey: [
+						'Block',
+						{
+							chainID: network.chainId,
+							blockNumber
+						}
+					],
+					queryFn: async () => {
+						// for(let block; !block; block = await provider.getBlockWithTransactions(toHex(blockNumber)));
+						// console.log('block', block)
+						try {
+							const block = await provider.getBlockWithTransactions(blockNumber);
+							return block;
+						} catch (e) {
+							console.dir(e);
+							if (e.body) {
+								const { error } = JSON.parse(e.body);
+								// console.error(e, error)
+								throw (
+									error.message +
+									Object.entries(error.data)
+										.map(([k, v]) => `\n${k}: ${v}`)
+										.join('')
+								);
+							} else {
+								throw e;
+							}
 						}
 					}
-				}
-			})}
+				})}
 			bind:result={block}
 			let:result={block}
 		>
 			<NetworkIcon slot="loadingIcon" {network} />
 
-			<hr>
+			<hr />
 
 			{#if block}
 				<EthereumBlock
@@ -294,7 +267,6 @@
 	{/if}
 </div>
 
-
 <div class="navigation currentNetwork column">
 	<EthereumBlockNavigation
 		{network}
@@ -305,23 +277,27 @@
 </div>
 
 {#if availableNetworks && transactionProvider === 'Moralis' && block?.timestamp}
-	{@const otherNetworks = availableNetworks.filter(_network => _network !== network)}
+	{@const otherNetworks = availableNetworks.filter((_network) => _network !== network)}
 
 	<Loader
 		loadingIconName={'Moralis'}
 		loadingIcon={MoralisIcon}
-		fromStore={otherNetworks && block?.timestamp && (() =>
-			// <Awaited<ReturnType<typeof MoralisWeb3Api.dateToBlock.getDateToBlock>>[]>
-			parallelLoaderStore(otherNetworks, network => (
-				MoralisWeb3Api.dateToBlock.getDateToBlock({
-					chain: chainCodeFromNetwork(network),
-					date: block.timestamp
-				})
-			))
-		)}
-		then={closestBlockByNetwork => [...closestBlockByNetwork?.entries()].filter(([network, { block: blockNumber }]) => blockNumber > 0) ?? []}
+		fromStore={otherNetworks &&
+			block?.timestamp &&
+			(() =>
+				// <Awaited<ReturnType<typeof MoralisWeb3Api.dateToBlock.getDateToBlock>>[]>
+				parallelLoaderStore(otherNetworks, (network) =>
+					MoralisWeb3Api.dateToBlock.getDateToBlock({
+						chain: chainCodeFromNetwork(network),
+						date: block.timestamp
+					})
+				))}
+		then={(closestBlockByNetwork) =>
+			[...closestBlockByNetwork?.entries()].filter(
+				([network, { block: blockNumber }]) => blockNumber > 0
+			) ?? []}
 		let:result={networksAndClosestBlock}
-		showIf={networksAndClosestBlock => networksAndClosestBlock?.length}
+		showIf={(networksAndClosestBlock) => networksAndClosestBlock?.length}
 		clip={false}
 	>
 		<svelte:fragment slot="loadingMessage">
@@ -329,7 +305,7 @@
 		</svelte:fragment>
 
 		<div class="navigation otherNetworks column">
-			{#each networksAndClosestBlock as [network, {block: blockNumber, timestamp}]}
+			{#each networksAndClosestBlock as [network, { block: blockNumber, timestamp }]}
 				<EthereumBlockNavigation
 					{network}
 					blockNumber={blockNumber > 1 ? Number(blockNumber) : undefined}
@@ -338,3 +314,38 @@
 		</div>
 	</Loader>
 {/if}
+
+<style>
+	.navigation {
+		--padding-inner: 0.25em;
+
+		/* margin: 0 calc(-1 * var(--padding-outer)); */
+		margin-top: auto;
+		padding: var(--padding-outer);
+
+		background-color: rgba(0, 0, 0, 0.25);
+		-webkit-backdrop-filter: var(--overlay-backdrop-filter);
+		backdrop-filter: var(--overlay-backdrop-filter);
+		border-radius: var(--card-border-radius);
+		margin: 0 calc(-1 * var(--padding-outer));
+	}
+	.navigation.currentNetwork {
+		position: sticky;
+		bottom: 4rem;
+		/* bottom: 0; */
+		z-index: 1;
+	}
+	.navigation.otherNetworks {
+		font-size: 0.8em;
+	}
+	/* .navigation {
+		position: sticky;
+		top: calc(100% - 8rem);
+		bottom: 3.5rem;
+
+		transition: 0.3s;
+	}
+	.navigation:not(:hover):not(:focus-within) {
+		transform: translateY(calc(100% - 1em - var(--padding-outer) * 2));
+	} */
+</style>

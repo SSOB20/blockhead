@@ -1,15 +1,12 @@
 <script context="module" lang="ts">
-	let cachedBlockHeightForNetwork: Record<Ethereum.ChainID, Ethereum.BlockNumber> = {}
+	let cachedBlockHeightForNetwork: Record<Ethereum.ChainID, Ethereum.BlockNumber> = {};
 </script>
 
-
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-
+	import type { Ethereum } from '../data/networks/types';
 
 	// export let network: Ethereum.Network
 	// export let provider: Ethereum.Provider
-
 
 	// import { preferences } from '../state/preferences'
 	// import { getEthersProvider } from '../data/networkProviders'
@@ -21,7 +18,6 @@
 	// 	})
 	// 		.then(_ => provider = _)
 	// }
-
 
 	// export let blockNumber: number
 
@@ -49,8 +45,6 @@
 	// 	return { update, destroy }
 	// }
 
-
-
 	// import { derived, writable } from 'svelte/store'
 
 	// const providerStore = writable(provider)
@@ -77,29 +71,26 @@
 	// export let blockNumber
 	// $: blockNumber = $blockNumberStore
 
+	export let network: Ethereum.Network;
 
-
-	export let network: Ethereum.Network
-
-	
 	// Computed
 
-	export let latestBlockNumber: Ethereum.BlockNumber | undefined
+	export let latestBlockNumber: Ethereum.BlockNumber | undefined;
 
-	let blockHeightForNetwork: Record<Ethereum.ChainID, Ethereum.BlockNumber> = cachedBlockHeightForNetwork
-	
+	let blockHeightForNetwork: Record<Ethereum.ChainID, Ethereum.BlockNumber> =
+		cachedBlockHeightForNetwork;
+
 	$: {
-		latestBlockNumber = blockHeightForNetwork[network.chainId]
-		cachedBlockHeightForNetwork = blockHeightForNetwork
+		latestBlockNumber = blockHeightForNetwork[network.chainId];
+		cachedBlockHeightForNetwork = blockHeightForNetwork;
 	}
 
-
-	import { preferences } from '../state/preferences'
-	import { getEthersProvider } from '../data/networkProviders'
+	import { preferences } from '../state/preferences';
+	import { getEthersProvider } from '../data/networkProviders';
 	// import { onDestroy } from 'svelte'
 
-	$: if(network && !blockHeightForNetwork[network.chainId]){
-		const { chainId } = network
+	$: if (network && !blockHeightForNetwork[network.chainId]) {
+		const { chainId } = network;
 
 		getEthersProvider({
 			network,
@@ -109,22 +100,20 @@
 				blockHeightForNetwork = {
 					...blockHeightForNetwork,
 					[chainId]: blockNumber
-				}
-			}
+				};
+			};
 
-			provider.on('block', onBlock)
+			provider.on('block', onBlock);
 
 			// onDestroy(() => provider.off('block', onBlock))
-		})
+		});
 	}
 
-
-	import EthereumBlockNumber from './EthereumBlockNumber.svelte'
+	import EthereumBlockNumber from './EthereumBlockNumber.svelte';
 	// import Loader from './Loader.svelte'
 	// import Loading from './Loading.svelte'
 	// import NetworkIcon from './NetworkIcon.svelte'
 </script>
-
 
 <slot {network} {latestBlockNumber}>
 	<EthereumBlockNumber {network} blockNumber={latestBlockNumber} />

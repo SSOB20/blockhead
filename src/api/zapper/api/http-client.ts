@@ -56,7 +56,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-	public baseUrl: string = 'https://api.zapper.fi';
+	public baseUrl: string = 'https://api.zapper.xyz';
 	private securityData: SecurityDataType | null = null;
 	private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
 	private abortControllers = new Map<CancelToken, AbortController>();
@@ -191,8 +191,8 @@ export class HttpClient<SecurityDataType = unknown> {
 			{
 				...requestParams,
 				headers: {
-					...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
-					...(requestParams.headers || {})
+					...(requestParams.headers || {}),
+					...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {})
 				},
 				signal: cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal,
 				body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body)

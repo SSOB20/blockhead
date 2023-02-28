@@ -1,35 +1,30 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { Covalent } from '../api/covalent'
-	import { getHistoricalPricesByTickerSymbol, getHistoricalPricesByAddress } from '../api/covalent'
-	import type { QuoteCurrency, TickerSymbol } from '../data/currencies'
-	import type { PriceScale } from './PriceChart.svelte'
-	
-	export let historicalPriceProvider
-	export let currencies: (TickerSymbol | Ethereum.ContractAddress)[]
-	export let chainID: Ethereum.ChainID = 1
-	export let quoteCurrency: QuoteCurrency
-	export let fromDate = '2017-01-01'
-	export let toDate = new Date().toISOString().slice(0, 10) // today's date
-	export let fromPrice = 0
-	export let toPrice = 1000
-	export let priceScale: PriceScale
+	import type { Ethereum } from '../data/networks/types';
+	import type { Covalent } from '../api/covalent';
+	import { getHistoricalPricesByTickerSymbol, getHistoricalPricesByAddress } from '../api/covalent';
+	import type { QuoteCurrency, TickerSymbol } from '../data/currencies';
+	import type { PriceScale } from './PriceChart.svelte';
 
+	export let historicalPriceProvider;
+	export let currencies: (TickerSymbol | Ethereum.ContractAddress)[];
+	export let chainID: Ethereum.ChainID = 1;
+	export let quoteCurrency: QuoteCurrency;
+	export let fromDate = '2017-01-01';
+	export let toDate = new Date().toISOString().slice(0, 10); // today's date
+	export let fromPrice = 0;
+	export let toPrice = 1000;
+	export let priceScale: PriceScale;
 
-	const isAddress = query => /^0x[0-9a-f]{40}$/i.test(query)
+	const isAddress = (query) => /^0x[0-9a-f]{40}$/i.test(query);
 
+	import { promiseAllFulfilled } from '../utils/promiseAllFulfilled';
 
-	import { promiseAllFulfilled } from '../utils/promiseAllFulfilled'
+	import Loader from './Loader.svelte';
+	import PriceChart from './PriceChart.svelte';
 
-
-	import Loader from './Loader.svelte'
-	import PriceChart from './PriceChart.svelte'
-
-
-	import { CovalentIcon } from '../assets/icons'
+	import { CovalentIcon } from '../assets/icons';
 	import { parallelLoaderStore } from '../utils/parallelLoaderStore';
 </script>
-
 
 <!-- {#if historicalPriceProvider === 'Covalent' && currencies}
 	<Loader

@@ -1,27 +1,47 @@
 <script lang="ts">
-	import type { NetworkAccountAddress } from '../data/address'
-	import type { Ethereum } from '../data/networks/types'
+	import type { NetworkAccountAddress } from '../data/address';
+	import type { Ethereum } from '../data/networks/types';
 
+	export let network: Ethereum.Network;
+	export let address: NetworkAccountAddress;
 
-	export let network: Ethereum.Network
-	export let address: NetworkAccountAddress
+	export let format: 'full' | 'middle-truncated' = 'full';
+	export let linked = true;
 
-	export let format: 'full' | 'middle-truncated' = 'full'
-	export let linked = true
+	import { formatAddress } from '../utils/formatAddress';
+	$: formattedAddress = formatAddress(address, format);
 
-
-	import { formatAddress } from '../utils/formatAddress'
-	$: formattedAddress = formatAddress(address, format)
-
-
-	$: link = network ? `/explorer/${network.slug}/${address}` : ''
+	$: link = network ? `/explorer/${network.slug}/${address}` : '';
 
 	const onDragStart = (e: DragEvent) => {
-		e.dataTransfer.setData('text/plain', address)
-		if(linked) e.dataTransfer.setData('text/uri-list', link)
-	}
+		e.dataTransfer.setData('text/plain', address);
+		if (linked) e.dataTransfer.setData('text/uri-list', link);
+	};
 </script>
 
+{#if linked && network}
+	<a class="address" href={link} draggable={true} on:dragstart={onDragStart}>
+		<slot {formattedAddress}>
+			{#if format === 'middle-truncated'}
+				<abbr class="format" title={address}>{formattedAddress}</abbr>
+			{:else}
+				<span class="format">{formattedAddress}</span>
+			{/if}
+		</slot>
+	</a>
+{:else}
+	<slot {formattedAddress}>
+		{#if format === 'middle-truncated'}
+			<abbr class="address format" title={address} draggable={true} on:dragstart={onDragStart}
+				>{formattedAddress}</abbr
+			>
+		{:else}
+			<span class="address format" draggable={true} on:dragstart={onDragStart}
+				>{formattedAddress}</span
+			>
+		{/if}
+	</slot>
+{/if}
 
 <style>
 	.format {
@@ -36,39 +56,3 @@
 		white-space: nowrap;
 	}
 </style>
-
-
-{#if linked && network}
-	<a
-		class="address"
-		href={link}
-		draggable={true}
-		on:dragstart={onDragStart}
-	>
-		<slot {formattedAddress}>
-			{#if format === 'middle-truncated'}
-				<abbr class="format" title={address}>{formattedAddress}</abbr>
-			{:else}
-				<span class="format">{formattedAddress}</span>
-			{/if}
-		</slot>
-	</a>
-{:else}
-	<slot {formattedAddress}>
-		{#if format === 'middle-truncated'}
-			<abbr
-				class="address format"
-				title={address}
-				draggable={true}
-				on:dragstart={onDragStart}
-
-			>{formattedAddress}</abbr>
-		{:else}
-			<span
-				class="address format"
-				draggable={true}
-				on:dragstart={onDragStart}
-			>{formattedAddress}</span>
-		{/if}
-	</slot>
-{/if}

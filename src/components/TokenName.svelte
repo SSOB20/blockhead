@@ -1,32 +1,35 @@
 <script lang="ts">
-	import type { TickerSymbol } from '../data/currencies'
-	import type { Ethereum } from '../data/networks/types'
+	import type { TickerSymbol } from '../data/currencies';
+	import type { Ethereum } from '../data/networks/types';
 
+	export let network: EthereumNetwork;
+	export let symbol: TickerSymbol;
+	export let address: Ethereum.ContractAddress;
+	export let name: string;
+	export let icon: string;
 
-	export let network: EthereumNetwork
-	export let symbol: TickerSymbol
-	export let address: Ethereum.ContractAddress
-	export let name: string
-	export let icon: string
+	export let erc20Token: Ethereum.ERC20Token;
+	$: symbol = $$props.symbol || erc20Token?.symbol;
+	$: address = $$props.address || erc20Token?.address;
+	$: name = $$props.name || erc20Token?.name;
+	$: icon = $$props.icon || erc20Token?.icon;
 
-	export let erc20Token: Ethereum.ERC20Token
-	$: symbol = $$props.symbol || erc20Token?.symbol
-	$: address = $$props.address || erc20Token?.address
-	$: name = $$props.name || erc20Token?.name
-	$: icon = $$props.icon || erc20Token?.icon
-
-	$: title = `${name || symbol}${symbol && name ? ` (${symbol})` : ``}`
-
+	$: title = `${name || symbol}${symbol && name ? ` (${symbol})` : ``}`;
 
 	const onDragStart = (e: DragEvent) => {
-		e.dataTransfer.setData('text/plain', title)
-	}
+		e.dataTransfer.setData('text/plain', title);
+	};
 
-
-	import Address from './Address.svelte'
-	import TokenIcon from './TokenIcon.svelte'
+	import Address from './Address.svelte';
+	import TokenIcon from './TokenIcon.svelte';
 </script>
 
+<Address {network} {address}>
+	<span class="token-value-container" {title} draggable={true} on:dragstart={onDragStart}>
+		<TokenIcon {network} {symbol} {address} {name} {icon} {erc20Token} />
+		<span class="token-name">{symbol}</span>
+	</span>
+</Address>
 
 <style>
 	.token-value-container {
@@ -47,19 +50,3 @@
 		white-space: nowrap;
 	}
 </style>
-
-
-<Address
-	{network}
-	{address}
->
-	<span
-		class="token-value-container"
-		{title}
-		draggable={true}
-		on:dragstart={onDragStart}
-	>
-		<TokenIcon {network} {symbol} {address} {name} {icon} {erc20Token} />
-		<span class="token-name">{symbol}</span>
-	</span>
-</Address>

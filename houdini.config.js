@@ -9,28 +9,28 @@ const config = {
 	schemaPath: './src/api/ens/ens-subgraph.graphql',
 	plugins: {
 		'houdini-svelte': {
-			client: './src/api/ens/client.ts',
+			client: './src/api/ens/client.ts'
 		}
 	},
 
 	scalars: {
-		'BigDecimal': {
+		BigDecimal: {
 			type: 'string',
-			unmarshal: value => value?.toString(),
-			marshal: value => value,
+			unmarshal: (value) => value?.toString(),
+			marshal: (value) => value
 		},
-		'BigInt': {
+		BigInt: {
 			type: 'string',
-			unmarshal: value => value?.toString(),
-			marshal: value => value,
+			unmarshal: (value) => value?.toString(),
+			marshal: (value) => value
 		},
-		'Bytes': {
+		Bytes: {
 			type: 'string',
-			unmarshal: value => value?.toString(),
-			marshal: value => value,
+			unmarshal: (value) => value?.toString(),
+			marshal: (value) => value
 		}
 	},
 	schemaPollInterval: null
-}
+};
 
-export default config
+export default config;

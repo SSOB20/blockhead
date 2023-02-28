@@ -1,7 +1,7 @@
-declare const brand: unique symbol
+declare const brand: unique symbol;
 
 export type Branded<T, TBrand extends string> = T & {
-	[brand]: TBrand
-}
+	[brand]: TBrand;
+};
 
-export type BrandedString<TBrand extends string> = Branded<string, TBrand>
+export type BrandedString<TBrand extends string> = Branded<string, TBrand>;

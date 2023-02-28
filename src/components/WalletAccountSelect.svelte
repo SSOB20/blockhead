@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { getLocalPortfolios, connectedProviderAccounts, Account } from '../data/ethereum/portfolio-accounts'
+	import {
+		getLocalPortfolios,
+		connectedProviderAccounts,
+		Account
+	} from '../data/ethereum/portfolio-accounts';
 
-	const localPortfolios = getLocalPortfolios()
+	const localPortfolios = getLocalPortfolios();
 
-
-	export let account: Account
+	export let account: Account;
 </script>
-
 
 <select class="wallet-account-select" bind:value={account}>
 	<!-- {#each $localPortfolios as {name, accounts}, i (i)}

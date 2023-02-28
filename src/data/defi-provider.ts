@@ -1,1 +1,1 @@
-export type DeFiProvider = 'Zerion DeFi SDK' | 'Zapper' | 'Covalent'
+export type DeFiProvider = 'Zerion DeFi SDK' | 'Zapper' | 'Covalent';

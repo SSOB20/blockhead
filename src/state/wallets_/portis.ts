@@ -1,12 +1,10 @@
-import type { Ethereum } from '../../data/networks/types'
-import { getNetworkRPC } from '../../data/networks'
+import type { Ethereum } from '../../data/networks/types';
+import { getNetworkRPC } from '../../data/networks';
 
+const PORTIS_DAPP_ID = '136f70ac-f0e2-4f6f-b83b-a1089ec331bb';
 
-const PORTIS_DAPP_ID = '136f70ac-f0e2-4f6f-b83b-a1089ec331bb'
-
-
-export async function getPortis(network: Ethereum.Network){
-	const Portis = (await import('@portis/web3')).default
+export async function getPortis(network: Ethereum.Network) {
+	const Portis = (await import('@portis/web3')).default;
 
 	/*
 	Initialize Portis by declaring:
@@ -23,11 +21,14 @@ export async function getPortis(network: Ethereum.Network){
 		- gasRelay
 		- registerPageByDefault
 	*/
-	return new Portis(PORTIS_DAPP_ID, portisNetworkNames[network.chainId] ?? {
-		nodeUrl: getNetworkRPC(network),
-		chainId: String(network.chainId),
-		// gasRelayHubAddress
-	})
+	return new Portis(
+		PORTIS_DAPP_ID,
+		portisNetworkNames[network.chainId] ?? {
+			nodeUrl: getNetworkRPC(network),
+			chainId: String(network.chainId)
+			// gasRelayHubAddress
+		}
+	);
 }
 
 const portisNetworkNames: Record<Ethereum.ChainID, string> = {
@@ -48,7 +49,7 @@ const portisNetworkNames: Record<Ethereum.ChainID, string> = {
 	122: 'fuse',
 	163: 'lightstreams',
 	137: 'matic',
-	80001: 'maticMumbai',
+	80001: 'maticMumbai'
 	// 'maticAlpha',
 	// 'maticTestnet',
-}
+};

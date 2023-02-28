@@ -1,7 +1,6 @@
-import { Sdk, randomPrivateKey, NetworkNames } from 'etherspot'
-import { memoized } from '../utils/memoized'
-import type { Ethereum } from '../data/networks/types'
-
+import { Sdk, randomPrivateKey, NetworkNames } from 'etherspot';
+import { memoized } from '../utils/memoized';
+import type { Ethereum } from '../data/networks/types';
 
 const CHAIN_ID_TO_NETWORK_NAME: Record<Ethereum.ChainID, NetworkNames> = {
 	1: NetworkNames.Mainnet,
@@ -20,67 +19,66 @@ const CHAIN_ID_TO_NETWORK_NAME: Record<Ethereum.ChainID, NetworkNames> = {
 	4386: NetworkNames.Etherspot,
 	9999: NetworkNames.LocalA,
 	6666: NetworkNames.LocalB,
-	3333: NetworkNames.LocalH,
-}
+	3333: NetworkNames.LocalH
+};
 
-
-export const getEtherspotInstance = memoized(({
-	network
-}: {
-	network: Ethereum.Network
-}) => (
-	new Sdk({
-		privateKey: randomPrivateKey(),
-	}, {
-		networkName: CHAIN_ID_TO_NETWORK_NAME[network.chainId]
-	})
-))
-
+export const getEtherspotInstance = memoized(
+	({ network }: { network: Ethereum.Network }) =>
+		new Sdk(
+			{
+				privateKey: randomPrivateKey()
+			},
+			{
+				networkName: CHAIN_ID_TO_NETWORK_NAME[network.chainId]
+			}
+		)
+);
 
 export const getTransaction = async ({
 	network,
 	etherspotSdk = getEtherspotInstance({ network }),
 	transactionID
-}: {
-	network: Ethereum.Network,
-	etherspotSdk?: Sdk,
-	transactionID: Ethereum.TransactionID
-} | {
-	network?: Ethereum.Network,
-	etherspotSdk: Sdk,
-	transactionID: Ethereum.TransactionID
-}) =>
+}:
+	| {
+			network: Ethereum.Network;
+			etherspotSdk?: Sdk;
+			transactionID: Ethereum.TransactionID;
+	  }
+	| {
+			network?: Ethereum.Network;
+			etherspotSdk: Sdk;
+			transactionID: Ethereum.TransactionID;
+	  }) =>
 	await etherspotSdk.getTransaction({
 		hash: transactionID
-	})
-
+	});
 
 export const getTransactions = async ({
 	network,
 	address,
-	etherspotSdk = getEtherspotInstance({network})
-}: {
-	network: Ethereum.Network,
-	address: Ethereum.Address,
-	etherspotSdk?: Sdk
-} | {
-	network?: Ethereum.Network,
-	address: Ethereum.Address,
-	etherspotSdk: Sdk
-}) => {
+	etherspotSdk = getEtherspotInstance({ network })
+}:
+	| {
+			network: Ethereum.Network;
+			address: Ethereum.Address;
+			etherspotSdk?: Sdk;
+	  }
+	| {
+			network?: Ethereum.Network;
+			address: Ethereum.Address;
+			etherspotSdk: Sdk;
+	  }) => {
 	try {
 		const { items } = await etherspotSdk.getTransactions({
 			account: address
-		})
-		return items
-	}catch(e){
-		throw e?.errors?.map(e => e?.constraints?.type).join('\n') ?? e
+		});
+		return items;
+	} catch (e) {
+		throw e?.errors?.map((e) => e?.constraints?.type).join('\n') ?? e;
 	}
-}
+};
 
-
-
-export async function startEtherspotTransfer(){}
+export async function startEtherspotTransfer() {}
 
 // import type { Ethereum } from '../ethereum/types'
 // import type { Account } from '../ethereum/portfolio-accounts'

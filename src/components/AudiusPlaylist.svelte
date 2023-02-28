@@ -1,14 +1,67 @@
 <script lang="ts">
-	import type { Audius } from '../api/audius'
+	import type { Audius } from '../api/audius';
 
+	export let playlist: Audius.Playlist;
 
-	export let playlist: Audius.Playlist
-
-
-	import AudiusUserSummary from './AudiusUserSummary.svelte'
-	import HeightContainer from './HeightContainer.svelte'
+	import AudiusUserSummary from './AudiusUserSummary.svelte';
+	import HeightContainer from './HeightContainer.svelte';
 </script>
 
+{#if playlist}
+	<div class="audius-playlist card">
+		<div class="columns">
+			{#if playlist.artwork}
+				<img
+					class="playlist-artwork"
+					srcset={Object.entries(playlist.artwork)
+						.map(([size, src]) => `${src}`)
+						.join(', ')}
+					alt="{playlist.playlist_name} - Playlist Artiwork"
+				/>
+			{:else}
+				<span />
+			{/if}
+			<div class="column">
+				<div class="bar">
+					<div class="row-inline">
+						<h3>
+							<a href="/apps/audius/playlist/{playlist.id}">{playlist.playlist_name}</a>
+						</h3>
+						<span class="user row">by <AudiusUserSummary user={playlist.user} /></span>
+					</div>
+					<p class="card-annotation">{playlist.is_album ? 'Album' : 'Playlist'}</p>
+				</div>
+				<div class="metadata row">
+					{#if playlist.tracks?.length}
+						<span class="tracks">
+							<b>{playlist.tracks.length}</b> track{playlist.tracks.length === 1 ? '' : 's'}
+						</span>
+					{/if}
+					{#if playlist.repost_count}
+						<span class="reposts">
+							<b>{playlist.repost_count}</b> repost{playlist.repost_count === 1 ? '' : 's'}
+						</span>
+					{/if}
+					{#if playlist.favorite_count}
+						<span class="favorites">
+							<b>{playlist.favorite_count}</b> like{playlist.favorite_count === 1 ? '' : 's'}
+						</span>
+					{/if}
+					{#if playlist.total_play_count}
+						<span class="plays">
+							<b>{playlist.total_play_count}</b> play{playlist.total_play_count === 1 ? '' : 's'}
+						</span>
+					{/if}
+				</div>
+				{#if playlist.description}
+					<HeightContainer>
+						<p class="description">{playlist.description}</p>
+					</HeightContainer>
+				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.card {
@@ -60,54 +113,3 @@
 		overflow: hidden;
 	}
 </style>
-
-
-{#if playlist}
-	<div class="audius-playlist card">
-		<div class="columns">
-			{#if playlist.artwork}
-				<img class="playlist-artwork" srcset={Object.entries(playlist.artwork).map(([size, src]) => `${src}`).join(', ')} alt="{playlist.playlist_name} - Playlist Artiwork" />
-			{:else}
-				<span />
-			{/if}
-			<div class="column">
-				<div class="bar">
-					<div class="row-inline">
-						<h3>
-							<a href="/apps/audius/playlist/{playlist.id}">{playlist.playlist_name}</a>
-						</h3>
-						<span class="user row">by <AudiusUserSummary user={playlist.user} /></span>
-					</div>
-					<p class="card-annotation">{playlist.is_album ? 'Album' : 'Playlist'}</p>
-				</div>
-				<div class="metadata row">
-					{#if playlist.tracks?.length}
-						<span class="tracks">
-							<b>{playlist.tracks.length}</b> track{playlist.tracks.length === 1 ? '' : 's'}
-						</span>
-					{/if}
-					{#if playlist.repost_count}
-						<span class="reposts">
-							<b>{playlist.repost_count}</b> repost{playlist.repost_count === 1 ? '' : 's'}
-						</span>
-					{/if}
-					{#if playlist.favorite_count}
-						<span class="favorites">
-							<b>{playlist.favorite_count}</b> like{playlist.favorite_count === 1 ? '' : 's'}
-						</span>
-					{/if}
-					{#if playlist.total_play_count}
-						<span class="plays">
-							<b>{playlist.total_play_count}</b> play{playlist.total_play_count === 1 ? '' : 's'}
-						</span>
-					{/if}
-				</div>
-				{#if playlist.description}
-					<HeightContainer>
-						<p class="description">{playlist.description}</p>
-					</HeightContainer>
-				{/if}
-			</div>
-		</div>
-	</div>
-{/if}

@@ -1,11 +1,24 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { Transaction } from '../api/etherspot'
+	import type { Ethereum } from '../data/networks/types';
+	import type { Transaction } from '../api/etherspot';
 
-	export let network: Ethereum.Network
-	export let logEvent: Transaction['logs'][number]
+	export let network: Ethereum.Network;
+	export let logEvent: Transaction['logs'][number];
 </script>
 
+<div class="log-event">
+	<h4 class="log-event-index">{logEvent.logIndex}</h4>
+	{#if logEvent.topics.length}
+		<span class="topics">
+			{#each logEvent.topics as topic, i}
+				<span class="topic-wrapper">
+					<span class="topic-index">Topic {i}</span>
+					<output class="topic-value">{topic}</output>
+				</span>
+			{/each}
+		</span>
+	{/if}
+</div>
 
 <style>
 	.log-event {
@@ -34,18 +47,3 @@
 		opacity: 0.6;
 	}
 </style>
-
-
-<div class="log-event">
-	<h4 class="log-event-index">{logEvent.logIndex}</h4>
-	{#if logEvent.topics.length}
-		<span class="topics">
-			{#each logEvent.topics as topic, i}
-				<span class="topic-wrapper">
-					<span class="topic-index">Topic {i}</span>
-					<output class="topic-value">{topic}</output>
-				</span>
-			{/each}
-		</span>
-	{/if}
-</div>

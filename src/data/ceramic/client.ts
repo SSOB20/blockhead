@@ -1,16 +1,16 @@
-import CeramicClient from '@ceramicnetwork/http-client'
+import CeramicClient from '@ceramicnetwork/http-client';
 
 type CeramicNode = {
-	id: string,
-	url: string,
-	network: CeramicNetwork,
-	hasReadAccess: boolean,
-	hasWriteAccess: boolean,
-}
+	id: string;
+	url: string;
+	network: CeramicNetwork;
+	hasReadAccess: boolean;
+	hasWriteAccess: boolean;
+};
 
 enum CeramicNetwork {
 	Mainnet = 'mainnet',
-	ClayTestnet = 'clay-testnet',
+	ClayTestnet = 'clay-testnet'
 }
 
 // https://developers.ceramic.network/run/nodes/community-nodes/
@@ -21,24 +21,23 @@ const ceramicNodes: CeramicNode[] = [
 		url: 'https://gateway.ceramic.network',
 		network: CeramicNetwork.Mainnet,
 		hasReadAccess: true,
-		hasWriteAccess: false,
+		hasWriteAccess: false
 	},
 	{
 		id: 'testnet-clay',
 		url: 'https://gateway-clay.ceramic.network',
 		network: CeramicNetwork.ClayTestnet,
 		hasReadAccess: true,
-		hasWriteAccess: false,
+		hasWriteAccess: false
 	},
 	{
 		id: 'testnet-clay-gateway',
 		url: 'https://ceramic-clay.3boxlabs.com',
 		network: CeramicNetwork.ClayTestnet,
 		hasReadAccess: true,
-		hasWriteAccess: true,
-	},
-]
+		hasWriteAccess: true
+	}
+];
 
-export const getCeramicClient = (ceramicNode = ceramicNodes.find(node => node.hasWriteAccess)) => (
-	new CeramicClient(ceramicNode.url)
-)
+export const getCeramicClient = (ceramicNode = ceramicNodes.find((node) => node.hasWriteAccess)) =>
+	new CeramicClient(ceramicNode.url);

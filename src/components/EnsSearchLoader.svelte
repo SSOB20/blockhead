@@ -1,29 +1,33 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
+	import type { Ethereum } from '../data/networks/types';
 
-
-	export let network: Ethereum.Network
-	export let searchQuery: string
-
+	export let network: Ethereum.Network;
+	export let searchQuery: string;
 
 	// import { queryENSDomain, queryENSDomainsContaining } from '../api/ens'
 
-	import { graphql } from '$houdini'
+	import { graphql } from '$houdini';
 
 	/* @type { import('./$houdini').ENSDomainQuery } */
 	export const _ENSDomainQueryVariables = ({ props: { searchQuery } }) => ({
 		name: searchQuery
-	})
+	});
 	const ensDomainQuery = graphql(`
 		query ENSDomainQuery($name: String!) {
-			domains(where: {name: $name}) {
+			domains(where: { name: $name }) {
 				__typename
 				id
 				name
 				labelName
 				labelhash
-				parent { id name }
-				subdomains { id name }
+				parent {
+					id
+					name
+				}
+				subdomains {
+					id
+					name
+				}
 				resolvedAddress {
 					__typename
 					id
@@ -35,12 +39,20 @@
 				resolver {
 					__typename
 					id
-					domain { id }
+					domain {
+						id
+					}
 					address
-					addr { id }
+					addr {
+						id
+					}
 					texts
 					coinTypes
-					events { id blockNumber transactionID }
+					events {
+						id
+						blockNumber
+						transactionID
+					}
 				}
 				ttl
 				isMigrated
@@ -50,13 +62,20 @@
 					blockNumber
 					transactionID
 					... on Transfer {
-						owner { id }
+						owner {
+							id
+						}
 					}
 					... on NewOwner {
-						owner { id }
+						owner {
+							id
+						}
 					}
 					... on NewResolver {
-						resolver { id address }
+						resolver {
+							id
+							address
+						}
 					}
 					... on NewTTL {
 						ttl
@@ -64,22 +83,28 @@
 				}
 			}
 		}
-	`)
+	`);
 
 	/* @type { import('./$houdini').ENSDomainsContainingQuery } */
 	export const _ENSDomainsContainingQueryVariables = ({ props: { searchQuery } }) => ({
 		query: searchQuery
-	})
+	});
 	const ensDomainsContainingQuery = graphql(`
 		query ENSDomainsContainingQuery($query: String!) {
-			domains(where: {name_contains: $query, name_not: $query}) {
+			domains(where: { name_contains: $query, name_not: $query }) {
 				__typename
 				id
 				name
 				labelName
 				labelhash
-				parent { id name }
-				subdomains { id name }
+				parent {
+					id
+					name
+				}
+				subdomains {
+					id
+					name
+				}
 				resolvedAddress {
 					__typename
 					id
@@ -91,12 +116,20 @@
 				resolver {
 					__typename
 					id
-					domain { id }
+					domain {
+						id
+					}
 					address
-					addr { id }
+					addr {
+						id
+					}
 					texts
 					coinTypes
-					events { id blockNumber transactionID }
+					events {
+						id
+						blockNumber
+						transactionID
+					}
 				}
 				ttl
 				isMigrated
@@ -106,13 +139,20 @@
 					blockNumber
 					transactionID
 					... on Transfer {
-						owner { id }
+						owner {
+							id
+						}
 					}
 					... on NewOwner {
-						owner { id }
+						owner {
+							id
+						}
 					}
 					... on NewResolver {
-						resolver { id address }
+						resolver {
+							id
+							address
+						}
 					}
 					... on NewTTL {
 						ttl
@@ -120,20 +160,70 @@
 				}
 			}
 		}
-	`)
+	`);
 
+	const sortByLength = (a, b) => a.name.length - b.name.length;
 
-	const sortByLength = (a, b) => a.name.length - b.name.length
+	import EnsName from './EnsName.svelte';
+	import EnsDomain from './EnsDomain.svelte';
+	import Loader from './Loader.svelte';
 
-
-	import EnsName from './EnsName.svelte'
-	import EnsDomain from './EnsDomain.svelte'
-	import Loader from './Loader.svelte'
-
-
-	import { ENSIcon } from '../assets/icons'
+	import { ENSIcon } from '../assets/icons';
 </script>
 
+<!-- fromHoudiniQuery={searchQuery && (() => queryENSDomain({name: searchQuery}))} -->
+<Loader
+	fromHoudiniQuery={searchQuery && (() => ensDomainQuery)}
+	loadingIcon={ENSIcon}
+	loadingIconName="The Graph"
+	loadingMessage="Searching for "{searchQuery}" in the Ethereum Name Service subgraph..."
+	let:result
+>
+	<div class="ens-query column">
+		{#each result.domains.sort(sortByLength) as domain (domain.id)}
+			<EnsDomain {network} {domain} showRecordResolver showRecords />
+		{:else}
+			<div class="card">
+				<div class="bar">
+					<h2><EnsName {network} ensName={searchQuery} showAvatar showName /></h2>
+					<span class="card-annotation">ENS Name</span>
+				</div>
+				<div class="bar">
+					<p>
+						The ENS name "{searchQuery}" hasn't been registered by anyone. Perhaps you could claim
+						it for yourself!
+					</p>
+					<a href="https://app.ens.domains/name/{searchQuery}" target="_blank"
+						><button class="medium">Register On ENS</button></a
+					>
+				</div>
+			</div>
+		{/each}
+
+		<!-- fromHoudiniQuery={() => queryENSDomainsContaining({query: searchQuery})} -->
+		<Loader
+			fromHoudiniQuery={() => ensDomainsContainingQuery}
+			loadingIcon={ENSIcon}
+			loadingIconName="The Graph"
+			loadingMessage="Searching the Ethereum Name Service subgraph for similar names..."
+			let:result
+			showIf={(result) => result?.domains.length}
+		>
+			<svelte:fragment slot="header" let:status>
+				{#if status === 'resolved' && result?.domains.length}
+					<hr />
+					<h2>Similar ENS Names</h2>
+				{/if}
+			</svelte:fragment>
+
+			<div class="similar column scrollable-list">
+				{#each result.domains.sort(sortByLength) as domain (domain.id)}
+					<EnsDomain {network} {domain} />
+				{/each}
+			</div>
+		</Loader>
+	</div>
+</Loader>
 
 <style>
 	.ens-query {
@@ -152,58 +242,3 @@
 		font-size: 0.8em;
 	} */
 </style>
-
-
-	<!-- fromHoudiniQuery={searchQuery && (() => queryENSDomain({name: searchQuery}))} -->
-<Loader
-	fromHoudiniQuery={searchQuery && (() => ensDomainQuery)}
-	loadingIcon={ENSIcon}
-	loadingIconName="The Graph"
-	loadingMessage='Searching for "{searchQuery}" in the Ethereum Name Service subgraph...'
-	let:result={result}
->
-	<div class="ens-query column">
-		{#each result.domains.sort(sortByLength) as domain (domain.id)}
-			<EnsDomain
-				{network}
-				{domain}
-				showRecordResolver
-				showRecords
-			/>
-		{:else}
-			<div class="card">
-				<div class="bar">
-					<h2><EnsName {network} ensName={searchQuery} showAvatar showName /></h2>
-					<span class="card-annotation">ENS Name</span>
-				</div>
-				<div class="bar">
-					<p>The ENS name "{searchQuery}" hasn't been registered by anyone. Perhaps you could claim it for yourself!</p>
-					<a href="https://app.ens.domains/name/{searchQuery}" target="_blank"><button class="medium">Register On ENS</button></a>
-				</div>
-			</div>
-		{/each}
-
-			<!-- fromHoudiniQuery={() => queryENSDomainsContaining({query: searchQuery})} -->
-		<Loader
-			fromHoudiniQuery={() => ensDomainsContainingQuery}
-			loadingIcon={ENSIcon}
-			loadingIconName="The Graph"
-			loadingMessage="Searching the Ethereum Name Service subgraph for similar names..."
-			let:result={result}
-			showIf={result => result?.domains.length}
-		>
-			<svelte:fragment slot="header" let:status>
-				{#if status === 'resolved' && result?.domains.length}
-					<hr>
-					<h2>Similar ENS Names</h2>
-				{/if}
-			</svelte:fragment>
-
-			<div class="similar column scrollable-list">
-				{#each result.domains.sort(sortByLength) as domain (domain.id)}
-					<EnsDomain {network} {domain} />
-				{/each}
-			</div>
-		</Loader>
-	</div>
-</Loader>

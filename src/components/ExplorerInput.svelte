@@ -1,75 +1,64 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
+	import type { Ethereum } from '../data/networks/types';
 
+	export let value: string = '';
 
-	export let value: string = ''
+	export let required = false;
+	export let autofocus = false;
+	export let placeholder =
+		'Address (0xabcd...6789) / Transaction ID (0xabcdef...456789) / Block Number (12345678) / ENS Domain (vitalik.eth)';
 
-	export let required = false
-	export let autofocus = false
-	export let placeholder = 'Address (0xabcd...6789) / Transaction ID (0xabcdef...456789) / Block Number (12345678) / ENS Domain (vitalik.eth)'
-
-	export let network: Ethereum.Network
-
+	export let network: Ethereum.Network;
 
 	const explorerInputTypes = {
 		ensName: {
-			label: 'ENS Name',
+			label: 'ENS Name'
 		},
 		address: {
-			label: 'Address',
+			label: 'Address'
 		},
 		transaction: {
-			label: 'Transaction',
+			label: 'Transaction'
 		},
 		blockNumber: {
-			label: 'Block',
-		},
-	}
-	type ExplorerInputType = keyof typeof explorerInputTypes
+			label: 'Block'
+		}
+	};
+	type ExplorerInputType = keyof typeof explorerInputTypes;
 
-	const pattern = /^(?:(?<empty>)|(?<address>0x[0-9a-fA-F]{40})|(?<transaction>0x[0-9a-fA-F]{64})|(?<blockNumber>0|[1-9][0-9]*)|(?<ensName>(?:[^. ]+[.])*(?:eth|xyz|luxe|kred|art|club|test)))$/
-	const subpattern = /(?<address>0x[0-9a-fA-F]{40})|(?<transaction>0x[0-9a-fA-F]{64})|(?<blockNumber>0|[1-9][0-9]*)|(?<ensName>(?:[^. ]+[.])*(?:eth|xyz|luxe|kred|art|club|test))/g
+	const pattern =
+		/^(?:(?<empty>)|(?<address>0x[0-9a-fA-F]{40})|(?<transaction>0x[0-9a-fA-F]{64})|(?<blockNumber>0|[1-9][0-9]*)|(?<ensName>(?:[^. ]+[.])*(?:eth|xyz|luxe|kred|art|club|test)))$/;
+	const subpattern =
+		/(?<address>0x[0-9a-fA-F]{40})|(?<transaction>0x[0-9a-fA-F]{64})|(?<blockNumber>0|[1-9][0-9]*)|(?<ensName>(?:[^. ]+[.])*(?:eth|xyz|luxe|kred|art|club|test))/g;
 
 	const findMatches = (value: string) =>
-		[...value.matchAll(subpattern)]
-			.flatMap(match =>
-				Object.entries(match.groups ?? {})
-					.map(([type, match]) => ({ type: type as ExplorerInputType, match }))
-					.filter(({match}) => match)
-			)
+		[...value.matchAll(subpattern)].flatMap((match) =>
+			Object.entries(match.groups ?? {})
+				.map(([type, match]) => ({ type: type as ExplorerInputType, match }))
+				.filter(({ match }) => match)
+		);
 
+	import { afterNavigate } from '$app/navigation';
+	import { localStorageWritable } from '../utils/localStorageWritable';
 
-	import { afterNavigate } from '$app/navigation'
-	import { localStorageWritable } from '../utils/localStorageWritable'
-
-	const history = localStorageWritable('ExplorerInput/history', [] as string[])
+	const history = localStorageWritable('ExplorerInput/history', [] as string[]);
 	afterNavigate(() => {
-		$history = [...new Set([value, ...$history])]
-	})
+		$history = [...new Set([value, ...$history])];
+	});
 
-	
 	import { findMatchedCaptureGroup } from '../utils/findMatchedCaptureGroup';
 
-	$: matchedType = findMatchedCaptureGroup<'empty' | 'address' | 'transaction' | 'blockNumber' | 'ensName'>(pattern, value) ?? ''	
+	$: matchedType =
+		findMatchedCaptureGroup<'empty' | 'address' | 'transaction' | 'blockNumber' | 'ensName'>(
+			pattern,
+			value
+		) ?? '';
 
+	import { accountConnections } from '../state/account';
+	import { getLocalPortfolios } from '../state/portfolio-accounts';
 
-	import { accountConnections } from '../state/account'
-	import { getLocalPortfolios } from '../state/portfolio-accounts'
-
-
-	const localPortfolios = getLocalPortfolios()
+	const localPortfolios = getLocalPortfolios();
 </script>
-
-
-<style>
-	/* [data-type="ensName"], */
-	[data-type="address"],
-	[data-type="transaction"],
-	[data-type="blockNumber"] {
-		font-family: var(--monospace-fonts);
-	}
-</style>
-
 
 <input
 	type="search"
@@ -84,22 +73,21 @@
 
 <datalist id="ExplorerInputList">
 	<!-- {#each Object.entries(value.match(subpattern)?.groups ?? {}) as [type, substringMatch]} -->
-	{#each findMatches(value) as {type, match}}
-		<option
-			value={match}
-			label={explorerInputTypes[type].label}
-		/>
+	{#each findMatches(value) as { type, match }}
+		<option value={match} label={explorerInputTypes[type].label} />
 	{/each}
 
 	{#if $localPortfolios.length}
-		{#each $localPortfolios as {name, accounts}, i (i)}
+		{#each $localPortfolios as { name, accounts }, i (i)}
 			<optgroup label={name}>
 				{#each accounts as account}
 					{@const _value = account.id}
 					{@const type = explorerInputTypes[findMatches(_value)[0]?.type]}
 					<option
 						value={_value}
-						label={`Portfolio › ${name}${type ? ` │ ${network ? `${network.name} › ` : ''}${type.label}` : ''}`}
+						label={`Portfolio › ${name}${
+							type ? ` │ ${network ? `${network.name} › ` : ''}${type.label}` : ''
+						}`}
 					/>
 				{/each}
 			</optgroup>
@@ -109,10 +97,7 @@
 	{#if $accountConnections?.length}
 		<optgroup label="Connected Accounts">
 			{#each $accountConnections as accountConnection}
-				<option
-					value={accountConnection.state?.address}
-					label={accountConnection.walletType}
-				/>
+				<option value={accountConnection.state?.address} label={accountConnection.walletType} />
 			{/each}
 		</optgroup>
 	{/if}
@@ -127,7 +112,7 @@
 				value={_value}
 				label={`History${type ? ` │ ${network ? `${network.name} › ` : ''}${type.label}` : ''}`}
 			/>
-				<!-- label={
+			<!-- label={
 					type
 						// ? `${type.label} (Explore › History)`
 						// ? `Explore › History (${type.label})`
@@ -137,3 +122,12 @@
 		</optgroup>
 	{/each}
 </datalist>
+
+<style>
+	/* [data-type="ensName"], */
+	[data-type='address'],
+	[data-type='transaction'],
+	[data-type='blockNumber'] {
+		font-family: var(--monospace-fonts);
+	}
+</style>

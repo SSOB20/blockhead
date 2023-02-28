@@ -5,7 +5,7 @@ export enum WalletType {
 	Rainbow = 'Rainbow',
 	// Tally = 'Tally',
 	WalletConnect = 'WalletConnect',
-	OtherWallet = 'Other',
+	OtherWallet = 'Other'
 }
 
 export enum WalletConnectionType {
@@ -13,28 +13,31 @@ export enum WalletConnectionType {
 	InjectedEthereum = 'injected ethereum', // 'injected ethereum provider',
 	InjectedWeb3 = 'injected web3', // 'injected web3 provider',
 	WalletConnect = 'WalletConnect',
-	CoinbaseWalletSDK = 'Coinbase Wallet SDK',
+	CoinbaseWalletSDK = 'Coinbase Wallet SDK'
 }
-
 
 type WalletConfig = {
-	type: WalletType,
-	name: string,
-	icon: string,
-	colors: string[],
+	type: WalletType;
+	name: string;
+	icon: string;
+	colors: string[];
 
-	connectionTypes: WalletConnectionType[],
+	connectionTypes: WalletConnectionType[];
 
 	// connectionType === WalletConnectionType.InjectedWeb3 || connectionType === WalletConnectionType.InjectedEthereum
-	injectedEip1193ProviderGlobal?: string,
-	injectedEip1193ProviderFlag?: string,
-	
-	// connectionType === WalletConnectionType.WalletConnect 
-	walletConnectMobileLinks?: string[],
-}
+	injectedEip1193ProviderGlobal?: string;
+	injectedEip1193ProviderFlag?: string;
 
+	// connectionType === WalletConnectionType.WalletConnect
+	walletConnectMobileLinks?: string[];
+};
 
-import { CoinbaseWalletIcon, MetaMaskIcon, RainbowIcon, WalletConnectIcon } from '../assets/walletIcons'
+import {
+	CoinbaseWalletIcon,
+	MetaMaskIcon,
+	RainbowIcon,
+	WalletConnectIcon
+} from '../assets/walletIcons';
 
 export const wallets: WalletConfig[] = [
 	{
@@ -46,11 +49,11 @@ export const wallets: WalletConfig[] = [
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
 			WalletConnectionType.InjectedWeb3,
-			WalletConnectionType.WalletConnect,
+			WalletConnectionType.WalletConnect
 		],
 
 		injectedEip1193ProviderFlag: 'isMetaMask',
-		walletConnectMobileLinks: ['metamask'],
+		walletConnectMobileLinks: ['metamask']
 	},
 	// {
 	// 	type: WalletType.Tally,
@@ -78,10 +81,10 @@ export const wallets: WalletConfig[] = [
 			WalletConnectionType.InjectedEthereum,
 			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.CoinbaseWalletSDK,
-			WalletConnectionType.WalletConnect,
+			WalletConnectionType.WalletConnect
 		],
 
-		injectedEip1193ProviderFlag: 'isCoinbaseWallet',
+		injectedEip1193ProviderFlag: 'isCoinbaseWallet'
 	},
 	// {
 	// 	type: WalletType.MEW,
@@ -110,12 +113,10 @@ export const wallets: WalletConfig[] = [
 			'#FFF700',
 			'#01DA40',
 			'#00AAFF',
-			'#174299',
+			'#174299'
 		],
 
-		connectionTypes: [
-			WalletConnectionType.WalletConnect,
-		],
+		connectionTypes: [WalletConnectionType.WalletConnect]
 	},
 	// {
 	// 	type: WalletType.Trust,
@@ -137,10 +138,8 @@ export const wallets: WalletConfig[] = [
 		icon: WalletConnectIcon,
 		colors: ['#3083FC'],
 
-		connectionTypes: [
-			WalletConnectionType.WalletConnect,
-		],
-	},
+		connectionTypes: [WalletConnectionType.WalletConnect]
+	}
 	// {
 	// 	type: WalletType.OtherWallet,
 	// 	name: 'Auto-Detect', // name: 'Other Wallet',
@@ -152,6 +151,8 @@ export const wallets: WalletConfig[] = [
 	// 		WalletConnectionType.WalletConnect,
 	// 	],
 	// },
-]
+];
 
-export const walletsByType: Record<WalletType, WalletConfig> = Object.fromEntries(wallets.map(wallet => [wallet.type, wallet]))
+export const walletsByType: Record<WalletType, WalletConfig> = Object.fromEntries(
+	wallets.map((wallet) => [wallet.type, wallet])
+);

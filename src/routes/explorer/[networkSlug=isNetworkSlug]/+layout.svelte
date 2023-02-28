@@ -1,115 +1,91 @@
 <script lang="ts">
 	// Types/constants
-	import type { Ethereum } from '../../../data/networks/types'
-
+	import type { Ethereum } from '../../../data/networks/types';
 
 	// Params/Context
 
-	import { networkSlug, query } from '../_explorerParams'
+	import { networkSlug, query } from '../_explorerParams';
 
-	import { explorerNetwork, explorerProvider, explorerBlockNumber } from '../_explorerContext'
+	import { explorerNetwork, explorerProvider, explorerBlockNumber } from '../_explorerContext';
 
-	import { getContext } from 'svelte'
+	import { getContext } from 'svelte';
 
-	const ethereumNetwork = getContext<SvelteStore<Ethereum.Network>>('ethereumNetwork')
-	const ethereumProvider = getContext<SvelteStore<Ethereum.Provider>>('ethereumProvider')
+	const ethereumNetwork = getContext<SvelteStore<Ethereum.Network>>('ethereumNetwork');
+	const ethereumProvider = getContext<SvelteStore<Ethereum.Provider>>('ethereumProvider');
 
-	import type { Writable } from 'svelte/store'
+	import type { Writable } from 'svelte/store';
 
-	const relevantPreferences = getContext<Writable<string[]>>('relevantPreferences')
+	const relevantPreferences = getContext<Writable<string[]>>('relevantPreferences');
 	$: $relevantPreferences = [
 		'theme',
-		...(
-			!$query ? ['rpcNetwork', 'currentPriceProvider', 'historicalPriceProvider'] :
-			_isTransaction ? ['rpcNetwork', 'transactionProvider', 'quoteCurrency'] :
-			_isBlockNumber ? ['rpcNetwork', 'transactionProvider', 'quoteCurrency'] :
-			['rpcNetwork', 'contractSourceProvider', 'tokenBalancesProvider', 'transactionProvider', 'quoteCurrency']
-			// _isAddress ? ['rpcNetwork', 'tokenBalancesProvider', 'transactionProvider', 'quoteCurrency'] :
-			// []
-		),
-	]
-
+		...(!$query
+			? ['rpcNetwork', 'currentPriceProvider', 'historicalPriceProvider']
+			: _isTransaction
+			? ['rpcNetwork', 'transactionProvider', 'quoteCurrency']
+			: _isBlockNumber
+			? ['rpcNetwork', 'transactionProvider', 'quoteCurrency']
+			: [
+					'rpcNetwork',
+					'contractSourceProvider',
+					'tokenBalancesProvider',
+					'transactionProvider',
+					'quoteCurrency'
+			  ])
+		// _isAddress ? ['rpcNetwork', 'tokenBalancesProvider', 'transactionProvider', 'quoteCurrency'] :
+		// []
+	];
 
 	// External stores
 
-	import { preferences } from '../../../state/preferences'
-
+	import { preferences } from '../../../state/preferences';
 
 	// Internal state
-		
-	$: currentQuery = $query
 
-	$: showCurrentBlockHeight = true
+	$: currentQuery = $query;
 
-	$: showCurrentPrice = [
-		'ethereum',
-		'polygon',
-		'avalanche',
-		'fantom',
-		'bsc'
-	].includes($networkSlug)
+	$: showCurrentBlockHeight = true;
 
-	$: showHistoricalPrice = [
-		'ethereum',
-		'polygon',
-		'avalanche',
-		'fantom',
-		'bsc'
-	].includes($networkSlug)
+	$: showCurrentPrice = ['ethereum', 'polygon', 'avalanche', 'fantom', 'bsc'].includes(
+		$networkSlug
+	);
 
-	let placeholder: string
+	$: showHistoricalPrice = ['ethereum', 'polygon', 'avalanche', 'fantom', 'bsc'].includes(
+		$networkSlug
+	);
+
+	let placeholder: string;
 	// $: placeholder = {
 	// 	'avalanche': 'C-Chain Address (0xabcd...6789) / Avvy Domain (avvy.avax)'
 	// }
 
+	const isAddress = (query) => /^0x[0-9a-f]{40}$/i.test(query);
+	const isTransaction = (query) => /^0x[0-9a-f]{64}$/i.test(query);
+	const isBlockNumber = (query) => /^(?:0|[1-9][0-9]*)$/i.test(query);
 
-	const isAddress = query => /^0x[0-9a-f]{40}$/i.test(query)
-	const isTransaction = query => /^0x[0-9a-f]{64}$/i.test(query)
-	const isBlockNumber = query => /^(?:0|[1-9][0-9]*)$/i.test(query)
-
-	$: _isAddress = isAddress($query)
-	$: _isTransaction = isTransaction($query)
-	$: _isBlockNumber = isBlockNumber($query)
-
+	$: _isAddress = isAddress($query);
+	$: _isTransaction = isTransaction($query);
+	$: _isBlockNumber = isBlockNumber($query);
 
 	// Components
 
-	import ExplorerInput from '../../../components/ExplorerInput.svelte'
-	import NetworkProviderLoader from '../../../components/NetworkProviderLoader.svelte'
+	import ExplorerInput from '../../../components/ExplorerInput.svelte';
+	import NetworkProviderLoader from '../../../components/NetworkProviderLoader.svelte';
 
-	import HistoricalPriceChart from '../../../components/HistoricalPriceChart.svelte'
-	import CurrentPrice from '../../../components/CurrentPrice.svelte'
-	import EthereumBlockHeight from '../../../components/EthereumBlockHeight.svelte'
+	import HistoricalPriceChart from '../../../components/HistoricalPriceChart.svelte';
+	import CurrentPrice from '../../../components/CurrentPrice.svelte';
+	import EthereumBlockHeight from '../../../components/EthereumBlockHeight.svelte';
 
-	import EthereumAccountOrContract from '../../../components/EthereumAccountOrContract.svelte'
-	import EthereumBlockLoader from '../../../components/EthereumBlockLoader.svelte'
-	import EthereumTransactionLoader from '../../../components/EthereumTransactionLoader.svelte'
+	import EthereumAccountOrContract from '../../../components/EthereumAccountOrContract.svelte';
+	import EthereumBlockLoader from '../../../components/EthereumBlockLoader.svelte';
+	import EthereumTransactionLoader from '../../../components/EthereumTransactionLoader.svelte';
 
 	// Transitions
 
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
 
-
-<style>
-	form {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: var(--padding-inner);
-		align-items: center;
-	}
-
-	.row {
-		align-items: stretch;
-	}
-	.row > * {
-		flex: 1 20rem;
-	}
-</style>
-
-
-<section class="column" in:fly={{x: 100}} out:fly={{x: -100}}>
-	<form on:submit|preventDefault={() => $query = currentQuery}>
+<section class="column" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+	<form on:submit|preventDefault={() => ($query = currentQuery)}>
 		<ExplorerInput bind:value={currentQuery} {placeholder} network={$explorerNetwork} />
 		<button type="submit">Go</button>
 	</form>
@@ -129,11 +105,9 @@
 									network={$explorerNetwork}
 									transactionID={$query}
 									provider={$explorerProvider}
-
 									detailLevel="exhaustive"
 									tokenBalanceFormat="both"
 									showFees={true}
-
 									layout="standalone"
 								/>
 							</div>
@@ -148,7 +122,11 @@
 							</div>
 						{:else}
 							<div class="column">
-								<EthereumAccountOrContract network={$explorerNetwork} addressOrEnsName={$query} provider={$explorerProvider}/>
+								<EthereumAccountOrContract
+									network={$explorerNetwork}
+									addressOrEnsName={$query}
+									provider={$explorerProvider}
+								/>
 							</div>
 						{/if}
 					{:else}
@@ -194,3 +172,19 @@
 		</NetworkProviderLoader>
 	{/if}
 </section>
+
+<style>
+	form {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: var(--padding-inner);
+		align-items: center;
+	}
+
+	.row {
+		align-items: stretch;
+	}
+	.row > * {
+		flex: 1 20rem;
+	}
+</style>

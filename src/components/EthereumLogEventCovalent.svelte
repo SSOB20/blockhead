@@ -1,75 +1,177 @@
 <script lang="ts">
-	import type { Covalent } from '../api/covalent'
-	import type { Ethereum } from '../data/networks/types'
+	import type { Covalent } from '../api/covalent';
+	import type { Ethereum } from '../data/networks/types';
 
+	export let network: Ethereum.Network;
+	export let logEvent: Ethereum.TransactionLogEvent;
+	export let contextualAddress: Ethereum.Address;
 
-	export let network: Ethereum.Network
-	export let logEvent: Ethereum.TransactionLogEvent
-	export let contextualAddress: Ethereum.Address
+	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed';
+	export let isCard = false;
 
-	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed'
-	export let isCard = false
+	$: isSummary = detailLevel === 'summary';
+	$: isExhaustive = detailLevel === 'exhaustive';
 
-
-	$: isSummary = detailLevel === 'summary'
-	$: isExhaustive = detailLevel === 'exhaustive'
-
-
-	$: indexedParams = logEvent.decoded?.params.filter(param => param.indexed)
-	$: eventSignatureIsTopic = indexedParams && logEvent.topics && indexedParams.length === logEvent.topics.length - 1
-	$: paramsToTopic = indexedParams && logEvent.topics && new WeakMap(
-		indexedParams.map((param, i, {length}) => {
-			const topicIndex = logEvent.topics.length + i - length
-			return [param, {topicIndex, topicHash: logEvent.topics[topicIndex]}]
-		})
-	)
+	$: indexedParams = logEvent.decoded?.params.filter((param) => param.indexed);
+	$: eventSignatureIsTopic =
+		indexedParams && logEvent.topics && indexedParams.length === logEvent.topics.length - 1;
+	$: paramsToTopic =
+		indexedParams &&
+		logEvent.topics &&
+		new WeakMap(
+			indexedParams.map((param, i, { length }) => {
+				const topicIndex = logEvent.topics.length + i - length;
+				return [param, { topicIndex, topicHash: logEvent.topics[topicIndex] }];
+			})
+		);
 
 	$: paramsContainingContextualAddress = new Set(
 		contextualAddress
-			? logEvent.decoded?.params?.filter(param => (
-				param.type === 'address' &&
-				param.value.toLowerCase() == contextualAddress.toLowerCase()
-			))
+			? logEvent.decoded?.params?.filter(
+					(param) =>
+						param.type === 'address' && param.value.toLowerCase() == contextualAddress.toLowerCase()
+			  )
 			: []
-	)
+	);
 
-	$: isToken =
-		logEvent.contract &&
-		logEvent.contract.symbol &&
-		logEvent.contract.address
+	$: isToken = logEvent.contract && logEvent.contract.symbol && logEvent.contract.address;
 	$: isTokenTransfer =
 		logEvent.decoded &&
 		logEvent.decoded.name === 'Transfer' &&
 		logEvent.decoded.params.length === 3 &&
 		logEvent.decoded.params[0]?.name === 'from' &&
 		logEvent.decoded.params[1]?.name === 'to' &&
-		logEvent.decoded.params[2]?.name === 'value'
+		logEvent.decoded.params[2]?.name === 'value';
 	$: isTokenMint =
 		isTokenTransfer &&
-		logEvent.decoded.params[0]?.value === '0x0000000000000000000000000000000000000000'
+		logEvent.decoded.params[0]?.value === '0x0000000000000000000000000000000000000000';
 	$: isTokenBurn =
 		isTokenTransfer &&
-		logEvent.decoded.params[1]?.value === '0x0000000000000000000000000000000000000000'
+		logEvent.decoded.params[1]?.value === '0x0000000000000000000000000000000000000000';
 
+	export let isHidden;
+	$: isHidden = !isExhaustive && !(logEvent.decoded && paramsContainingContextualAddress.size);
 
-	export let isHidden
-	$: isHidden = !isExhaustive && !(logEvent.decoded && paramsContainingContextualAddress.size)
+	const hiddenEllipsis = '︙'; // '• • •'
 
+	import { formatIdentifierToWords } from '../utils/formatIdentifierToWords';
+	import { formatTransactionHash } from '../utils/formatTransactionHash';
+	import { formatUnits } from 'ethers';
 
-	const hiddenEllipsis = '︙' // '• • •'
-
-
-	import { formatIdentifierToWords } from '../utils/formatIdentifierToWords'
-	import { formatTransactionHash } from '../utils/formatTransactionHash'
-	import { formatUnits } from 'ethers'
-
-
-	import Address from './Address.svelte'
-	import AddressWithLabel from './AddressWithLabel.svelte'
-	import EthereumTopic from './EthereumTopic.svelte'
-	import TokenName from './TokenName.svelte'
+	import Address from './Address.svelte';
+	import AddressWithLabel from './AddressWithLabel.svelte';
+	import EthereumTopic from './EthereumTopic.svelte';
+	import TokenName from './TokenName.svelte';
 </script>
 
+<article class="log-event" class:card={isCard} class:hidden={isHidden}>
+	{#if isExhaustive}
+		<span class="log-event-index">{isHidden ? hiddenEllipsis : logEvent.indexInTransaction}</span>
+	{/if}
+	<header class="log-event-contract-and-name">
+		<span class="log-event-contract">
+			{#if isHidden}
+				{hiddenEllipsis}
+			{:else if isToken}
+				<TokenName
+					{network}
+					symbol={logEvent.contract.symbol}
+					address={logEvent.contract.address}
+					name={logEvent.contract.name}
+					icon={logEvent.contract.icon}
+				/>
+			{:else}
+				<span class="address">
+					<AddressWithLabel
+						{network}
+						address={logEvent.contract.address}
+						label={logEvent.contract.label && logEvent.contract.symbol
+							? `${logEvent.contract.label} (${logEvent.contract.symbol})`
+							: logEvent.contract.label || logEvent.contract.symbol}
+						format="middle-truncated"
+						alwaysShowAddress={isExhaustive}
+					/>
+				</span>
+			{/if}
+		</span>
+		<h4
+			class="log-event-name"
+			class:mark={isExhaustive && paramsContainingContextualAddress.size}
+			title={logEvent.decoded?.name}
+		>
+			{#if isHidden}
+				{hiddenEllipsis}
+			{:else}
+				<EthereumTopic
+					{...eventSignatureIsTopic
+						? {
+								topicIndex: 0,
+								topicHash: logEvent.topics[0]
+						  }
+						: {}}
+					parameterName={logEvent.decoded?.signature
+						.replace('(', `(\n\t`)
+						.replace(/, ?/g, `,\n\t`)
+						.replace(')', `\n)`) ?? '[Undecoded]'}
+					parameterType="signature"
+				>
+					{logEvent.decoded ? formatIdentifierToWords(logEvent.decoded.name) : '[Undecoded]'}
+				</EthereumTopic>
+			{/if}
+		</h4>
+	</header>
+	{#if !isHidden}
+		<div class="column">
+			{#if logEvent.decoded?.params?.length}
+				<span class="parameters">
+					{#each logEvent.decoded.params as param}
+						<span
+							class="parameter"
+							class:mark={(isTokenMint && param.name === 'from') ||
+								(isTokenBurn && param.name === 'to')}
+							class:mint={isTokenMint && param.name === 'from'}
+							class:burn={isTokenBurn && param.name === 'to'}
+						>
+							<span class="parameter-name" title="{param.type} {param.name}">
+								<EthereumTopic
+									{...paramsToTopic.get(param) ?? {}}
+									parameterType={param.type}
+									parameterName={param.name}
+								>
+									{formatIdentifierToWords(param.name)}
+								</EthereumTopic>
+							</span>
+							{#if isTokenMint && param.name === 'from'}🌱{/if}
+							{#if isTokenBurn && param.name === 'to'}🔥{/if}
+							{#if param.type === 'address'}
+								<span class="address" class:mark={paramsContainingContextualAddress.has(param)}>
+									<Address {network} address={param.value} format="middle-truncated" />
+								</span>
+							{:else if param.type === 'uint256'}
+								{#if param.value || param.value === 0}
+									<output class="parameter-value" title={formatUnits(param.value, 0)}
+										>{formatUnits(param.value, isToken ? logEvent.contract.decimals : 0)}</output
+									>
+								{/if}
+							{:else}
+								<output class="parameter-value" title={param.value}>{param.value}</output>
+							{/if}
+						</span>
+					{/each}
+				</span>
+			{:else if logEvent.topics?.length}
+				<span class="topics">
+					{#each logEvent.topics as topic, i}
+						<span class="topic-wrapper">
+							<span class="topic-index">[Topic {i}]</span>
+							<output class="topic-hash">{formatTransactionHash(topic, 'middle-truncated')}</output>
+						</span>
+					{/each}
+				</span>
+			{/if}
+		</div>
+	{/if}
+</article>
 
 <style>
 	.log-event {
@@ -128,7 +230,6 @@
 		opacity: 0.6;
 	}
 
-
 	.topics {
 		display: flex;
 		flex-wrap: wrap;
@@ -150,7 +251,6 @@
 		--primary-color: var(--down-red);
 	}
 
-
 	.log-event.hidden {
 		font-weight: bold;
 		opacity: 0.33;
@@ -166,106 +266,3 @@
 		display: grid;
 	} */
 </style>
-
-
-<article class="log-event" class:card={isCard} class:hidden={isHidden}>
-	{#if isExhaustive}
-		<span class="log-event-index">{isHidden ? hiddenEllipsis : logEvent.indexInTransaction}</span>
-	{/if}
-	<header class="log-event-contract-and-name">
-		<span class="log-event-contract">
-			{#if isHidden}
-				{hiddenEllipsis}
-			{:else if isToken}
-				<TokenName
-					{network}
-					symbol={logEvent.contract.symbol}
-					address={logEvent.contract.address}
-					name={logEvent.contract.name}
-					icon={logEvent.contract.icon}
-				/>
-			{:else}
-				<span class="address">
-					<AddressWithLabel
-						{network}
-						address={logEvent.contract.address}
-						label={
-							logEvent.contract.label && logEvent.contract.symbol ?
-								`${logEvent.contract.label} (${logEvent.contract.symbol})`
-							:
-								logEvent.contract.label
-							||
-							logEvent.contract.symbol
-						}
-						format="middle-truncated"
-						alwaysShowAddress={isExhaustive}
-					/>
-				</span>
-			{/if}
-		</span>
-		<h4 class="log-event-name" class:mark={isExhaustive && paramsContainingContextualAddress.size} title={logEvent.decoded?.name}>
-			{#if isHidden}
-				{hiddenEllipsis}
-			{:else}
-				<EthereumTopic
-					{...eventSignatureIsTopic ? {
-						topicIndex: 0,
-						topicHash: logEvent.topics[0]
-					} : {}}
-					parameterName={logEvent.decoded?.signature.replace('(', `(\n\t`).replace(/, ?/g, `,\n\t`).replace(')', `\n)`) ?? '[Undecoded]'}
-					parameterType="signature"
-				>
-					{logEvent.decoded ? formatIdentifierToWords(logEvent.decoded.name) : '[Undecoded]'}
-				</EthereumTopic>
-			{/if}
-		</h4>
-	</header>
-	{#if !isHidden}
-		<div class="column">
-			{#if logEvent.decoded?.params?.length}
-				<span class="parameters">
-					{#each logEvent.decoded.params as param}
-						<span
-							class="parameter"
-							class:mark={(isTokenMint && param.name === 'from') || (isTokenBurn && param.name === 'to')}
-							class:mint={isTokenMint && param.name === 'from'}
-							class:burn={isTokenBurn && param.name === 'to'}
-						>
-							<span class="parameter-name" title="{param.type} {param.name}">
-								<EthereumTopic
-									{...paramsToTopic.get(param) ?? {}}
-									parameterType={param.type}
-									parameterName={param.name}
-								>
-									{formatIdentifierToWords(param.name)}
-								</EthereumTopic>
-							</span>
-							{#if isTokenMint && param.name === 'from'}🌱{/if}
-							{#if isTokenBurn && param.name === 'to'}🔥{/if}
-							{#if param.type === 'address'}
-								<span class="address" class:mark={paramsContainingContextualAddress.has(param)}>
-									<Address {network} address={param.value} format="middle-truncated" />
-								</span>
-							{:else if param.type === 'uint256'}
-								{#if param.value || param.value === 0}
-									<output class="parameter-value" title={formatUnits(param.value, 0)}>{formatUnits(param.value, isToken ? logEvent.contract.decimals : 0)}</output>
-								{/if}
-							{:else}
-								<output class="parameter-value" title={param.value}>{param.value}</output>
-							{/if}
-						</span>
-					{/each}
-				</span>
-			{:else if logEvent.topics?.length}
-				<span class="topics">
-					{#each logEvent.topics as topic, i}
-						<span class="topic-wrapper">
-							<span class="topic-index">[Topic {i}]</span>
-							<output class="topic-hash">{formatTransactionHash(topic, 'middle-truncated')}</output>
-						</span>
-					{/each}
-				</span>
-			{/if}
-		</div>
-	{/if}
-</article>

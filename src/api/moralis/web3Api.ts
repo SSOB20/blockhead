@@ -1,19 +1,20 @@
-import { env } from '../../env'
-import { HttpClient, Api } from './api/Api'
+import { env } from '../../env';
+import { HttpClient, Api } from './api/Api';
 
-export const MoralisWeb3Api = new Api(new HttpClient({
-	baseApiParams: {
-		headers: {
-			'x-api-key': env.MORALIS_WEB3_API_KEY
+export const MoralisWeb3Api = new Api(
+	new HttpClient({
+		baseApiParams: {
+			headers: {
+				'x-api-key': env.MORALIS_WEB3_API_KEY
+			}
 		}
-	}
-}))
+	})
+);
 
-
-import type { Ethereum } from '../../data/networks/types'
+import type { Ethereum } from '../../data/networks/types';
 
 export const chainCodeFromNetwork = (network: Ethereum.Network) =>
-	`0x${network.chainId.toString(16)}`
+	`0x${network.chainId.toString(16)}`;
 
 // export const moralisChainIDs = [
 // 	'eth',

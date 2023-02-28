@@ -1,49 +1,33 @@
 <script lang="ts">
 	// Constants
-	import { preferences } from '../../../state/preferences'
-
+	import { preferences } from '../../../state/preferences';
 
 	// Params
-	import { addressOrEnsName } from '../_appsParams'
-
+	import { addressOrEnsName } from '../_appsParams';
 
 	// Context
-	import { web3AppConfig } from '../_appsContext'
-
+	import { web3AppConfig } from '../_appsContext';
 
 	// Internal state
 
-	$: currentAddressOrEnsName = $addressOrEnsName
+	$: currentAddressOrEnsName = $addressOrEnsName;
 
-	let tokenBalanceFormat
-	let showUnderlyingAssets
-
+	let tokenBalanceFormat;
+	let showUnderlyingAssets;
 
 	// Components
 
-	import ExplorerInput from '../../../components/ExplorerInput.svelte'
-	import Web3AppDashboard from '../../../components/Web3AppDashboard.svelte'
-	import EnsResolutionLoader from '../../../components/EnsResolutionLoader.svelte'
-
+	import ExplorerInput from '../../../components/ExplorerInput.svelte';
+	import Web3AppDashboard from '../../../components/Web3AppDashboard.svelte';
+	import EnsResolutionLoader from '../../../components/EnsResolutionLoader.svelte';
 
 	// Transitions
 
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
 
-
-<style>
-	form {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: var(--padding-inner);
-		align-items: center;
-	}
-</style>
-
-
-<section class="column" in:fly={{x: 100}} out:fly={{x: -100}}>
-	<form on:submit|preventDefault={() => $addressOrEnsName = currentAddressOrEnsName}>
+<section class="column" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+	<form on:submit|preventDefault={() => ($addressOrEnsName = currentAddressOrEnsName)}>
 		<ExplorerInput bind:value={currentAddressOrEnsName} />
 		<button type="submit">Go</button>
 	</form>
@@ -59,7 +43,7 @@
 		{#if $web3AppConfig}
 			<div class="stack">
 				{#key $web3AppConfig}
-					<div class="column" in:fly={{x: 100}} out:fly={{x: -100}}>
+					<div class="column" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
 						<Web3AppDashboard
 							{address}
 							web3AppConfig={$web3AppConfig}
@@ -77,3 +61,12 @@
 
 	<slot />
 </section>
+
+<style>
+	form {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: var(--padding-inner);
+		align-items: center;
+	}
+</style>

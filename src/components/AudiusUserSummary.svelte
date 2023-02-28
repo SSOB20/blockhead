@@ -1,10 +1,29 @@
 <script lang="ts">
-	import type { Audius } from '../api/audius'
+	import type { Audius } from '../api/audius';
 
-
-	export let user: Audius.User
+	export let user: Audius.User;
 </script>
 
+{#if user}
+	<a href="/apps/audius/user/{user.id}" class="audius-user row">
+		{#if user.profile_picture}
+			<img
+				class="profile-picture"
+				srcset={Object.entries(user.profile_picture)
+					.map(([size, src]) => `${src}`)
+					.join(', ')}
+				alt="{user.name} - Profile Picture"
+			/>
+		{/if}
+		<h3>{user.name}</h3>
+		<!-- <span class="handle">
+			@{user.handle}
+		</span> -->
+		{#if user.is_verified}
+			<span class="verified" title="Verified">✔</span>
+		{/if}
+	</a>
+{/if}
 
 <style>
 	.row {
@@ -24,19 +43,3 @@
 		opacity: 0.66;
 	}
 </style>
-
-
-{#if user}
-	<a href="/apps/audius/user/{user.id}" class="audius-user row">
-		{#if user.profile_picture}
-			<img class="profile-picture" srcset={Object.entries(user.profile_picture).map(([size, src]) => `${src}`).join(', ')} alt="{user.name} - Profile Picture" />
-		{/if}
-		<h3>{user.name}</h3>
-		<!-- <span class="handle">
-			@{user.handle}
-		</span> -->
-		{#if user.is_verified}
-			<span class="verified" title="Verified">✔</span>
-		{/if}
-	</a>
-{/if}

@@ -1,14 +1,13 @@
-import type { Ethereum } from '../data/networks/types'
-import { Contract, formatUnits } from 'ethers'
-import type { QuoteCurrency, TickerSymbol } from '../data/currencies'
+import type { Ethereum } from '../data/networks/types';
+import { Contract, formatUnits } from 'ethers';
+import type { QuoteCurrency, TickerSymbol } from '../data/currencies';
 
-
-type AssetPair = string
+type AssetPair = string;
 
 type PriceFeedContractInfo = {
-	decimals: number,
-	contractAddress: Ethereum.ContractAddress
-}
+	decimals: number;
+	contractAddress: Ethereum.ContractAddress;
+};
 
 // https://docs.chain.link/docs/reference-contracts
 const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedContractInfo>> = {
@@ -509,7 +508,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 			decimals: 8,
 			contractAddress: '0xd75AAaE4AF0c398ca13e2667Be57AF2ccA8B5de6'
 		},
-		'Orchid': {
+		Orchid: {
 			decimals: 5,
 			contractAddress: '0xa175FA75795c6Fb2aFA48B72d22054ee0DeDa4aC'
 		},
@@ -796,7 +795,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'sUSD/USD': {
 			decimals: 8,
 			contractAddress: '0xad35Bd71b9aFE6e4bDc266B345c198eaDEf9Ad94'
-		},
+		}
 	},
 	42: {
 		'AAVE/ETH': {
@@ -847,7 +846,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 			decimals: 8,
 			contractAddress: '0xECF93D14d25E02bA2C13698eeDca9aA98348EFb6'
 		},
-		'CVI': {
+		CVI: {
 			decimals: 18,
 			contractAddress: '0x0BD102ef50a6a133B38Bf3Bd3d40cE36cc1aB5A8'
 		},
@@ -1022,7 +1021,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'sDEFI/USD': {
 			decimals: 8,
 			contractAddress: '0x70179FB2F3A0a5b7FfB36a235599De440B0922ea'
-		},
+		}
 	},
 	4: {
 		'AUD/USD': {
@@ -1192,7 +1191,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'sDEFI/USD': {
 			decimals: 8,
 			contractAddress: '0x0630521aC362bc7A19a4eE44b57cE72Ea34AD01c'
-		},
+		}
 	},
 	56: {
 		'AAPL/USD': {
@@ -1470,7 +1469,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'YFII/USD': {
 			decimals: 8,
 			contractAddress: '0xC94580FAaF145B2FD0ab5215031833c98D3B77E4'
-		},
+		}
 	},
 	97: {
 		'ADA/USD': {
@@ -1560,7 +1559,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'XVS/USD': {
 			decimals: 8,
 			contractAddress: '0xCfA786C17d6739CBC702693F23cA4417B5945491'
-		},
+		}
 	},
 	137: {
 		'AAVE/ETH': {
@@ -1634,7 +1633,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'WBTC/USD': {
 			decimals: 8,
 			contractAddress: '0xDE31F8bFBD8c84b5360CFACCa3539B938dd78ae6'
-		},
+		}
 	},
 	80001: {
 		'DAI/USD': {
@@ -1656,7 +1655,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'USDT/USD': {
 			decimals: 8,
 			contractAddress: '0x92C09849638959196E976289418e5973CC96d645'
-		},
+		}
 	},
 	100: {
 		'1INCH/USD': {
@@ -1754,7 +1753,7 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'YFI/USD': {
 			decimals: 8,
 			contractAddress: '0x14030d5a0C9e63D9606C6f2c8771Fc95b34b07e0'
-		},
+		}
 	},
 	128: {
 		'AAVE/USD': {
@@ -1840,31 +1839,92 @@ const CHAINLINK_CONTRACTS: Record<Ethereum.ChainID, Record<AssetPair, PriceFeedC
 		'YFII/USD': {
 			decimals: 8,
 			contractAddress: '0xf64EbB7635c8ed885d82fD87544eD2041dEEd8F8'
-		},
+		}
 	}
-}
+};
 
 // https://docs.chain.link/docs/get-the-latest-price
-const aggregatorV3InterfaceABI = [{ "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "description", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint80", "name": "_roundId", "type": "uint80" }], "name": "getRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "latestRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "version", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }];
+const aggregatorV3InterfaceABI = [
+	{
+		inputs: [],
+		name: 'decimals',
+		outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'description',
+		outputs: [{ internalType: 'string', name: '', type: 'string' }],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [{ internalType: 'uint80', name: '_roundId', type: 'uint80' }],
+		name: 'getRoundData',
+		outputs: [
+			{ internalType: 'uint80', name: 'roundId', type: 'uint80' },
+			{ internalType: 'int256', name: 'answer', type: 'int256' },
+			{ internalType: 'uint256', name: 'startedAt', type: 'uint256' },
+			{ internalType: 'uint256', name: 'updatedAt', type: 'uint256' },
+			{ internalType: 'uint80', name: 'answeredInRound', type: 'uint80' }
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'latestRoundData',
+		outputs: [
+			{ internalType: 'uint80', name: 'roundId', type: 'uint80' },
+			{ internalType: 'int256', name: 'answer', type: 'int256' },
+			{ internalType: 'uint256', name: 'startedAt', type: 'uint256' },
+			{ internalType: 'uint256', name: 'updatedAt', type: 'uint256' },
+			{ internalType: 'uint80', name: 'answeredInRound', type: 'uint80' }
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'version',
+		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		stateMutability: 'view',
+		type: 'function'
+	}
+];
 
 // let validId = BigInt("18446744073709562301")
 // return await priceFeed.methods.getRoundData(validId).call()
 
-export async function getChainlinkPriceFeed(provider: Ethereum.Provider, network: Ethereum.Network, quoteAsset: TickerSymbol, baseAsset: QuoteCurrency){
-	const assetPair: AssetPair = `${quoteAsset}/${baseAsset}`
-	const contractInfo: PriceFeedContractInfo = CHAINLINK_CONTRACTS[network.chainId /*provider.network.chainId*/]?.[assetPair]
-	if(contractInfo){
-		const priceFeedContract = new Contract(contractInfo.contractAddress, aggregatorV3InterfaceABI, provider)
+export async function getChainlinkPriceFeed(
+	provider: Ethereum.Provider,
+	network: Ethereum.Network,
+	quoteAsset: TickerSymbol,
+	baseAsset: QuoteCurrency
+) {
+	const assetPair: AssetPair = `${quoteAsset}/${baseAsset}`;
+	const contractInfo: PriceFeedContractInfo =
+		CHAINLINK_CONTRACTS[network.chainId /*provider.network.chainId*/]?.[assetPair];
+	if (contractInfo) {
+		const priceFeedContract = new Contract(
+			contractInfo.contractAddress,
+			aggregatorV3InterfaceABI,
+			provider
+		);
 
 		// console.log('priceFeedContract', priceFeedContract)
-		const { answer, answeredInRound, roundId, startedAt, updatedAt } = await priceFeedContract.latestRoundData()
+		const { answer, answeredInRound, roundId, startedAt, updatedAt } =
+			await priceFeedContract.latestRoundData();
 		// console.log(answer.toString(), answeredInRound.toString(), roundId.toString(), startedAt.toString(), updatedAt.toString())
 		return {
 			contractAddress: contractInfo.contractAddress,
 			price: formatUnits(answer, contractInfo.decimals),
 			updatedAt: new Date(updatedAt * 1000)
-		}
+		};
 	}
 
-	throw new Error(`Chainlink price feed for ${assetPair} isn't available on ${network.name} (chain ID ${network.chainId}).`)
+	throw new Error(
+		`Chainlink price feed for ${assetPair} isn't available on ${network.name} (chain ID ${network.chainId}).`
+	);
 }

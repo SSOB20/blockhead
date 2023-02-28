@@ -1,13 +1,26 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { Log } from '../api/moralis/api/Api'
+	import type { Ethereum } from '../data/networks/types';
+	import type { Log } from '../api/moralis/api/Api';
 
-	export let network: Ethereum.Network
-	export let logEvent: Log
+	export let network: Ethereum.Network;
+	export let logEvent: Log;
 
-	$: topics = [logEvent.topic0, logEvent.topic1, logEvent.topic2, logEvent.topic3].filter(Boolean)
+	$: topics = [logEvent.topic0, logEvent.topic1, logEvent.topic2, logEvent.topic3].filter(Boolean);
 </script>
 
+<div class="log-event">
+	<h4 class="log-event-index">{logEvent.log_index}</h4>
+	{#if topics.length}
+		<span class="topics">
+			{#each topics as topic, i}
+				<span class="topic-wrapper">
+					<span class="topic-index">Topic {i}</span>
+					<output class="topic-value">{topic}</output>
+				</span>
+			{/each}
+		</span>
+	{/if}
+</div>
 
 <style>
 	.log-event {
@@ -36,18 +49,3 @@
 		opacity: 0.6;
 	}
 </style>
-
-
-<div class="log-event">
-	<h4 class="log-event-index">{logEvent.log_index}</h4>
-	{#if topics.length}
-		<span class="topics">
-			{#each topics as topic, i}
-				<span class="topic-wrapper">
-					<span class="topic-index">Topic {i}</span>
-					<output class="topic-value">{topic}</output>
-				</span>
-			{/each}
-		</span>
-	{/if}
-</div>

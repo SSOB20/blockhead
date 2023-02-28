@@ -1,76 +1,68 @@
 <script lang="ts">
-	import { getContext } from 'svelte'
-	
-	import type { Ethereum } from '../../data/networks/types'
-	import { Portfolio, getLocalPortfolios } from '../../state/portfolio-accounts'
-	import { preferences } from '../../state/preferences'
-	import { networksByChainID } from '../../data/networks'
+	import { getContext } from 'svelte';
 
+	import type { Ethereum } from '../../data/networks/types';
+	import { Portfolio, getLocalPortfolios } from '../../state/portfolio-accounts';
+	import { preferences } from '../../state/preferences';
+	import { networksByChainID } from '../../data/networks';
 
-	import { writable } from 'svelte/store'
+	import { writable } from 'svelte/store';
 
-	const ethereumChainID = writable(1)
+	const ethereumChainID = writable(1);
 
-	const ethereumProvider = getContext<SvelteStore<Ethereum.Provider>>('ethereumProvider')
-	$: portfolioProvider = $ethereumProvider
-	
-	const localPortfolios = getLocalPortfolios()
+	const ethereumProvider = getContext<SvelteStore<Ethereum.Provider>>('ethereumProvider');
+	$: portfolioProvider = $ethereumProvider;
 
+	const localPortfolios = getLocalPortfolios();
 
-	import { triggerEvent } from '../../events/triggerEvent'
+	import { triggerEvent } from '../../events/triggerEvent';
 
 	const addPortfolio = () => {
-		$localPortfolios = [...$localPortfolios, new Portfolio()]
+		$localPortfolios = [...$localPortfolios, new Portfolio()];
 
 		triggerEvent('Portfolios/AddPortfolio', {
 			newPortfolioCount: $localPortfolios.length
-		})
-	}
+		});
+	};
 
 	const deletePortfolio = (i: number) => {
-		const deletedPortfolio = $localPortfolios[i]
-		$localPortfolios = [...$localPortfolios.slice(0, i), ...$localPortfolios.slice(i + 1)]
+		const deletedPortfolio = $localPortfolios[i];
+		$localPortfolios = [...$localPortfolios.slice(0, i), ...$localPortfolios.slice(i + 1)];
 
 		triggerEvent('Portfolios/DeletePortfolio', {
 			portfolioAccountsCount: deletedPortfolio.accounts.length,
-			newPortfolioCount: $localPortfolios.length,
-		})
-	}
+			newPortfolioCount: $localPortfolios.length
+		});
+	};
 
-	$: if(localPortfolios && !$localPortfolios.length)
-		addPortfolio()
+	$: if (localPortfolios && !$localPortfolios.length) addPortfolio();
 
+	$: network = networksByChainID[$ethereumChainID];
 
-	$: network = networksByChainID[$ethereumChainID]
-
-
-	import PortfolioComponent from '../../components/Portfolio.svelte'
-	import Preferences from '../../components/Preferences.svelte'
-	import AccountConnections from '../../components/AccountConnections.svelte'
+	import PortfolioComponent from '../../components/Portfolio.svelte';
+	import Preferences from '../../components/Preferences.svelte';
+	import AccountConnections from '../../components/AccountConnections.svelte';
 	// import WalletProviders from '../../components/WalletProviders.svelte'
-
 
 	// Style
 
-	import { matchesMediaQuery } from '../../utils/matchesMediaQuery'
+	import { matchesMediaQuery } from '../../utils/matchesMediaQuery';
 
-	const matchesLayoutBreakpoint = matchesMediaQuery('(min-width: 100rem)')
-	let layout: 'row' | 'column'
-	$: layout = $matchesLayoutBreakpoint ? 'row' : 'column'
+	const matchesLayoutBreakpoint = matchesMediaQuery('(min-width: 100rem)');
+	let layout: 'row' | 'column';
+	$: layout = $matchesLayoutBreakpoint ? 'row' : 'column';
 
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
-
 
 <svelte:head>
 	<title>Portfolio | Blockhead</title>
 </svelte:head>
 
-
-<main in:fly={{x: 300}} out:fly={{x: -300}}>
+<main in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
 	<section class="portfolios column">
 		{#if localPortfolios}
-			{#each $localPortfolios as {name, accounts}, i (i)}
+			{#each $localPortfolios as { name, accounts }, i (i)}
 				<PortfolioComponent
 					bind:name
 					bind:accounts
@@ -79,7 +71,7 @@
 					defiProvider={$preferences.defiProvider}
 					tokenBalancesProvider={$preferences.tokenBalancesProvider}
 					quoteCurrency={$preferences.quoteCurrency}
-					on:delete={e => deletePortfolio(i)}
+					on:delete={(e) => deletePortfolio(i)}
 				/>
 			{/each}
 
@@ -90,25 +82,24 @@
 			Please enable LocalStorage in your browser.
 		{/if}
 	</section>
-	
+
 	<!-- <WalletProviders {network} {portfolioProvider} /> -->
 
-	<aside
-		class="account-connections column"
-		class:scrollable-list={layout === 'row'}
-	>
-		<AccountConnections layout={{'column': 'row', 'row': 'column'}[layout]} />
+	<aside class="account-connections column" class:scrollable-list={layout === 'row'}>
+		<AccountConnections layout={{ column: 'row', row: 'column' }[layout]} />
 	</aside>
 </main>
 
 <Preferences
 	relevantPreferences={[
 		'theme',
-		'rpcNetwork', 'tokenBalancesProvider', 'defiProvider', 'nftProvider',
+		'rpcNetwork',
+		'tokenBalancesProvider',
+		'defiProvider',
+		'nftProvider',
 		'quoteCurrency'
 	]}
 />
-
 
 <style>
 	main {
@@ -119,7 +110,7 @@
 			'Portfolios'
 			/ minmax(0, 1fr);
 		gap: 2rem 1.5rem !important;
-		
+
 		/* Override scroll container to support position: sticky */
 		height: 100vh;
 		overflow-y: auto;

@@ -1,41 +1,90 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
+	import type { Ethereum } from '../data/networks/types';
 
+	export let network: Ethereum.Network;
+	export let blockNumber: Ethereum.BlockNumber;
 
-	export let network: Ethereum.Network
-	export let blockNumber: Ethereum.BlockNumber
-	
 	// export let format: 'full' | 'number-only' = 'full'
-	export let linked = true
-	export let tween = true
+	export let linked = true;
+	export let tween = true;
 
-
-	const formatBlockNumber = blockNumber =>
+	const formatBlockNumber = (blockNumber) =>
 		// format === 'full' ?
 		// 	`block #${blockNumber}`
 		// :
-		blockNumber // && new Intl.NumberFormat(globalThis.navigator.languages).format(blockNumber)
+		blockNumber; // && new Intl.NumberFormat(globalThis.navigator.languages).format(blockNumber)
 
 	// const blockSymbol = '' // '🅱️' // 'B⃞' // '#'
 
-
-	$: link = `/explorer/${network.slug}/${blockNumber}`
+	$: link = `/explorer/${network.slug}/${blockNumber}`;
 
 	const onDragStart = (e: DragEvent) => {
-		e.dataTransfer.setData('text/plain', `${blockNumber}`)
-		e.dataTransfer.setData('text/uri', link)
-	}
+		e.dataTransfer.setData('text/plain', `${blockNumber}`);
+		e.dataTransfer.setData('text/uri', link);
+	};
 
+	import { tokenColors } from '../data/tokenColors';
 
-	import { tokenColors } from '../data/tokenColors'
+	import NetworkIcon from './NetworkIcon.svelte';
+	import TweenedNumber from './TweenedNumber.svelte';
 
-
-	import NetworkIcon from './NetworkIcon.svelte'
-	import TweenedNumber from './TweenedNumber.svelte'
-
-	import { animationKey } from '../actions/animationKey'
+	import { animationKey } from '../actions/animationKey';
 </script>
 
+<!-- {#if format === 'full'}block{/if} -->
+{#if linked && blockNumber !== undefined}
+	<a
+		class="block-number"
+		href={link}
+		use:animationKey={blockNumber}
+		style={tokenColors[network.slug] ? `--primary-color: var(--${tokenColors[network.slug]});` : ''}
+		draggable={true}
+		on:dragstart={onDragStart}
+	>
+		<NetworkIcon {network} />
+
+		{#if blockNumber !== undefined}
+			<TweenedNumber
+				value={blockNumber}
+				formatter={formatBlockNumber}
+				format={{
+					showDecimalPlaces: 0,
+					useGrouping: false
+				}}
+				{tween}
+				duration={500}
+				padZero
+			/>
+		{:else}
+			•••
+		{/if}
+	</a>
+{:else}
+	<span
+		class="block-number format"
+		use:animationKey={blockNumber}
+		style={tokenColors[network.slug] ? `--primary-color: var(--${tokenColors[network.slug]});` : ''}
+		draggable={true}
+	>
+		<NetworkIcon {network} />
+
+		{#if blockNumber !== undefined}
+			<TweenedNumber
+				value={blockNumber}
+				formatter={formatBlockNumber}
+				format={{
+					showDecimalPlaces: 0,
+					useGrouping: false
+				}}
+				{tween}
+				duration={500}
+				padZero
+			/>
+		{:else}
+			•••
+		{/if}
+	</span>
+{/if}
 
 <style>
 	.block-number {
@@ -69,7 +118,7 @@
 		text-decoration: none;
 	}
 	.block-number:hover {
-		filter: drop-shadow(0 0 2px var(--primary-color)) contrast(1.2)
+		filter: drop-shadow(0 0 2px var(--primary-color)) contrast(1.2);
 	}
 
 	@keyframes Flash {
@@ -90,59 +139,3 @@
 		pointer-events: none;
 	}
 </style>
-
-
-<!-- {#if format === 'full'}block{/if} -->
-{#if linked && blockNumber !== undefined}
-	<a
-		class="block-number"
-		href={link}
-		use:animationKey={blockNumber}
-		style="{tokenColors[network.slug] ? `--primary-color: var(--${tokenColors[network.slug]});` : ''}"
-		draggable={true}
-		on:dragstart={onDragStart}
-	>
-		<NetworkIcon {network} />
-
-		{#if blockNumber !== undefined}
-			<TweenedNumber
-				value={blockNumber}
-				formatter={formatBlockNumber}
-				format={{
-					showDecimalPlaces: 0,
-					useGrouping: false,
-				}}
-				{tween}
-				duration={500}
-				padZero
-			/>
-		{:else}
-			•••
-		{/if}
-	</a>
-{:else}
-	<span
-		class="block-number format"
-		use:animationKey={blockNumber}
-		style="{tokenColors[network.slug] ? `--primary-color: var(--${tokenColors[network.slug]});` : ''}"
-		draggable={true}
-	>
-		<NetworkIcon {network} />
-
-		{#if blockNumber !== undefined}
-			<TweenedNumber
-				value={blockNumber}
-				formatter={formatBlockNumber}
-				format={{
-					showDecimalPlaces: 0,
-					useGrouping: false,
-				}}
-				{tween}
-				duration={500}
-				padZero
-			/>
-		{:else}
-			•••
-		{/if}
-	</span>
-{/if}

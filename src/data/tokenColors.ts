@@ -1,6 +1,6 @@
-export const tokenColors: Record<string, string> = {}
+export const tokenColors: Record<string, string> = {};
 
-for(const [color, tokenNames] of Object.entries({
+for (const [color, tokenNames] of Object.entries({
 	'usd-green': ['USD'],
 	'gbp-purple': ['GBP'],
 
@@ -23,7 +23,6 @@ for(const [color, tokenNames] of Object.entries({
 	'celo-gold': ['celo', 'CELO'],
 	'aurora-green': ['aurora'],
 	'cronos-blue': ['cronos'],
-	'evmos-orange': ['evmos'],
+	'evmos-orange': ['evmos']
 }))
-	for(const tokenName of tokenNames)
-		tokenColors[tokenName] = color
+	for (const tokenName of tokenNames) tokenColors[tokenName] = color;

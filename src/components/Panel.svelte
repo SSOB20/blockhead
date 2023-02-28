@@ -1,6 +1,6 @@
 <div class="bar">
-    <slot name="title"></slot>
-    <slot name="controls"></slot>
+	<slot name="title" />
+	<slot name="controls" />
 </div>
 
-<slot></slot>
+<slot />

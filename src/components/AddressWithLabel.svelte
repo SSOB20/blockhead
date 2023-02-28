@@ -1,33 +1,17 @@
 <script lang="ts">
-	import type { NetworkAccountAddress } from '../data/address'
-	import type { Ethereum } from '../data/networks/types'
-	
+	import type { NetworkAccountAddress } from '../data/address';
+	import type { Ethereum } from '../data/networks/types';
 
-	export let network: Ethereum.Network
-	export let address: NetworkAccountAddress
-	export let label: string
+	export let network: Ethereum.Network;
+	export let address: NetworkAccountAddress;
+	export let label: string;
 
-	export let format: 'full' | 'middle-truncated'
-	export let linked: boolean
-	export let alwaysShowAddress = false
+	export let format: 'full' | 'middle-truncated';
+	export let linked: boolean;
+	export let alwaysShowAddress = false;
 
-	import Address from './Address.svelte'
+	import Address from './Address.svelte';
 </script>
-
-
-<style>
-	.address-with-label {
-		
-	}
-
-	.label {
-		/* font-weight: 100; */
-	}
-	.label + .address {
-		font-size: 0.8em;
-	}
-</style>
-
 
 <span class="address-with-label">
 	{#if label}
@@ -41,3 +25,15 @@
 		</span>
 	{/if}
 </span>
+
+<style>
+	.address-with-label {
+	}
+
+	.label {
+		/* font-weight: 100; */
+	}
+	.label + .address {
+		font-size: 0.8em;
+	}
+</style>

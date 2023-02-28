@@ -1,14 +1,40 @@
 <script lang="ts">
-	import { web3AppsBySection } from '../../data/web3Apps'
+	import { web3AppsBySection } from '../../data/web3Apps';
 
+	import TokenIcon from '../../components/TokenIcon.svelte';
 
-	import TokenIcon from '../../components/TokenIcon.svelte'
-
-
-	import { cardStyle } from '../../utils/card-background'
-	import { fly, scale } from 'svelte/transition'
+	import { cardStyle } from '../../utils/card-background';
+	import { fly, scale } from 'svelte/transition';
 </script>
 
+<div class="column" in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
+	{#each web3AppsBySection as { title, apps, isFeatured }, i}
+		<hr />
+
+		<h2>{title}</h2>
+
+		<section class="row" class:featured={isFeatured}>
+			{#each apps as app, i}
+				<a
+					href="/apps/{app.slug}"
+					class="item card"
+					transition:scale={{ delay: i * 10 }}
+					style={cardStyle(app.colors)}
+				>
+					<h3 class="row">
+						{#each app.views
+							?.flatMap((view) => view.erc20Tokens ?? [])
+							.filter(Boolean)
+							.slice(0, 1) as erc20Token}
+							<TokenIcon {erc20Token} />
+						{/each}
+						<span>{app.name}</span>
+					</h3>
+				</a>
+			{/each}
+		</section>
+	{/each}
+</div>
 
 <style>
 	.column {
@@ -49,25 +75,3 @@
 		font-size: 0.9em;
 	}
 </style>
-
-
-<div class="column" in:fly={{x: 300}} out:fly={{x: -300}}>
-	{#each web3AppsBySection as {title, apps, isFeatured}, i}
-		<hr>
-
-		<h2>{title}</h2>
-
-		<section class="row" class:featured={isFeatured}>
-			{#each apps as app, i}
-				<a href="/apps/{app.slug}" class="item card" transition:scale={{delay: i * 10}} style={cardStyle(app.colors)}>
-					<h3 class="row">
-						{#each app.views?.flatMap(view => view.erc20Tokens ?? []).filter(Boolean).slice(0, 1) as erc20Token}
-							<TokenIcon {erc20Token} />
-						{/each}
-						<span>{app.name}</span>
-					</h3>
-				</a>
-			{/each}
-		</section>
-	{/each}
-</div>

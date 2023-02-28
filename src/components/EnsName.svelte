@@ -1,52 +1,34 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { ENS } from '../api/ens'
-	import { networksByChainID } from '../data/networks'
+	import type { Ethereum } from '../data/networks/types';
+	import type { ENS } from '../api/ens';
+	import { networksByChainID } from '../data/networks';
 
+	export let network: Ethereum.Network = networksByChainID[1];
+	export let ensName: string = '';
 
-	export let network: Ethereum.Network = networksByChainID[1]
-	export let ensName: string = ''
+	export let linked = true;
 
-	export let linked = true
+	export let showAvatar = false;
+	export let showName = false;
 
-	export let showAvatar = false
-	export let showName = false
+	let textRecords: Map<string, string>;
 
+	$: formattedENSName = textRecords?.get('display') ?? ensName.trim().toLowerCase();
 
-	let textRecords: Map<string, string>
-
-
-	$: formattedENSName = textRecords?.get('display') ?? ensName.trim().toLowerCase()
-
-	$: link = `/apps/ens/address/${formattedENSName}`
-
+	$: link = `/apps/ens/address/${formattedENSName}`;
 
 	const onDragStart = (e: DragEvent) => {
-		e.dataTransfer.setData('text/plain', formattedENSName)
-		if(linked) e.dataTransfer.setData('text/uri-list', link)
-	}
+		e.dataTransfer.setData('text/plain', formattedENSName);
+		if (linked) e.dataTransfer.setData('text/uri-list', link);
+	};
 
-
-	import EnsRecordsLoader from './EnsRecordsLoader.svelte'
-	import Icon from './Icon.svelte'
+	import EnsRecordsLoader from './EnsRecordsLoader.svelte';
+	import Icon from './Icon.svelte';
 	// import InlineContainer from './InlineContainer.svelte'
 
 	// import { scale } from 'svelte/transition'
-	import { scaleFont } from '../transitions/scale-font'
+	import { scaleFont } from '../transitions/scale-font';
 </script>
-
-
-<style>
-	.ens-name {
-		font-family: var(--monospace-fonts), var(--base-fonts);
-		font-size: 0.95em;
-	}
-
-	.ens-name-container :global(.ens-text-record-name ~ .ens-name) {
-		font-size: 0.6em;
-	}
-</style>
-
 
 <EnsRecordsLoader
 	layout="passive"
@@ -54,7 +36,11 @@
 	resolveTextRecordKeys={[showAvatar && 'avatar', showName && 'name'].filter(Boolean)}
 	let:textRecords
 >
-	{@const title = `${formattedENSName}${textRecords ? [...textRecords.entries()].map(([key, value]) => `${key} ${value}`).join('\n') : ''}`}
+	{@const title = `${formattedENSName}${
+		textRecords
+			? [...textRecords.entries()].map(([key, value]) => `${key} ${value}`).join('\n')
+			: ''
+	}`}
 
 	<span class="ens-name-container row-inline {$$props.class}">
 		{#if textRecords?.get('avatar')}
@@ -86,7 +72,9 @@
 		</InlineContainer> -->
 
 		{#if textRecords?.get('name')}
-			<h4 class="ens-text-record-name" transition:scaleFont={{ duration: 400 }}>{textRecords.get('name')}</h4>
+			<h4 class="ens-text-record-name" transition:scaleFont={{ duration: 400 }}>
+				{textRecords.get('name')}
+			</h4>
 		{/if}
 
 		<!-- <InlineContainer containerClass="ens-text-record-name" isOpen={!!textRecords?.get('name')} clip>
@@ -97,9 +85,11 @@
 			this={linked ? 'a' : 'span'}
 			class="ens-name"
 			{title}
-			{...linked ? {
-				href: link
-			} : {}}
+			{...linked
+				? {
+						href: link
+				  }
+				: {}}
 			draggable={true}
 			on:dragstart={onDragStart}
 		>
@@ -107,3 +97,14 @@
 		</svelte:element>
 	</span>
 </EnsRecordsLoader>
+
+<style>
+	.ens-name {
+		font-family: var(--monospace-fonts), var(--base-fonts);
+		font-size: 0.95em;
+	}
+
+	.ens-name-container :global(.ens-text-record-name ~ .ens-name) {
+		font-size: 0.6em;
+	}
+</style>

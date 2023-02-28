@@ -1,12 +1,20 @@
 <script lang="ts">
-	import { fly, scale } from 'svelte/transition'
+	import { fly, scale } from 'svelte/transition';
 
-	export let layout: 'card' | 'icon' = 'card'
+	export let layout: 'card' | 'icon' = 'card';
 
-	export let title: string
-	export let iconAnimation: 'spin' | 'hover' = 'spin'
+	export let title: string;
+	export let iconAnimation: 'spin' | 'hover' = 'spin';
 </script>
 
+<div class="loading" class:card={layout === 'card'} data-layout={layout} {title} transition:scale>
+	<!-- in:fly={{x: -100}} out:fly={{x: 100}} -->
+	<span class="icon {iconAnimation}">
+		<slot name="icon">🧭</slot>
+	</span>
+
+	<slot />
+</div>
 
 <style>
 	.loading {
@@ -21,7 +29,7 @@
 
 		cursor: progress;
 	}
-	.loading[data-layout="icon"] {
+	.loading[data-layout='icon'] {
 		animation: HoverIcon 1.5s infinite;
 	}
 	.loading :global(*) {
@@ -50,12 +58,17 @@
 	} */
 
 	@keyframes Spin {
-		from { transform: rotate(0); }
-		to { transform: rotate(360deg); }
+		from {
+			transform: rotate(0);
+		}
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	@keyframes Hover {
-		from, to {
+		from,
+		to {
 			transform: perspective(1000px) translateZ(calc(-1 * var(--hover-intensity)));
 		}
 		50% {
@@ -64,7 +77,8 @@
 	}
 
 	@keyframes HoverIcon {
-		from, to {
+		from,
+		to {
 			transform: perspective(1000px) translateZ(calc(-1 * var(--hover-intensity)));
 			opacity: 1;
 		}
@@ -74,18 +88,3 @@
 		}
 	}
 </style>
-
-
-<div
-	class="loading"
-	class:card={layout === 'card'}
-	data-layout={layout}
-	{title}
-	transition:scale
-><!-- in:fly={{x: -100}} out:fly={{x: 100}} -->
-	<span class="icon {iconAnimation}">
-		<slot name="icon">🧭</slot>
-	</span>
-
-	<slot />
-</div>

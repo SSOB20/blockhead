@@ -1,110 +1,86 @@
 <script lang="ts">
 	// Params two-way binding
 
-	import { page } from '$app/stores'
-	import { browser } from '$app/environment'
-	import { goto, beforeNavigate } from '$app/navigation'
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
+	import { goto, beforeNavigate } from '$app/navigation';
 
-	import {
-		networkSlug,
-		query,
-		derivedPath
-	} from './_explorerParams'
+	import { networkSlug, query, derivedPath } from './_explorerParams';
 
-	$: if($page.url.pathname.startsWith('/explorer')){
-		$networkSlug = $page.params.networkSlug || $page.url.pathname.match(/^\/explorer\/([^/]+)/)?.[1] || ''
-		$query = $page.params.query || ''
+	$: if ($page.url.pathname.startsWith('/explorer')) {
+		$networkSlug =
+			$page.params.networkSlug || $page.url.pathname.match(/^\/explorer\/([^/]+)/)?.[1] || '';
+		$query = $page.params.query || '';
 	}
 
-	$: if(browser)
-		goto($derivedPath, {keepfocus: true})
+	$: if (browser) goto($derivedPath, { keepfocus: true });
 
-	beforeNavigate(({from, to, cancel}) => {
-		if(from.url.pathname === to.url.pathname)
-			cancel()
-	})
-
+	beforeNavigate(({ from, to, cancel }) => {
+		if (from.url.pathname === to.url.pathname) cancel();
+	});
 
 	// Context
 
-	import { explorerNetwork } from './_explorerContext'
+	import { explorerNetwork } from './_explorerContext';
 
-	import { setContext } from 'svelte'
-	import { writable } from 'svelte/store'
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	const relevantPreferences = writable<string[]>()
+	const relevantPreferences = writable<string[]>();
 	$: $relevantPreferences = $relevantPreferences || [
 		'theme',
 		...($query
 			? ['rpcNetwork', 'tokenBalancesProvider', 'transactionProvider']
-			: ['rpcNetwork', 'currentPriceProvider', 'historicalPriceProvider']
-		),
+			: ['rpcNetwork', 'currentPriceProvider', 'historicalPriceProvider']),
 		'quoteCurrency'
-	]
-	setContext('relevantPreferences', relevantPreferences)
-
+	];
+	setContext('relevantPreferences', relevantPreferences);
 
 	// Side effects
 
-	import { networksBySection, testnetsForMainnets, isTestnet, getNetworkColor } from '../../data/networks'
+	import {
+		networksBySection,
+		testnetsForMainnets,
+		isTestnet,
+		getNetworkColor
+	} from '../../data/networks';
 
-	let showTestnets = false
-	$: _isTestnet = $explorerNetwork && isTestnet($explorerNetwork)
-	$: if(_isTestnet)
-		showTestnets = true
+	let showTestnets = false;
+	$: _isTestnet = $explorerNetwork && isTestnet($explorerNetwork);
+	$: if (_isTestnet) showTestnets = true;
 
+	$: networkDisplayName = $explorerNetwork
+		? $explorerNetwork.name
+		: $networkSlug
+		? $networkSlug[0].toUpperCase() + $networkSlug.slice(1)
+		: 'Networks';
 
-	$: networkDisplayName =
-		$explorerNetwork ? $explorerNetwork.name :
-		$networkSlug ? $networkSlug[0].toUpperCase() + $networkSlug.slice(1) :
-		'Networks'
-
-
-	$: if(globalThis.document && $explorerNetwork)
-		document.documentElement.style.setProperty('--primary-color', getNetworkColor($explorerNetwork))
-
+	$: if (globalThis.document && $explorerNetwork)
+		document.documentElement.style.setProperty(
+			'--primary-color',
+			getNetworkColor($explorerNetwork)
+		);
 
 	// Components
 
-	import AccountConnections from '../../components/AccountConnections.svelte'
-	import Preferences from '../../components/Preferences.svelte'
-	import InlineContainer from '../../components/InlineContainer.svelte'
-	import NetworkIcon from '../../components/NetworkIcon.svelte'
-
+	import AccountConnections from '../../components/AccountConnections.svelte';
+	import Preferences from '../../components/Preferences.svelte';
+	import InlineContainer from '../../components/InlineContainer.svelte';
+	import NetworkIcon from '../../components/NetworkIcon.svelte';
 
 	// Style/transitions
 
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
 
-
-<style>
-	main {
-		max-width: var(--one-column-width);
-		grid-template-columns: 100%;
-	}
-
-	select {
-		max-width: 11.5rem;
-	}
-	.title {
-		gap: 0.66em;
-	}
-	.title-icon {
-		display: inline-flex;
-		align-items: center;
-		font-size: 1.5em;
-	}
-</style>
-
-
 <svelte:head>
-	<title>{$query ? `${$query} | ` : ''}{$networkSlug ? `${networkDisplayName} Explorer` : `Explorer`} | Blockhead</title>
+	<title
+		>{$query ? `${$query} | ` : ''}{$networkSlug ? `${networkDisplayName} Explorer` : `Explorer`} | Blockhead</title
+	>
 </svelte:head>
 
-
-<main in:fly={{x: 300}} out:fly={{x: -300}}>
-<!-- <main> -->
+<main in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
+	<!-- <main> -->
 	<div class="bar">
 		<div class="title row">
 			<span class="title-icon">
@@ -118,7 +94,13 @@
 			</span>
 			<h1>
 				<InlineContainer class="stack-inline align-end" clip>
-					{#key $networkSlug}<b in:fly|local={{y: 20, duration: 200}} out:fly|local={{y: -20, duration: 200}}><InlineContainer>{$networkSlug ? `${networkDisplayName} ` : `Blockchain `}</InlineContainer></b>{/key}
+					{#key $networkSlug}<b
+							in:fly|local={{ y: 20, duration: 200 }}
+							out:fly|local={{ y: -20, duration: 200 }}
+							><InlineContainer
+								>{$networkSlug ? `${networkDisplayName} ` : `Blockchain `}</InlineContainer
+							></b
+						>{/key}
 				</InlineContainer>
 				Explorer
 			</h1>
@@ -135,18 +117,26 @@
 			<select bind:value={$networkSlug}>
 				<option value="" selected>Select Network...</option>
 
-				{#each networksBySection as {title, networks}}
+				{#each networksBySection as { title, networks }}
 					<optgroup label={title}>
 						{#each networks as network}
 							{#if showTestnets}
 								<option disabled>{network.name}</option>
-								<option value={network.slug}>{network.name} Mainnet{network.chainId ? ` (${network.chainId})` : ''}</option>
+								<option value={network.slug}
+									>{network.name} Mainnet{network.chainId ? ` (${network.chainId})` : ''}</option
+								>
 
 								{#each testnetsForMainnets[network.slug] ?? [] as testnetNetwork}
-									<option value={testnetNetwork.slug}>{testnetNetwork.name}{testnetNetwork.chainId ? ` (${testnetNetwork.chainId})` : ''}</option>
+									<option value={testnetNetwork.slug}
+										>{testnetNetwork.name}{testnetNetwork.chainId
+											? ` (${testnetNetwork.chainId})`
+											: ''}</option
+									>
 								{/each}
 							{:else}
-								<option value={network.slug} style={`--primary-color: ${getNetworkColor(network)}`}>{network.name}</option>
+								<option value={network.slug} style={`--primary-color: ${getNetworkColor(network)}`}
+									>{network.name}</option
+								>
 							{/if}
 						{/each}
 					</optgroup>
@@ -189,6 +179,23 @@
 	</section>
 </aside>
 
-<Preferences
-	relevantPreferences={$relevantPreferences}
-/>
+<Preferences relevantPreferences={$relevantPreferences} />
+
+<style>
+	main {
+		max-width: var(--one-column-width);
+		grid-template-columns: 100%;
+	}
+
+	select {
+		max-width: 11.5rem;
+	}
+	.title {
+		gap: 0.66em;
+	}
+	.title-icon {
+		display: inline-flex;
+		align-items: center;
+		font-size: 1.5em;
+	}
+</style>

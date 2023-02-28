@@ -1,55 +1,103 @@
 <script lang="ts">
 	// External State
-	export let isOpen = true
-	export let renderOnlyWhenOpen = true
+	export let isOpen = true;
+	export let renderOnlyWhenOpen = true;
 
-	export let transitionWidth = false
-	export let transitionHeight = true
+	export let transitionWidth = false;
+	export let transitionHeight = true;
 
-	export let duration = 600
-	export let easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
+	export let duration = 600;
+	export let easing = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
-	export let clip = false
+	export let clip = false;
 
-	export let inline = false
-	export let contentsOnly = false
-	export let contentElementOnly = !transitionWidth && !transitionHeight
-	export let containerClass = ''
+	export let inline = false;
+	export let contentsOnly = false;
+	export let contentElementOnly = !transitionWidth && !transitionHeight;
+	export let containerClass = '';
 
-	export let contentClass = $$props.class
+	export let contentClass = $$props.class;
 
-	let otherProps
+	let otherProps;
 	$: {
 		const {
-			duration, clip, isOpen, transitionWidth, transitionHeight, contentsOnly, containerClass, contentClass, class: _,
+			duration,
+			clip,
+			isOpen,
+			transitionWidth,
+			transitionHeight,
+			contentsOnly,
+			containerClass,
+			contentClass,
+			class: _,
 			..._otherProps
-		} = $$props
+		} = $$props;
 
-		otherProps = _otherProps
+		otherProps = _otherProps;
 	}
 
-
 	// Internal state
-	let container: HTMLElement
-	let content: HTMLElement
-
+	let container: HTMLElement;
+	let content: HTMLElement;
 
 	// Stores
 
-	import { readable } from 'svelte/store'
+	import { readable } from 'svelte/store';
 
-	let contentRect: SvelteStore<DOMRectReadOnly>
+	let contentRect: SvelteStore<DOMRectReadOnly>;
 
 	// $: contentRect = content && readable<DOMRectReadOnly>(content.getBoundingClientRect(), set => {
-	$: contentRect = content && readable<DOMRectReadOnly>({}, set => {
-		const resizeObserver = new ResizeObserver(([observerEntry]) => {
-			set(observerEntry.contentRect)
-		})
-		resizeObserver.observe(content)
-		// return () => resizeObserver.disconnect()
-	})
+	$: contentRect =
+		content &&
+		readable<DOMRectReadOnly>({}, (set) => {
+			const resizeObserver = new ResizeObserver(([observerEntry]) => {
+				set(observerEntry.contentRect);
+			});
+			resizeObserver.observe(content);
+			// return () => resizeObserver.disconnect()
+		});
 </script>
 
+{#if contentsOnly}
+	<slot />
+{:else if contentElementOnly}
+	<div class="content{contentClass ? ` ${contentClass}` : ''}" class:inline>
+		<slot />
+	</div>
+{:else}
+	<div
+		bind:this={container}
+		class="container{containerClass ? ` ${containerClass}` : ''}"
+		class:isOpen
+		class:clip
+		class:inline
+		style={[
+			duration && `--duration: ${duration}ms;`,
+			easing && `--easing: ${easing};`,
+			transitionWidth &&
+				contentRect &&
+				`width: ${isOpen ? `${Math.max($contentRect.width, 0)}px` : '0'};`,
+			transitionHeight &&
+				contentRect &&
+				`height: ${isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'};`
+		]
+			.filter(Boolean)
+			.join(' ')}
+		aria-expanded={isOpen}
+		tabindex={isOpen ? undefined : -1}
+	>
+		<div
+			class="content{contentClass ? ` ${contentClass}` : ''}"
+			class:inline
+			bind:this={content}
+			{...otherProps}
+		>
+			{#if renderOnlyWhenOpen ? isOpen : true}
+				<slot />
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <style>
 	.container {
@@ -84,42 +132,3 @@
 		align-items: baseline;
 	}
 </style>
-
-
-{#if contentsOnly}
-	<slot />
-{:else if contentElementOnly}
-	<div
-		class="content{contentClass ? ` ${contentClass}` : ''}"
-		class:inline
-	>
-		<slot />
-	</div>
-{:else}
-	<div
-		bind:this={container}
-		class="container{containerClass ? ` ${containerClass}` : ''}"
-		class:isOpen
-		class:clip
-		class:inline
-		style={[
-			duration && `--duration: ${duration}ms;`,
-			easing && `--easing: ${easing};`,
-			transitionWidth && contentRect && `width: ${isOpen ? `${Math.max($contentRect.width, 0)}px` : '0'};`,
-			transitionHeight && contentRect && `height: ${isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'};`,
-		].filter(Boolean).join(' ')}
-		aria-expanded={isOpen}
-		tabindex={isOpen ? undefined : -1}
-	>
-		<div
-			class="content{contentClass ? ` ${contentClass}` : ''}"
-			class:inline
-			bind:this={content}
-			{...otherProps}
-		>
-			{#if renderOnlyWhenOpen ? isOpen : true}
-				<slot />
-			{/if}
-		</div>
-	</div>
-{/if}

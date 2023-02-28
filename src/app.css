@@ -23,7 +23,7 @@
 
 	--polygon-purple: #8248e5;
 	--optimism-red: #f01a37;
-	--binance-gold: #FCD535;
+	--binance-gold: #fcd535;
 	--avalanche-red: #f9273c;
 	--gnosis-teal: #48a9a6;
 	--fantom-blue: #1969ff;
@@ -31,9 +31,9 @@
 	--metis-blue: #00dacd;
 	--skale-black: #000;
 	--celo-gold: #fbcc5c;
-	--aurora-green: #92D36F;
-	--cronos-blue: #002D74;
-	--evmos-orange: #ED4E33;
+	--aurora-green: #92d36f;
+	--cronos-blue: #002d74;
+	--evmos-orange: #ed4e33;
 
 	--up-green: #1af73d;
 	--down-red: #f7541a;
@@ -41,7 +41,7 @@
 	--portis-blue: #6db2d8;
 	--metamask-orange: #e27625;
 	--torus-blue: #0364ff;
-	
+
 	--primary-color: var(--ethereum-blue); /* #6790e1; */
 	/* --card-background-color: rgba(0, 0, 0, 0.075);
 	--card-hover-background-color: rgba(0, 0, 0, 0.100); */
@@ -53,8 +53,9 @@
 	--one-column-width: 70em;
 	--padding-outer: 1rem;
 	--padding-inner: 0.8rem;
-	
-	--base-fonts: Ubuntu, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+	--base-fonts: Ubuntu, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Cantarell, Fira Sans,
+		Droid Sans, Helvetica Neue, sans-serif;
 	--monospace-fonts: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', Menlo, Inconsolata, monospace;
 
 	--overlay-backdrop-filter: blur(20px) contrast(1.1);
@@ -71,8 +72,8 @@
 	line-height: 1.5;
 	letter-spacing: 0.03ch;
 
-	-webkit-font-feature-settings: "liga" on, "calt" on;
-	font-feature-settings: "liga" on, "calt" on;
+	-webkit-font-feature-settings: 'liga' on, 'calt' on;
+	font-feature-settings: 'liga' on, 'calt' on;
 	font-variant: tabular-nums;
 
 	-webkit-font-smoothing: antialiased;
@@ -86,7 +87,7 @@
 	--text-decoration-color: 51, 51, 51;
 	--text-decoration-opacity: 0.15;
 	text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.1);
-	
+
 	--global-background-gradient-base-color: #f6f6f6;
 
 	accent-color: var(--primary-color);
@@ -96,8 +97,10 @@
 
 	--is-light: 1;
 	--is-dark: calc(1 - var(--is-light));
-	--rgb-light-dark: calc(var(--is-light) * 255), calc(var(--is-light) * 255), calc(var(--is-light) * 255);
-	--rgb-light-dark-inverse: calc(var(--is-dark) * 255), calc(var(--is-dark) * 255), calc(var(--is-dark) * 255);
+	--rgb-light-dark: calc(var(--is-light) * 255), calc(var(--is-light) * 255),
+		calc(var(--is-light) * 255);
+	--rgb-light-dark-inverse: calc(var(--is-dark) * 255), calc(var(--is-dark) * 255),
+		calc(var(--is-dark) * 255);
 }
 @media (prefers-color-scheme: dark) {
 	:root:not(.color-scheme-light) {
@@ -139,14 +142,18 @@
 :root {
 	overflow: hidden;
 
-	background: linear-gradient(155deg, var(--global-background-gradient-base-color), var(--primary-color, var(--ethereum-blue)) 250%) fixed;
+	background: linear-gradient(
+			155deg,
+			var(--global-background-gradient-base-color),
+			var(--primary-color, var(--ethereum-blue)) 250%
+		)
+		fixed;
 }
 
 body {
 	overflow: hidden auto;
 	height: 100vh;
 }
-
 
 a {
 	color: var(--text-color);
@@ -160,8 +167,12 @@ a:hover {
 	/* text-shadow: 0 1px 3px; */
 }
 
-
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-weight: 600;
 	line-height: 1.2;
 }
@@ -176,11 +187,15 @@ h6 {
 	font-size: 0.9em;
 }
 
-h3.row, h4.row, h5.row, h6.row {
-    --padding-inner: 1ch;
+h3.row,
+h4.row,
+h5.row,
+h6.row {
+	--padding-inner: 1ch;
 }
 
-pre, code {
+pre,
+code {
 	font-family: var(--monospace-fonts);
 	white-space: pre-wrap;
 	font-size: 0.75em;
@@ -193,7 +208,6 @@ output {
 	word-break: break-word;
 	user-select: all;
 }
-
 
 button {
 	display: inline-flex;
@@ -209,7 +223,7 @@ button {
 	outline: none;
 
 	padding: 0.3em 0.7em;
-	
+
 	font: inherit;
 	font-size: 1.15em;
 	font-weight: bold;
@@ -219,16 +233,18 @@ button {
 	--depth: 0.15em;
 	--scale: 1;
 	--glow: 0;
-	box-shadow: 0px var(--depth) rgba(0, 0, 0, 0.25), 0px var(--depth) var(--primary-color), 0 var(--depth) var(--glow) var(--primary-color);
+	box-shadow: 0px var(--depth) rgba(0, 0, 0, 0.25), 0px var(--depth) var(--primary-color),
+		0 var(--depth) var(--glow) var(--primary-color);
 	transform: translateY(calc(-1 * var(--depth))) scale(var(--scale));
 	transform-origin: var(--button-transform-origin);
-	
+
 	transition: 0.2s;
 
 	cursor: pointer;
 	user-select: none;
 }
-button:hover, button:focus {
+button:hover,
+button:focus {
 	--scale: 1.015;
 }
 button:focus {
@@ -257,21 +273,24 @@ a:has(button) {
 	text-decoration: none;
 }
 
-
 :-placeholder {
 	opacity: 0.5;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
 	border: none;
 	font: inherit;
 }
-input, textarea {
+input,
+textarea {
 	/* background-color: rgba(var(--rgb-light-dark-inverse), 0.975) */
-	background-color: rgba(255, 255, 255, 0.975)
+	background-color: rgba(255, 255, 255, 0.975);
 }
 
-input, textarea {
+input,
+textarea {
 	border-radius: 0.5rem;
 	padding: 0.3em 0.7em;
 	flex-basis: 20rem;
@@ -279,11 +298,11 @@ input, textarea {
 /* input.is-valid {
 	border: 2px solid green;
 } */
-input[type="number"] {
+input[type='number'] {
 	font-family: var(--monospace-fonts);
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
 	width: 1.2em;
 	height: 1.2em;
 	transform: translateY(0.2em);
@@ -296,10 +315,10 @@ label {
 	cursor: pointer;
 }
 
-label input:is([type="checkbox"], [type="radio"]) {
+label input:is([type='checkbox'], [type='radio']) {
 	display: none;
 }
-label input:is([type="checkbox"], [type="radio"]) ~ span {
+label input:is([type='checkbox'], [type='radio']) ~ span {
 	background-color: rgba(255, 255, 255, calc(0.2 + var(--is-light) * 0.8));
 	padding: 0.2em 0.4em;
 	border-radius: 0.25em;
@@ -309,44 +328,45 @@ label input:is([type="checkbox"], [type="radio"]) ~ span {
 	align-items: center;
 	gap: 0.3em;
 }
-label input:is([type="checkbox"], [type="radio"]):checked ~ span {
+label input:is([type='checkbox'], [type='radio']):checked ~ span {
 	/* box-shadow: 0 0 0 1px rgba(var(--rgb-light-dark-inverse), 0.33); */
 	box-shadow: 0 0 0 1.5px var(--primary-color);
 	scale: 1.025;
 }
-label input:is([type="checkbox"], [type="radio"]):not(:checked) ~ span {
+label input:is([type='checkbox'], [type='radio']):not(:checked) ~ span {
 	opacity: 0.66;
 }
-label:hover input:is([type="checkbox"], [type="radio"]) ~ span {
+label:hover input:is([type='checkbox'], [type='radio']) ~ span {
 	scale: 1.02;
 }
-label:active input:is([type="checkbox"], [type="radio"]) ~ span {
+label:active input:is([type='checkbox'], [type='radio']) ~ span {
 	scale: 0.99;
 }
-label:hover input:is([type="checkbox"], [type="radio"]):not(:checked) ~ span {
+label:hover input:is([type='checkbox'], [type='radio']):not(:checked) ~ span {
 	opacity: 0.66;
 }
-label input:is([type="checkbox"], [type="radio"]) ~ span:before {
+label input:is([type='checkbox'], [type='radio']) ~ span:before {
 	font-size: 1.4em;
 	line-height: 0;
 	speak: none;
 	transition: 0.1s ease-out;
 }
-label input:is([type="checkbox"]):not(:checked) ~ span:before {
-	content: "⃞";
+label input:is([type='checkbox']):not(:checked) ~ span:before {
+	content: '⃞';
 	opacity: 0.5;
 }
-label input[type="checkbox"]:checked ~ span:before {
-	content: "✓⃞";
+label input[type='checkbox']:checked ~ span:before {
+	content: '✓⃞';
 }
-label input:is([type="radio"]):not(:checked) ~ span:before {
-	content: "⃝";
+label input:is([type='radio']):not(:checked) ~ span:before {
+	content: '⃝';
 }
-label input:is([type="radio"]):checked ~ span:before {
-	content: "✓⃝";
+label input:is([type='radio']):checked ~ span:before {
+	content: '✓⃝';
 }
 
-h1 input, h2 input {
+h1 input,
+h2 input {
 	font-size: 0.7em;
 	animation: From 0.3s;
 }
@@ -373,24 +393,22 @@ section {
 	grid-template-columns: 100%;
 }
 
-
 :disabled,
-form:invalid input[type="submit"],
-form:invalid button[type="submit"],
+form:invalid input[type='submit'],
+form:invalid button[type='submit'],
 .placeholder {
 	opacity: 0.33;
 	cursor: not-allowed !important;
 	touch-action: none;
 }
 
-
 :invalid {
 	/* border: red 2px solid; */
 	outline-color: red;
 }
 
-
-mark, .mark {
+mark,
+.mark {
 	background: none;
 	color: currentColor;
 	text-shadow: 1px 1px 0.25rem var(--primary-color);
@@ -398,9 +416,9 @@ mark, .mark {
 	/* text-outline: 1px 2px var(--primary-color); */
 }
 
-
 abbr {
-	text-decoration: underline dotted 1px rgba(var(--text-decoration-color), var(--text-decoration-opacity));
+	text-decoration: underline dotted 1px
+		rgba(var(--text-decoration-color), var(--text-decoration-opacity));
 }
 
 :not(a) > :not(a)[title],
@@ -408,14 +426,12 @@ a > :not(a):not(:only-child)[title] {
 	cursor: help;
 }
 
-
 hr {
 	background: none;
 	border: none;
 	border-bottom: currentColor 1px solid;
 	opacity: 0.25;
 }
-
 
 dl {
 	display: grid;
@@ -431,13 +447,11 @@ dt {
 	text-align: right;
 }
 
-
 iframe {
 	border: none;
 	width: 100%;
 	min-height: 50rem;
 }
-
 
 img {
 	display: inline-grid;
@@ -445,7 +459,7 @@ img {
 	place-items: center;
 
 	font-family: Pally, var(--base-fonts);
-	
+
 	/* font-size: 0; */
 	/* visibility: hidden; */
 	text-indent: -1000vw;
@@ -491,7 +505,6 @@ img:after {
 	}
 }
 
-
 .card {
 	display: grid;
 	gap: var(--padding-inner);
@@ -520,7 +533,9 @@ img:after {
 	background-attachment: fixed;
 	opacity: 0.1;
 } */
-.card:focus, .card:target, form.card:focus-within {
+.card:focus,
+.card:target,
+form.card:focus-within {
 	/* background-color: rgb(var(--rgb-light-dark-inverse), 0.2); */
 	box-shadow: var(--card-box-shadow), 0 0 0 2px var(--primary-color) inset;
 	outline: none;
@@ -540,7 +555,6 @@ a.card {
 	opacity: 0.8;
 	font-size: 0.66em;
 }
-
 
 .card .card-background {
 	position: absolute;
@@ -570,8 +584,9 @@ a.card {
 	z-index: -1;
 }
 
-
-.row, .row-inline, .bar {
+.row,
+.row-inline,
+.bar {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -591,7 +606,9 @@ a.card {
 .bar > :first-child {
 	flex: 1 auto;
 }
-.bar > .row-inline:first-child, .bar > h2:first-child, .bar > h3:first-child {
+.bar > .row-inline:first-child,
+.bar > h2:first-child,
+.bar > h3:first-child {
 	flex: 1;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -608,18 +625,18 @@ a.card {
 	justify-items: end;
 }
 
-
-.stack, .stack-inline {
+.stack,
+.stack-inline {
 	display: grid;
-	grid: "stack";
+	grid: 'stack';
 }
 .stack-inline {
 	display: inline-grid;
 }
-.stack > *, .stack-inline > * {
+.stack > *,
+.stack-inline > * {
 	grid-area: stack;
 }
-
 
 .column {
 	display: grid;
@@ -636,7 +653,6 @@ a.card {
 /* .column-block > :not(:last-child) {
 	margin-bottom: var(--padding-inner);
 } */
-
 
 .scroll-snap-area {
 	scroll-snap-type: both proximity;
@@ -666,7 +682,6 @@ a.card {
 	height: 100%;
 	overflow-x: auto;
 } */
-
 
 .row-scrollable {
 	display: flex;
@@ -702,7 +717,6 @@ a.card {
 	min-width: max-content;
 }
 
-
 .align-start {
 	text-align: left;
 	justify-items: start;
@@ -728,7 +742,6 @@ a.card {
 	--button-transform-origin: bottom;
 }
 
-
 :root {
 	--sticky-height-1: 3.5rem;
 	--sticky-height-2: 3rem;
@@ -753,7 +766,9 @@ a.card {
 .sticky-layout .sticky-layout .sticky-layout,
 .sticky-layout .sticky-layout .sticky ~ * {
 	--sticky-level: 3;
-	--sticky-top: calc(var(--sticky-height-1) + var(--sticky-gap) + var(--sticky-height-2) + var(--sticky-gap));
+	--sticky-top: calc(
+		var(--sticky-height-1) + var(--sticky-gap) + var(--sticky-height-2) + var(--sticky-gap)
+	);
 	--sticky-height: var(--sticky-height-2);
 	--sticky-header-outset: calc(0.666 * var(--padding-inner));
 }
@@ -821,7 +836,9 @@ a.card {
 }
 .sticky-layout .sticky-layout .sticky-layout .sticky {
 	position: sticky;
-	top: calc(var(--sticky-height-1) + var(--sticky-gap) + var(--sticky-height-2) + var(--sticky-gap));
+	top: calc(
+		var(--sticky-height-1) + var(--sticky-gap) + var(--sticky-height-2) + var(--sticky-gap)
+	);
 	height: var(--sticky-height-3);
 	z-index: 1;
 }
@@ -829,19 +846,16 @@ a.card {
 	position: sticky;
 } */
 
-
 .sticky-bottom {
 	position: sticky;
 	bottom: 0;
 	z-index: 10;
 }
 
-
 .slot {
 	display: inline-flex;
 	align-items: center;
 }
-
 
 .logo {
 	font-weight: 600;
@@ -865,14 +879,12 @@ a.card {
 	text-align: center;
 } */
 
-
-
 ::-webkit-scrollbar {
 	background: transparent;
 	width: 5px;
 	height: 5px;
 }
-[style*="animation:"]::-webkit-scrollbar {
+[style*='animation:']::-webkit-scrollbar {
 	display: none;
 }
 ::-webkit-scrollbar-track {
@@ -891,13 +903,12 @@ body::-webkit-scrollbar-button {
 	border: none;
 }
 
-
-[draggable=true]:active:where(:not(:has([draggable=true]:active))) {
+[draggable='true']:active:where(:not(:has([draggable='true']:active))) {
 	cursor: grabbing;
 	will-change: transform;
 	animation: Dragging 0.45s infinite ease-in-out;
 }
-[draggable=true]:active:where(:has([draggable=true]:active)) {
+[draggable='true']:active:where(:has([draggable='true']:active)) {
 	animation: DraggingParent 0.9s infinite ease-in-out;
 }
 @keyframes Dragging {

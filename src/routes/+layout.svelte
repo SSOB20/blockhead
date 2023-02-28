@@ -1,78 +1,91 @@
 <script lang="ts">
-	import '../fonts.css'
-	import '../app.css'
-
+	import '../fonts.css';
+	import '../app.css';
 
 	// Svelte Query
-	import { QueryClient, persistQueryClient, broadcastQueryClient, createWebStoragePersistor, QueryClientProvider } from '@sveltestack/svelte-query'
+	import {
+		QueryClient,
+		persistQueryClient,
+		broadcastQueryClient,
+		createWebStoragePersistor,
+		QueryClientProvider
+	} from '@sveltestack/svelte-query';
 
 	export const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {
 				keepPreviousData: true,
 				// staleTime: Infinity,
-				cacheTime: Infinity,
-			},
+				cacheTime: Infinity
+			}
 		}
-	})
+	});
 
 	const localStoragePersistor = createWebStoragePersistor({
 		storage: globalThis.localStorage
-	})
+	});
 	persistQueryClient({
 		queryClient,
-		persistor: localStoragePersistor,
-	})
+		persistor: localStoragePersistor
+	});
 
 	// broadcastQueryClient({
-		// 	queryClient,
-		// 	broadcastChannel: globalThis.location?.origin,
+	// 	queryClient,
+	// 	broadcastChannel: globalThis.location?.origin,
 	// })
 
+	import Nav from '../components/Nav.svelte';
 
-	import Nav from '../components/Nav.svelte'
-	
-	
 	// import { getDefaultProvider } from 'ethers'
 	// import { setContext } from 'svelte'
 	// import { writable } from 'svelte/store'
 	// const provider = writable<Ethereum.Provider>(getDefaultProvider('mainnet', {}))
 	// setContext('provider', provider)
 
+	import type { Ethereum } from '../data/networks/types';
+	import { networksByChainID } from '../data/networks';
+	import { derived, writable } from 'svelte/store';
+	import { getEthersProvider } from '../data/networkProviders';
+	import { onMount, setContext } from 'svelte';
 
-	import type { Ethereum } from '../data/networks/types'
-	import { networksByChainID } from '../data/networks'
-	import { derived, writable } from 'svelte/store'
-	import { getEthersProvider } from '../data/networkProviders'
-	import { onMount, setContext } from 'svelte'
+	const whenMounted = new Promise((r) => onMount(r));
 
-	const whenMounted = new Promise(r => onMount(r))
-
-	const ethereumChainID = writable(1)
+	const ethereumChainID = writable(1);
 
 	const ethereumNetwork = derived<[typeof ethereumChainID], Ethereum.Network>(
 		[ethereumChainID],
 		([$ethereumChainID], set) => {
-			set(networksByChainID[$ethereumChainID])
+			set(networksByChainID[$ethereumChainID]);
 		}
-	)
+	);
 
-	const ethereumProvider = derived<[typeof ethereumNetwork, typeof preferences], Ethereum.Provider>([ethereumNetwork, preferences], async ([$ethereumNetwork, $preferences], set) => {
-		await whenMounted
-		set(await getEthersProvider({
-			network: $ethereumNetwork,
-			networkProvider: $preferences.rpcNetwork
-		}))
-	})
-	setContext('ethereumNetwork', ethereumNetwork)
-	setContext('ethereumProvider', ethereumProvider)
+	const ethereumProvider = derived<[typeof ethereumNetwork, typeof preferences], Ethereum.Provider>(
+		[ethereumNetwork, preferences],
+		async ([$ethereumNetwork, $preferences], set) => {
+			await whenMounted;
+			set(
+				await getEthersProvider({
+					network: $ethereumNetwork,
+					networkProvider: $preferences.rpcNetwork
+				})
+			);
+		}
+	);
+	setContext('ethereumNetwork', ethereumNetwork);
+	setContext('ethereumProvider', ethereumProvider);
 
-
-	import { preferences } from '../state/preferences'
-	$: if(globalThis.document)
-		globalThis.document.documentElement.className = `color-scheme-${$preferences.theme}`
+	import { preferences } from '../state/preferences';
+	$: if (globalThis.document)
+		globalThis.document.documentElement.className = `color-scheme-${$preferences.theme}`;
 </script>
 
+<QueryClientProvider client={queryClient}>
+	<Nav />
+
+	<div class="stack">
+		<slot />
+	</div>
+</QueryClientProvider>
 
 <style>
 	:global(:is(body > nav)) {
@@ -99,7 +112,8 @@
 
 		display: grid;
 		gap: var(--padding-inner);
-		padding: calc(var(--bleed-top) + var(--padding-outer)) var(--padding-outer) calc(var(--bleed-bottom) + var(--padding-outer));
+		padding: calc(var(--bleed-top) + var(--padding-outer)) var(--padding-outer)
+			calc(var(--bleed-bottom) + var(--padding-outer));
 		align-content: start;
 	}
 
@@ -120,12 +134,3 @@
 		border-top: 1px solid rgba(0, 0, 0, 0.2);
 	}
 </style>
-
-
-<QueryClientProvider client={queryClient}>
-	<Nav />
-
-	<div class="stack">
-		<slot></slot>
-	</div>
-</QueryClientProvider>

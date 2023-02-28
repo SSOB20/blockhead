@@ -1,44 +1,34 @@
 <script context="module" lang="ts">
-	const cachedIndex = {}
+	const cachedIndex = {};
 </script>
-
 
 <script lang="ts">
-	import type { TransitionConfig } from 'svelte/transition'
+	import type { TransitionConfig } from 'svelte/transition';
 
+	export let key;
+	export let imageSources = [];
 
-	export let key
-	export let imageSources = []
+	export let title = '';
+	export let placeholder = '';
 
-	export let title = ''
-	export let placeholder = ''
-	
-	export let isGrayscale = false
+	export let isGrayscale = false;
 
-	export let transition: (node: Element, params: any) => TransitionConfig = () => ({})
-	export let transitionConfig: any
+	export let transition: (node: Element, params: any) => TransitionConfig = () => ({});
+	export let transitionConfig: any;
 
-
-	let i = cachedIndex[key] ||= 0
-	$: cachedIndex[key] = i
+	let i = (cachedIndex[key] ||= 0);
+	$: cachedIndex[key] = i;
 </script>
 
-
-<picture
-	class="icon"
-	class:isGrayscale={isGrayscale}
-	{title}
-	transition:transition={transitionConfig}
->
+<picture class="icon" class:isGrayscale {title} transition:transition={transitionConfig}>
 	{#if imageSources[i]}
-		<img src={imageSources[i]} on:error={e => i++} />
+		<img src={imageSources[i]} on:error={(e) => i++} />
 	{:else}
 		<slot>
 			{#if placeholder}<span class="placeholder-icon" data-placeholder={placeholder} />{/if}
 		</slot>
 	{/if}
 </picture>
-
 
 <style>
 	:global(:root) {
@@ -65,7 +55,9 @@
 		display: none;
 	}
 
-	img, .placeholder-icon, .icon > :global(svg) {
+	img,
+	.placeholder-icon,
+	.icon > :global(svg) {
 		width: var(--icon-size);
 		height: var(--icon-size);
 		max-width: 100%;
@@ -105,8 +97,8 @@
 	}
 
 	/* ETH SVG off-center correction */
-	picture[title="ETH"] :global(circle + g) {
-		transform: translateX(-.498px);
+	picture[title='ETH'] :global(circle + g) {
+		transform: translateX(-0.498px);
 	}
 
 	.isGrayscale {

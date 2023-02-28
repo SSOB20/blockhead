@@ -1,13 +1,10 @@
-import type { UserConfig } from 'vite'
+import type { UserConfig } from 'vite';
 
-import { sveltekit } from '@sveltejs/kit/vite'
-import houdini from 'houdini/vite'
+import { sveltekit } from '@sveltejs/kit/vite';
+import houdini from 'houdini/vite';
 
 const config: UserConfig = {
-	plugins: [
-		houdini(),
-		sveltekit()
-	],
+	plugins: [houdini(), sveltekit()],
 
 	ssr: {
 		noExternal: [
@@ -15,7 +12,7 @@ const config: UserConfig = {
 			// export * from './lib/export/core.js';
 			// ^^^^^^
 			// SyntaxError: Unexpected token 'export'
-			'echarts',
+			'echarts'
 		],
 
 		// Transform into ESModules
@@ -26,12 +23,12 @@ const config: UserConfig = {
 				// Directory import '/opt/build/repo/node_modules/@apollo/client/core' is not supported resolving ES modules imported from /opt/build/repo/.svelte-kit/output/server/app.js
 				// Did you mean to import @apollo/client/core/core.cjs.js?
 				// https://github.com/timhall/svelte-apollo/issues/97#issuecomment-857397762
-				"@apollo/client/core",
-				"@apollo/client/cache",
-				"@apollo/client/link/ws",
-				"@apollo/client/link/context",
-				"@apollo/client/link/error",
-				"@apollo/client/utilities",
+				'@apollo/client/core',
+				'@apollo/client/cache',
+				'@apollo/client/link/ws',
+				'@apollo/client/link/context',
+				'@apollo/client/link/error',
+				'@apollo/client/utilities',
 
 				'@3id/connect',
 
@@ -40,11 +37,11 @@ const config: UserConfig = {
 				// SyntaxError: Named export 'addEventListener' not found. The requested module 'zrender/lib/core/event.js' is a CommonJS module, which may not support all module.exports as named exports.
 				// CommonJS modules can always be imported via the default export, for example using:
 				// import pkg from 'zrender/lib/core/event.js';
-				'zrender',
+				'zrender'
 			],
-			exclude: ["@apollo/client", "svelte-apollo"],
-		},
-	},
-}
+			exclude: ['@apollo/client', 'svelte-apollo']
+		}
+	}
+};
 
-export default config
+export default config;

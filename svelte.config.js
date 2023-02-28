@@ -1,9 +1,9 @@
-import preprocess from 'svelte-preprocess'
+import preprocess from 'svelte-preprocess';
 
-import adapterAuto from '@sveltejs/adapter-auto'
-import adapterStatic from '@sveltejs/adapter-static'
+import adapterAuto from '@sveltejs/adapter-auto';
+import adapterStatic from '@sveltejs/adapter-static';
 
-const isStatic = !!process.env.SVELTE_BUILD_STATIC
+const isStatic = !!process.env.SVELTE_BUILD_STATIC;
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,17 +12,16 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter:
-			isStatic
-				? adapterStatic({
-					fallback: 'index.html',
+		adapter: isStatic
+			? adapterStatic({
+					fallback: 'index.html'
 					// precompress: true,
-				})
-				: adapterAuto(),
+			  })
+			: adapterAuto(),
 
 		alias: {
-			$houdini: './$houdini',
-		},
+			$houdini: './$houdini'
+		}
 	}
 };
 

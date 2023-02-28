@@ -1,28 +1,53 @@
 <script lang="ts">
-	import type { TickerSymbol } from '../data/currencies'
+	import type { TickerSymbol } from '../data/currencies';
 
-	export let rate = 0.0
-	export let quoteToken: TickerSymbol
-	export let baseToken: TickerSymbol
-	export let decimals = 3
+	export let rate = 0.0;
+	export let quoteToken: TickerSymbol;
+	export let baseToken: TickerSymbol;
+	export let decimals = 3;
 
-	export let layout: 'horizontal' | 'vertical' = 'vertical'
-	export let fractionLayout: 'horizontal' | 'vertical' = layout === 'vertical' ? 'horizontal' : 'vertical'
+	export let layout: 'horizontal' | 'vertical' = 'vertical';
+	export let fractionLayout: 'horizontal' | 'vertical' =
+		layout === 'vertical' ? 'horizontal' : 'vertical';
 
-	const formatRate = value =>
-		typeof value === 'number' ? value.toFixed(decimals) :
-		typeof value === 'string' ? value :
-		value.toString()
+	const formatRate = (value) =>
+		typeof value === 'number'
+			? value.toFixed(decimals)
+			: typeof value === 'string'
+			? value
+			: value.toString();
 
-	import { tokenColors } from '../data/tokenColors'
-	import TokenIcon from './TokenIcon.svelte'
+	import { tokenColors } from '../data/tokenColors';
+	import TokenIcon from './TokenIcon.svelte';
 </script>
 
+<div class="token-rate {layout}">
+	<span
+		class="rate"
+		style="--color-1: var(--{tokenColors[quoteToken]}); --color-2: var(--{tokenColors[baseToken]})"
+	>
+		{formatRate(rate)}
+	</span>
+	<span class="fraction {fractionLayout}">
+		<span>
+			<TokenIcon symbol={quoteToken} />
+			<span class="token-name">{quoteToken}</span>
+		</span>
+		<span class="fraction-bar">/</span>
+		<span>
+			<TokenIcon symbol={baseToken} />
+			<span class="token-name">{baseToken}</span>
+		</span>
+	</span>
+</div>
+
 <style>
-	.token-rate.horizontal, .fraction.horizontal {
+	.token-rate.horizontal,
+	.fraction.horizontal {
 		grid-auto-flow: column;
 	}
-	.token-rate.vertical, .fraction.vertical {
+	.token-rate.vertical,
+	.fraction.vertical {
 		grid-auto-flow: row;
 	}
 
@@ -88,20 +113,3 @@
 		font-weight: 300;
 	}
 </style>
-
-<div class="token-rate {layout}">
-	<span class="rate" style="--color-1: var(--{tokenColors[quoteToken]}); --color-2: var(--{tokenColors[baseToken]})">
-		{formatRate(rate)}
-	</span>
-	<span class="fraction {fractionLayout}">
-		<span>
-			<TokenIcon symbol={quoteToken} />
-			<span class="token-name">{quoteToken}</span>
-		</span>
-		<span class="fraction-bar">/</span>
-		<span>
-			<TokenIcon symbol={baseToken} />
-			<span class="token-name">{baseToken}</span>
-		</span>
-	</span>
-</div>

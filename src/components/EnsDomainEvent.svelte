@@ -1,33 +1,22 @@
 <script lang="ts">
-	import type { ENS } from '../api/ens'
-	import type { Ethereum } from '../data/networks/types'
-	
-	export let network: Ethereum.Network
-	export let event: ENS.DomainEvent
+	import type { ENS } from '../api/ens';
+	import type { Ethereum } from '../data/networks/types';
 
-	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed'
+	export let network: Ethereum.Network;
+	export let event: ENS.DomainEvent;
 
+	export let detailLevel: 'summary' | 'detailed' | 'exhaustive' = 'detailed';
 
-	import Address from './Address.svelte'
-	import EthereumTransactionLoader from './EthereumTransactionLoader.svelte'
-	import EthereumTransactionSummary from './EthereumTransactionSummary.svelte'
+	import Address from './Address.svelte';
+	import EthereumTransactionLoader from './EthereumTransactionLoader.svelte';
+	import EthereumTransactionSummary from './EthereumTransactionSummary.svelte';
 </script>
-
-
-<style>
-	.transaction-summary {
-		font-size: 0.66em;
-		justify-self: end;
-	}
-</style>
-
 
 <div class="ens-domain-event card">
 	<EthereumTransactionLoader
 		{network}
 		transactionID={event.transactionID}
 		contextualAddress={event.owner?.id || event.resolver?.address}
-
 		{detailLevel}
 		showIf={detailLevel !== 'summary'}
 	>
@@ -52,11 +41,13 @@
 				</h4>
 
 				<span class="card-annotation">
-					<a href="/apps/ens#subgraph">ENS Subgraph</a> › {event.__typename.replace(/[A-Z]/g, m => ` ${m}`).trim()} › {event.id}
+					<a href="/apps/ens#subgraph">ENS Subgraph</a> › {event.__typename
+						.replace(/[A-Z]/g, (m) => ` ${m}`)
+						.trim()} › {event.id}
 				</span>
 			</div>
 
-			<hr>
+			<hr />
 
 			{#if status !== 'resolved'}
 				<span class="transaction-summary">
@@ -70,3 +61,10 @@
 		</svelte:fragment>
 	</EthereumTransactionLoader>
 </div>
+
+<style>
+	.transaction-summary {
+		font-size: 0.66em;
+		justify-self: end;
+	}
+</style>

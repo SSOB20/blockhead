@@ -1,30 +1,27 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import { getEthersProvider } from '../data/networkProviders'
-	import { preferences } from '../state/preferences'
+	import type { Ethereum } from '../data/networks/types';
+	import { getEthersProvider } from '../data/networkProviders';
+	import { preferences } from '../state/preferences';
 
+	export let network: Ethereum.Network;
+	export let providerPromise: () => Promise<Ethereum.Provider>;
+	export let providerName: Ethereum.ProviderName = $preferences.rpcNetwork;
 
-	export let network: Ethereum.Network
-	export let providerPromise: () => Promise<Ethereum.Provider>
-	export let providerName: Ethereum.ProviderName = $preferences.rpcNetwork
+	let viaRPC = $preferences.rpcNetwork === 'Auto' ? '' : ` via ${$preferences.rpcNetwork}`;
 
-
-	let viaRPC = $preferences.rpcNetwork === 'Auto' ? '' : ` via ${$preferences.rpcNetwork}`
-
-
-	import Loader from './Loader.svelte'
-	import NetworkIcon from './NetworkIcon.svelte'
+	import Loader from './Loader.svelte';
+	import NetworkIcon from './NetworkIcon.svelte';
 </script>
-
 
 <Loader
 	loadingMessage="Connecting to the {network ? `${network.name} ` : ''} blockchain{viaRPC}..."
-	fromPromise={network && providerName && (async () =>
-		await getEthersProvider({
-			network,
-			networkProvider: providerName
-		})
-	)}
+	fromPromise={network &&
+		providerName &&
+		(async () =>
+			await getEthersProvider({
+				network,
+				networkProvider: providerName
+			}))}
 	let:result={provider}
 	clip={false}
 >

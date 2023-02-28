@@ -9,10 +9,14 @@
  * ---------------------------------------------------------------
  */
 
-import type {
+import {
+	BalanceControllerGetAppBalancesOldParams,
 	BalanceControllerGetAppBalancesParams,
+	BalanceControllerGetBalanceJobStatusParams,
 	BalanceControllerGetBalancesParams,
-	BalanceControllerGetSupportedBalancesParams,
+	BalanceControllerGetTokenBalancesParams,
+	BalanceControllerPostAppBalancesParams,
+	BalanceControllerPostTokenBalancesParams,
 	ExchangeControllerGetExchangePriceParams,
 	ExchangeControllerGetExchangeQuoteParams,
 	GasPriceControllerGetGasPriceParams,
@@ -22,13 +26,12 @@ import type {
 	NftControllerGetBalanceTokensParams,
 	NftControllerGetBalanceTokensTotalsParams,
 	NftControllerGetNetWorthParams,
+	NftControllerGetUserTokensParams,
 	PositionControllerGetContractPositionsParams,
 	PositionControllerGetTokensParams,
-	PricesControllerGetTokenPricesParams,
-	PricesControllerListPricesV3Params,
-	TransactionControllerGetTransactionsParams
+	PricesControllerListPricesV3Params
 } from './data-contracts';
-import type { HttpClient, RequestParams } from './http-client';
+import { HttpClient, RequestParams } from './http-client';
 
 export class V2<SecurityDataType = unknown> {
 	http: HttpClient<SecurityDataType>;
@@ -37,112 +40,6 @@ export class V2<SecurityDataType = unknown> {
 		this.http = http;
 	}
 
-	/**
-	 * @description Retrieve supported tokens and their prices
-	 *
-	 * @tags Miscellaneous Data Endpoints
-	 * @name PricesControllerListPricesV3
-	 * @summary Token Prices
-	 * @request GET:/v2/prices
-	 * @secure
-	 * @response `200` `unknown`
-	 */
-	pricesControllerListPricesV3 = (
-		query: PricesControllerListPricesV3Params,
-		params: RequestParams = {}
-	) =>
-		this.http.request<unknown, any>({
-			path: `/v2/prices`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			...params
-		});
-	/**
-	 * @description Retrieve supported tokens and their prices
-	 *
-	 * @tags Miscellaneous Data Endpoints
-	 * @name PricesControllerGetTokenPrices
-	 * @summary Token Prices
-	 * @request GET:/v2/prices/{tokenAddress}
-	 * @secure
-	 * @response `200` `unknown`
-	 */
-	pricesControllerGetTokenPrices = (
-		{ tokenAddress, ...query }: PricesControllerGetTokenPricesParams,
-		params: RequestParams = {}
-	) =>
-		this.http.request<unknown, any>({
-			path: `/v2/prices/${tokenAddress}`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			...params
-		});
-	/**
-	 * @description Retrieve a gas price aggregated from multiple different sources
-	 *
-	 * @tags Miscellaneous Data Endpoints
-	 * @name GasPriceControllerGetGasPrice
-	 * @summary Gas Price
-	 * @request GET:/v2/gas-prices
-	 * @secure
-	 * @response `200` `GasPricesResponse`
-	 */
-	gasPriceControllerGetGasPrice = (
-		query: GasPriceControllerGetGasPriceParams,
-		params: RequestParams = {}
-	) =>
-		this.http.request<GasPricesResponse, any>({
-			path: `/v2/gas-prices`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			format: 'json',
-			...params
-		});
-	/**
-	 * @description Retrieve positions (non-tokenized) for a given application
-	 *
-	 * @tags Apps
-	 * @name PositionControllerGetContractPositions
-	 * @summary Application Positions
-	 * @request GET:/v2/apps/{appId}/positions
-	 * @secure
-	 * @response `200` `unknown`
-	 */
-	positionControllerGetContractPositions = (
-		{ appId, ...query }: PositionControllerGetContractPositionsParams,
-		params: RequestParams = {}
-	) =>
-		this.http.request<unknown, any>({
-			path: `/v2/apps/${appId}/positions`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			...params
-		});
-	/**
-	 * @description Retrieve tokens for a given application
-	 *
-	 * @tags Apps
-	 * @name PositionControllerGetTokens
-	 * @summary Application Tokens
-	 * @request GET:/v2/apps/{appId}/tokens
-	 * @secure
-	 * @response `200` `unknown`
-	 */
-	positionControllerGetTokens = (
-		{ appId, ...query }: PositionControllerGetTokensParams,
-		params: RequestParams = {}
-	) =>
-		this.http.request<unknown, any>({
-			path: `/v2/apps/${appId}/tokens`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			...params
-		});
 	/**
 	 * No description
 	 *
@@ -164,14 +61,77 @@ export class V2<SecurityDataType = unknown> {
 	 *
 	 * @tags Apps
 	 * @name AppsControllerGetApp
-	 * @request GET:/v2/apps/{appId}
+	 * @request GET:/v2/apps/{appSlug}
 	 * @secure
 	 * @response `200` `unknown`
 	 */
-	appsControllerGetApp = (appId: string, params: RequestParams = {}) =>
+	appsControllerGetApp = (appSlug: string, params: RequestParams = {}) =>
 		this.http.request<unknown, any>({
-			path: `/v2/apps/${appId}`,
+			path: `/v2/apps/${appSlug}`,
 			method: 'GET',
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Retrieve positions (non-tokenized) for a given application
+	 *
+	 * @tags Apps
+	 * @name PositionControllerGetContractPositions
+	 * @summary Application Positions
+	 * @request GET:/v2/apps/{appSlug}/positions
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	positionControllerGetContractPositions = (
+		{ appSlug, ...query }: PositionControllerGetContractPositionsParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/apps/${appSlug}/positions`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Retrieve tokens for a given application
+	 *
+	 * @tags Apps
+	 * @name PositionControllerGetTokens
+	 * @summary Application Tokens
+	 * @request GET:/v2/apps/{appSlug}/tokens
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	positionControllerGetTokens = (
+		{ appSlug, ...query }: PositionControllerGetTokensParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/apps/${appSlug}/tokens`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Retrieve supported tokens and their prices
+	 *
+	 * @tags Miscellaneous Data Endpoints
+	 * @name PricesControllerListPricesV3
+	 * @summary Token Prices
+	 * @request GET:/v2/prices
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	pricesControllerListPricesV3 = (
+		query: PricesControllerListPricesV3Params,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/prices`,
+			method: 'GET',
+			query: query,
 			secure: true,
 			...params
 		});
@@ -236,6 +196,26 @@ export class V2<SecurityDataType = unknown> {
 	 * No description
 	 *
 	 * @tags NFT Balances
+	 * @name NftControllerGetUserTokens
+	 * @request GET:/v2/nft/user/tokens
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	nftControllerGetUserTokens = (
+		query: NftControllerGetUserTokensParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/nft/user/tokens`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * No description
+	 *
+	 * @tags NFT Balances
 	 * @name NftControllerGetBalanceTokens
 	 * @request GET:/v2/nft/balances/tokens
 	 * @secure
@@ -273,23 +253,19 @@ export class V2<SecurityDataType = unknown> {
 			...params
 		});
 	/**
-	 * @description Data on past transactions for addresses
+	 * @description Get stats about the API client points
 	 *
-	 * @tags Historical Transactions
-	 * @name TransactionControllerGetTransactions
-	 * @summary Historical Transactions
-	 * @request GET:/v2/transactions
+	 * @tags API Clients
+	 * @name ApiClientControllerPoints
+	 * @summary API Client Points
+	 * @request GET:/v2/api-clients/points
 	 * @secure
 	 * @response `200` `unknown`
 	 */
-	transactionControllerGetTransactions = (
-		query: TransactionControllerGetTransactionsParams,
-		params: RequestParams = {}
-	) =>
+	apiClientControllerPoints = (params: RequestParams = {}) =>
 		this.http.request<unknown, any>({
-			path: `/v2/transactions`,
+			path: `/v2/api-clients/points`,
 			method: 'GET',
-			query: query,
 			secure: true,
 			...params
 		});
@@ -297,49 +273,30 @@ export class V2<SecurityDataType = unknown> {
 	 * No description
 	 *
 	 * @tags Balances
-	 * @name BalanceControllerGetAppBalances
-	 * @request GET:/v2/apps/{appId}/balances
+	 * @name BalanceControllerGetAppBalancesOld
+	 * @request GET:/v2/apps/{appSlug}/balances
 	 * @secure
 	 * @response `200` `unknown`
 	 */
-	balanceControllerGetAppBalances = (
-		{ appId, ...query }: BalanceControllerGetAppBalancesParams,
+	balanceControllerGetAppBalancesOld = (
+		{ appSlug, ...query }: BalanceControllerGetAppBalancesOldParams,
 		params: RequestParams = {}
 	) =>
 		this.http.request<unknown, any>({
-			path: `/v2/apps/${appId}/balances`,
+			path: `/v2/apps/${appSlug}/balances`,
 			method: 'GET',
 			query: query,
 			secure: true,
 			...params
 		});
 	/**
-	 * No description
-	 *
-	 * @tags Balances
-	 * @name BalanceControllerGetSupportedBalances
-	 * @request GET:/v2/apps/balances/supported
-	 * @secure
-	 * @response `200` `unknown`
-	 */
-	balanceControllerGetSupportedBalances = (
-		query: BalanceControllerGetSupportedBalancesParams,
-		params: RequestParams = {}
-	) =>
-		this.http.request<unknown, any>({
-			path: `/v2/apps/balances/supported`,
-			method: 'GET',
-			query: query,
-			secure: true,
-			...params
-		});
-	/**
-	 * @description Gets the balances for a set of addresses.
+	 * @description Gets the balances for a set of addresses. Use `/v2/balances/apps` for app balances instead.
 	 *
 	 * @tags Balances
 	 * @name BalanceControllerGetBalances
 	 * @summary Balances
 	 * @request GET:/v2/balances
+	 * @deprecated
 	 * @secure
 	 * @response `200` `unknown`
 	 */
@@ -352,6 +309,133 @@ export class V2<SecurityDataType = unknown> {
 			method: 'GET',
 			query: query,
 			secure: true,
+			...params
+		});
+	/**
+	 * @description Gets the app balances for a set of addresses and set of networks.
+	 *
+	 * @tags Balances
+	 * @name BalanceControllerGetAppBalances
+	 * @summary Balances
+	 * @request GET:/v2/balances/apps
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	balanceControllerGetAppBalances = (
+		query: BalanceControllerGetAppBalancesParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/balances/apps`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Recomputes the app balances for a set of addresses and set of networks.
+	 *
+	 * @tags Balances
+	 * @name BalanceControllerPostAppBalances
+	 * @summary Balances
+	 * @request POST:/v2/balances/apps
+	 * @secure
+	 * @response `202` `unknown`
+	 */
+	balanceControllerPostAppBalances = (
+		query: BalanceControllerPostAppBalancesParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/balances/apps`,
+			method: 'POST',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Gets the token balances for a set of addresses and set of networks.
+	 *
+	 * @tags Balances
+	 * @name BalanceControllerGetTokenBalances
+	 * @summary Balances
+	 * @request GET:/v2/balances/tokens
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	balanceControllerGetTokenBalances = (
+		query: BalanceControllerGetTokenBalancesParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/balances/tokens`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Recomputes the token balances for a set of addresses and set of networks.
+	 *
+	 * @tags Balances
+	 * @name BalanceControllerPostTokenBalances
+	 * @summary Balances
+	 * @request POST:/v2/balances/tokens
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	balanceControllerPostTokenBalances = (
+		query: BalanceControllerPostTokenBalancesParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/balances/tokens`,
+			method: 'POST',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Gets the status of a single balance computation job.
+	 *
+	 * @tags Balances
+	 * @name BalanceControllerGetBalanceJobStatus
+	 * @summary Balances
+	 * @request GET:/v2/balances/job-status
+	 * @secure
+	 * @response `200` `unknown`
+	 */
+	balanceControllerGetBalanceJobStatus = (
+		query: BalanceControllerGetBalanceJobStatusParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<unknown, any>({
+			path: `/v2/balances/job-status`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			...params
+		});
+	/**
+	 * @description Retrieve a gas price aggregated from multiple different sources
+	 *
+	 * @tags Miscellaneous Data Endpoints
+	 * @name GasPriceControllerGetGasPrice
+	 * @summary Gas Price
+	 * @request GET:/v2/gas-prices
+	 * @secure
+	 * @response `200` `GasPricesResponse`
+	 */
+	gasPriceControllerGetGasPrice = (
+		query: GasPriceControllerGetGasPriceParams,
+		params: RequestParams = {}
+	) =>
+		this.http.request<GasPricesResponse, any>({
+			path: `/v2/gas-prices`,
+			method: 'GET',
+			query: query,
+			secure: true,
+			format: 'json',
 			...params
 		});
 	/**

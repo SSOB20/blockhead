@@ -1,85 +1,85 @@
 export const fiatQuoteCurrencies = {
-	'USD': {
+	USD: {
 		symbol: '$',
 		isoCode: 'USD',
 		name: 'US Dollar'
 	},
-	'CAD': {
+	CAD: {
 		symbol: 'CA$',
 		isoCode: 'CAD',
 		name: 'Canadian Dollar'
 	},
-	'EUR': {
+	EUR: {
 		symbol: '€',
 		isoCode: 'EUR',
 		name: 'Euro'
 	},
-	'GBP': {
+	GBP: {
 		symbol: '£',
 		isoCode: 'GBP',
 		name: 'British Pound'
 	},
-	'SGD': {
+	SGD: {
 		symbol: 'S$',
 		isoCode: 'SGD',
 		name: 'Singapore Dollar'
 	},
-	'INR': {
+	INR: {
 		symbol: '₹',
 		isoCode: 'INR',
 		name: 'Indian Rupee'
 	},
-	'JPY': {
+	JPY: {
 		symbol: '¥',
 		isoCode: 'JPY',
 		name: 'Japanese Yen'
 	},
-	'VND': {
+	VND: {
 		symbol: '₫',
 		isoCode: 'VND',
 		name: 'Vietnamese Dong'
 	},
-	'CNY': {
+	CNY: {
 		symbol: '¥',
 		isoCode: 'CNY',
 		name: 'Chinese Yuan'
 	},
-	'KRW': {
+	KRW: {
 		symbol: '₩',
 		isoCode: 'KRW',
 		name: 'South Korean Won'
 	},
-	'RUB': {
+	RUB: {
 		symbol: '₽',
 		isoCode: 'RUB',
 		name: 'Russian Ruble'
 	},
-	'TRY': {
+	TRY: {
 		symbol: '₺',
 		isoCode: 'TRY',
 		name: 'Turkish Lira'
-	},
-}
+	}
+};
 
 export const cryptoQuoteCurrencies = {
-	'ETH': {
+	ETH: {
 		symbol: 'Ξ',
 		isoCode: 'ETH',
 		name: 'Ethereum'
 	},
-	'BTC': {
+	BTC: {
 		symbol: '₿',
 		isoCode: 'BTC',
 		name: 'Bitcoin'
 	},
-	'BNB': {
+	BNB: {
 		symbol: '$',
 		isoCode: 'BNB',
 		name: 'Binance Coin'
 	}
-}
+};
 
-export const quoteCurrencies = {...fiatQuoteCurrencies, cryptoQuoteCurrencies}
+export const quoteCurrencies = { ...fiatQuoteCurrencies, cryptoQuoteCurrencies };
 
-export type QuoteCurrency = keyof typeof quoteCurrencies
-export type TickerSymbol = QuoteCurrency | string
+export type QuoteCurrency = keyof typeof quoteCurrencies;
+export type TickerSymbol = QuoteCurrency | string;

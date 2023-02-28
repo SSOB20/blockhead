@@ -1,54 +1,54 @@
-import type { Ethereum } from '../data/networks/types'
-import type { State as PortfolioState } from '../components/Portfolio.svelte'
-import type { WalletType } from '../data/wallets'
+import type { Ethereum } from '../data/networks/types';
+import type { State as PortfolioState } from '../components/Portfolio.svelte';
+import type { WalletType } from '../data/wallets';
 
 export type Events = {
-	'Home/LogoMousedown': {},
+	'Home/LogoMousedown': {};
 
 	'Preferences/Change': {
-		preferenceKey: string,
-		preferenceValue: string,
-	},
+		preferenceKey: string;
+		preferenceValue: string;
+	};
 
 	'Portfolios/AddPortfolio': {
-		newPortfolioCount: number,
-	},
+		newPortfolioCount: number;
+	};
 	'Portfolios/DeletePortfolio': {
-		portfolioAccountsCount: number,
-		newPortfolioCount: number,
-	},
+		portfolioAccountsCount: number;
+		newPortfolioCount: number;
+	};
 
 	'Portfolio/ChangeState': {
-		state: PortfolioState
-	},
+		state: PortfolioState;
+	};
 	'Portfolio/AddAccount': {
-		accountChainIds: Ethereum.ChainID[],
-		newPortfolioAccountsCount: number,
-	},
+		accountChainIds: Ethereum.ChainID[];
+		newPortfolioAccountsCount: number;
+	};
 	'Portfolio/DeleteAccount': {
-		accountChainIds: Ethereum.ChainID[],
-		newPortfolioAccountsCount: number,
-	},
+		accountChainIds: Ethereum.ChainID[];
+		newPortfolioAccountsCount: number;
+	};
 
 	'PortfolioAccount/ToggleNetwork': {
-		chainId: Ethereum.ChainID,
-		networkIsShowing: boolean,
-	}
+		chainId: Ethereum.ChainID;
+		networkIsShowing: boolean;
+	};
 	'PortfolioAccount/ToggleSection': {
-		chainId: Ethereum.ChainID,
-		sectionType: 'Balances' | 'DeFi' | 'NFTs',
-		sectionIsShowing: boolean,
-	},
+		chainId: Ethereum.ChainID;
+		sectionType: 'Balances' | 'DeFi' | 'NFTs';
+		sectionIsShowing: boolean;
+	};
 
 	'AccountConnections/ChangeState': {
-		state: PortfolioState
-	},
+		state: PortfolioState;
+	};
 	'AccountConnections/AddConnection': {
-		walletType: WalletType,
-	},
+		walletType: WalletType;
+	};
 	'AccountConnections/DeleteConnection': {
-		walletType: WalletType,
-	},
-}
+		walletType: WalletType;
+	};
+};
 
-export type EventType = keyof Events
+export type EventType = keyof Events;

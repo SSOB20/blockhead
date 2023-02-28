@@ -1,14 +1,175 @@
 <script>
-	import { triggerEvent } from '../events/triggerEvent'
+	import { triggerEvent } from '../events/triggerEvent';
 
+	import Preferences from '../components/Preferences.svelte';
+	import ContactForm from './ContactForm.svelte';
 
-	import Preferences from '../components/Preferences.svelte'
-	import ContactForm from './ContactForm.svelte'
-
-
-	import { fly, scale, fade } from 'svelte/transition'
+	import { fly, scale, fade } from 'svelte/transition';
 </script>
 
+<svelte:head>
+	<title>Blockhead</title>
+</svelte:head>
+
+<main in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
+	<!-- <main> -->
+	<section id="top">
+		<header>
+			<h2 class="description top" in:scale={{ delay: 150 }}>
+				<b>Track</b>,
+				<b>visualize</b>
+				&
+				<b>explore</b>
+				<br />
+				<!-- the
+				<b>blockchain</b>/<b>web 3.0</b>
+				<b>metaverse</b> -->
+				<!-- <b>blockchains</b> & -->
+				the
+				<b>decentralized world wide web</b>
+				with
+			</h2>
+			<div
+				class="logo-wrapper"
+				in:scale={{ delay: 200 }}
+				on:mousedown={(e) => triggerEvent('Home/LogoMousedown')}
+			>
+				<h1 class="logo" data-text="Blockhead">Blockhead</h1>
+			</div>
+		</header>
+
+		<section>
+			<div class="buttons">
+				<a
+					href="/portfolio"
+					style="--primary-color: var(--ethereum-blue);"
+					in:scale={{ delay: 800 }}
+					><button class="large row" data-before="📊">Create Portfolio ›</button></a
+				>
+				<a href="/explorer" style="--primary-color: var(--arbitrum-blue);" in:scale={{ delay: 850 }}
+					><button class="large row" data-before="🧭">Explore Blockchains ›</button></a
+				>
+				<a href="/apps" style="--primary-color: var(--gnosis-teal);" in:scale={{ delay: 900 }}
+					><button class="large row" data-before="📲">Browse Apps ›</button></a
+				>
+			</div>
+		</section>
+
+		<footer in:scale={{ delay: 1000 }}>
+			<p>
+				<strong>Blockhead</strong> • created by
+				<a href="https://darryl-yeo.com/blockhead">Darryl Yeo</a> • 2020 – 2023
+			</p>
+			<p>
+				<small
+					><a href="https://gitcoin.co/grants/2966/blockhead" target="_blank">Gitcoin Grants</a> •
+					<a href="https://discord.gg/966eXqqq7N" target="_blank">Discord</a>
+					• <a href="https://twitter.com/0xblockhead" target="_blank">Twitter</a></small
+				>
+			</p>
+			<br />
+			<p>
+				<small
+					>Donate: <a href="/explorer/ethereum/blockhead.eth" target="_blank"
+						><output>blockhead.eth</output></a
+					></small
+				>
+			</p>
+			<!-- <img src="/Blockhead-Logo.svg" alt="Blockhead Logo" width="40" /> -->
+		</footer>
+
+		<p class="learn-more card-annotation">
+			Learn more
+			<br />
+			﹀
+		</p>
+	</section>
+
+	<section>
+		<header>
+			<p class="description bottom" in:scale={{ delay: 250 }}>
+				<span>
+					a
+					<b>crypto portfolio</b>,
+					<b>DeFi dashboard</b>,
+					<b>NFT viewer</b>
+					&
+					<b>data explorer</b>
+				</span>
+				<span>
+					for
+					<b style="color: var(--ethereum-blue)">Ethereum</b>,
+					<b style="color: var(--polygon-purple)">Polygon</b>,
+					<b style="color: var(--gnosis-teal)">Gnosis Chain</b>,
+					<b style="color: var(--arbitrum-blue)">Arbitrum</b>,
+					<b style="color: var(--optimism-red)">Optimism</b>,
+					<!-- <b style="color: var(--binance-gold)">BSC</b>, -->
+					<!-- <b style="color: var(--avalanche-red)">Avalanche</b>, -->
+					<b style="color: var(--fantom-blue)">Fantom</b>
+					<!-- <b style="color: var(--aurora-green)">Aurora</b>, -->
+					<!-- <b style="color: var(--cronos-blue); filter: brightness(1.75)">Cronos</b> -->
+					& the
+					<b class="metaverse">Web3 Metaverse</b>
+					<!-- <b style="color: var(--bitcoin-gold)">EVM Multiverse</b> -->
+				</span>
+			</p>
+		</header>
+
+		<br />
+
+		<div class="columns">
+			<div class="card" in:scale={{ delay: 350 }}>
+				<h3><b>Track</b> your crypto</h3>
+				<hr />
+				<p>
+					See <b>tokens</b>, <b>NFTs</b>, & <b>DeFi balances</b> across your blockchain accounts in one
+					place.
+				</p>
+			</div>
+			<div class="card" in:scale={{ delay: 500 }}>
+				<h3><b>Visualize</b> your activity</h3>
+				<hr />
+				<p>
+					Contextualize your web3 interactions with <b>intuitive charts</b> & <b>visualizations</b>.
+				</p>
+			</div>
+			<div class="card" in:scale={{ delay: 400 }}>
+				<h3><b>Explore</b> the metaverse</h3>
+				<hr />
+				<p>
+					Discover <b>apps</b>, <b>services</b> & <b>communities</b> enabling
+					<b>portable, shared experiences</b>.
+				</p>
+			</div>
+			<div class="card" in:scale={{ delay: 600 }}>
+				<h3><b>Unstoppable</b> Web3 Tech</h3>
+				<hr />
+				<p>
+					Built upon <b>math</b>, <b>cryptography</b> & open, <b>incentive-aligned</b> computer networks.
+				</p>
+			</div>
+			<div class="card" in:scale={{ delay: 450 }}>
+				<h3><b>You</b> control the data</h3>
+				<hr />
+				<p>
+					<b>Choose which data sources</b> power this user interface in the <b>Preferences</b> below!
+				</p>
+			</div>
+			<div class="card" in:scale={{ delay: 700 }}>
+				<h3>To <b>Ethereum</b> & Beyond!</h3>
+				<hr />
+				<!-- <p>Hop between any of the supported <b>Ethereum Virtual Machine</b>-based chains!</p> -->
+				<p>Hop between Ethereum & any supported <b>Ethereum Virtual Machine</b>-based chain!</p>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<ContactForm />
+	</section>
+</main>
+
+<Preferences relevantPreferences={['theme', 'rpcNetwork', 'quoteCurrency']} />
 
 <style>
 	main {
@@ -62,8 +223,7 @@
 
 	b {
 		color: rgba(var(--rgb-light-dark-inverse), 0.8);
-		text-shadow:
-			0 1px 1px rgba(var(--rgb-light-dark-inverse), 0.15),
+		text-shadow: 0 1px 1px rgba(var(--rgb-light-dark-inverse), 0.15),
 			0 0 2.5em rgba(var(--rgb-light-dark-inverse), 0.2);
 	}
 
@@ -82,14 +242,14 @@
 		margin-bottom: auto;
 	}
 
-
 	.logo-wrapper {
 		font-size: clamp(2em, calc(1.5em + 5vw), 5em);
 		font-weight: 700;
 
-		box-shadow:
-			0 0 0 .15em rgba(var(--rgb-light-dark-inverse), calc(0.05 + var(--is-hovered) * 0.1)),
-			inset 0 0 calc(0.05em + var(--is-hovered) * 0.15em) rgba(var(--rgb-light-dark-inverse), calc(0.1 + var(--is-hovered) * 0.1)),
+		box-shadow: 0 0 0 0.15em
+				rgba(var(--rgb-light-dark-inverse), calc(0.05 + var(--is-hovered) * 0.1)),
+			inset 0 0 calc(0.05em + var(--is-hovered) * 0.15em)
+				rgba(var(--rgb-light-dark-inverse), calc(0.1 + var(--is-hovered) * 0.1)),
 			0 0 1em rgba(var(--rgb-light-dark-inverse), calc(0.15 + var(--is-hovered) * 0.1));
 		border-radius: 0.3em;
 		/* -webkit-background-clip: border-box; */
@@ -98,19 +258,22 @@
 		/* filter: drop-shadow(0 0 1em var(--primary-color), 0 0 1em rgba(var(--rgb-light-dark-inverse), 0.5)); */
 		padding: 0 0.44em;
 		justify-self: center;
-		
+
 		transition: var(--transition);
 	}
-	.logo-wrapper:hover, b:hover {
+	.logo-wrapper:hover,
+	b:hover {
 		--is-hovered: 1;
 	}
-	.logo-wrapper:active, b:hover:active {
+	.logo-wrapper:active,
+	b:hover:active {
 		--is-hovered: 0;
 		--is-active: 1;
 		--transition: 0.15s;
 	}
 
-	.logo, b {
+	.logo,
+	b {
 		--z: calc((1 - var(--is-active)) * 0.1em + var(--is-hovered) * 0.5rem);
 		font-size: inherit;
 		line-height: 1.3;
@@ -118,12 +281,10 @@
 		position: relative;
 		display: inline-block;
 
-		transition:
-			color var(--transition),
-			transform var(--transition),
-			text-shadow var(--transition);
+		transition: color var(--transition), transform var(--transition), text-shadow var(--transition);
 	}
-	.logo::after, b::after {
+	.logo::after,
+	b::after {
 		color: rgba(var(--rgb-light-dark), 0.1);
 		content: attr(data-text);
 		transform: translateZ(calc(-1 * var(--z)));
@@ -135,13 +296,18 @@
 	}
 	@supports (-webkit-background-clip: text) {
 		.logo {
-			background: radial-gradient(rgba(var(--rgb-light-dark-inverse), calc(0.5 + var(--is-hovered) * 0.1)) calc(-20% - var(--is-light) * 100%), var(--primary-color));
+			background: radial-gradient(
+				rgba(var(--rgb-light-dark-inverse), calc(0.5 + var(--is-hovered) * 0.1))
+					calc(-20% - var(--is-light) * 100%),
+				var(--primary-color)
+			);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: #ffffff20;
 		}
 	}
 
-	.description, h3 {
+	.description,
+	h3 {
 		text-transform: uppercase;
 		font-family: Pally;
 		color: rgba(var(--rgb-light-dark-inverse), 0.4);
@@ -169,7 +335,13 @@
 	}
 
 	.metaverse {
-		background: linear-gradient(-45deg, rgb(17, 230, 230), rgb(153, 32, 233), rgb(236, 167, 18), rgb(90, 199, 132)); 
+		background: linear-gradient(
+			-45deg,
+			rgb(17, 230, 230),
+			rgb(153, 32, 233),
+			rgb(236, 167, 18),
+			rgb(90, 199, 132)
+		);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
@@ -178,7 +350,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem;
-	    justify-content: center;
+		justify-content: center;
 	}
 
 	.columns {
@@ -266,132 +438,3 @@
 		top: calc(100% - 1rem);
 	}
 </style>
-
-<svelte:head>
-	<title>Blockhead</title>
-</svelte:head>
-
-<main in:fly={{x: 300}} out:fly={{x: -300}}>
-<!-- <main> -->
-	<section id="top">
-		<header>
-			<h2 class="description top" in:scale={{delay: 150}}>
-				<b>Track</b>,
-				<b>visualize</b>
-				&
-				<b>explore</b>
-				<br>
-				<!-- the
-				<b>blockchain</b>/<b>web 3.0</b>
-				<b>metaverse</b> -->
-				<!-- <b>blockchains</b> & -->
-				the
-				<b>decentralized world wide web</b>
-				with
-			</h2>
-			<div
-				class="logo-wrapper"
-				in:scale={{delay: 200}}
-				on:mousedown={(e) => triggerEvent('Home/LogoMousedown')}
-			>
-				<h1 class="logo" data-text="Blockhead">Blockhead</h1>
-			</div>
-		</header>
-
-		<section>
-			<div class="buttons">
-				<a href="/portfolio" style="--primary-color: var(--ethereum-blue);" in:scale={{delay: 800}}><button class="large row" data-before="📊">Create Portfolio ›</button></a>
-				<a href="/explorer" style="--primary-color: var(--arbitrum-blue);" in:scale={{delay: 850}}><button class="large row" data-before="🧭">Explore Blockchains ›</button></a>
-				<a href="/apps" style="--primary-color: var(--gnosis-teal);" in:scale={{delay: 900}}><button class="large row" data-before="📲">Browse Apps ›</button></a>
-			</div>
-		</section>
-
-		<footer in:scale={{delay: 1000}}>
-			<p><strong>Blockhead</strong> • created by <a href="https://darryl-yeo.com/blockhead">Darryl Yeo</a> • 2020 – 2023</p>
-			<p><small><a href="https://gitcoin.co/grants/2966/blockhead" target="_blank">Gitcoin Grants</a> • <a href="https://discord.gg/966eXqqq7N" target="_blank">Discord</a> • <a href="https://twitter.com/0xblockhead" target="_blank">Twitter</a></small></p>
-			<br>
-			<p><small>Donate: <a href="/explorer/ethereum/blockhead.eth" target="_blank"><output>blockhead.eth</output></a></small></p>
-			<!-- <img src="/Blockhead-Logo.svg" alt="Blockhead Logo" width="40" /> -->
-		</footer>
-
-		<p class="learn-more card-annotation">
-			Learn more
-			<br>
-			﹀
-		</p>
-	</section>
-
-	<section>
-		<header>
-			<p class="description bottom" in:scale={{delay: 250}}>
-
-				<span>
-					a
-					<b>crypto portfolio</b>,
-					<b>DeFi dashboard</b>,
-					<b>NFT viewer</b>
-					&
-					<b>data explorer</b>
-				</span>
-				<span>
-					for
-					<b style="color: var(--ethereum-blue)">Ethereum</b>,
-					<b style="color: var(--polygon-purple)">Polygon</b>,
-					<b style="color: var(--gnosis-teal)">Gnosis Chain</b>,
-					<b style="color: var(--arbitrum-blue)">Arbitrum</b>,
-					<b style="color: var(--optimism-red)">Optimism</b>,
-					<!-- <b style="color: var(--binance-gold)">BSC</b>, -->
-					<!-- <b style="color: var(--avalanche-red)">Avalanche</b>, -->
-					<b style="color: var(--fantom-blue)">Fantom</b>
-					<!-- <b style="color: var(--aurora-green)">Aurora</b>, -->
-					<!-- <b style="color: var(--cronos-blue); filter: brightness(1.75)">Cronos</b> -->
-					& the
-					<b class="metaverse">Web3 Metaverse</b>
-					<!-- <b style="color: var(--bitcoin-gold)">EVM Multiverse</b> -->
-				</span>
-			</p>
-		</header>
-
-		<br>
-
-		<div class="columns">
-			<div class="card" in:scale={{delay: 350}}>
-				<h3><b>Track</b> your crypto</h3>
-				<hr>
-				<p>See <b>tokens</b>, <b>NFTs</b>, & <b>DeFi balances</b> across your blockchain accounts in one place.</p>
-			</div>
-			<div class="card" in:scale={{delay: 500}}>
-				<h3><b>Visualize</b> your activity</h3>
-				<hr>
-				<p>Contextualize your web3 interactions with <b>intuitive charts</b> & <b>visualizations</b>.</p>
-			</div>
-			<div class="card" in:scale={{delay: 400}}>
-				<h3><b>Explore</b> the metaverse</h3>
-				<hr>
-				<p>Discover <b>apps</b>, <b>services</b> & <b>communities</b> enabling <b>portable, shared experiences</b>.</p>
-			</div>
-			<div class="card" in:scale={{delay: 600}}>
-				<h3><b>Unstoppable</b> Web3 Tech</h3>
-				<hr>
-				<p>Built upon <b>math</b>, <b>cryptography</b> & open, <b>incentive-aligned</b> computer networks.</p>
-			</div>
-			<div class="card" in:scale={{delay: 450}}>
-				<h3><b>You</b> control the data</h3>
-				<hr>
-				<p><b>Choose which data sources</b> power this user interface in the <b>Preferences</b> below!</p>
-			</div>
-			<div class="card" in:scale={{delay: 700}}>
-				<h3>To <b>Ethereum</b> & Beyond!</h3>
-				<hr>
-				<!-- <p>Hop between any of the supported <b>Ethereum Virtual Machine</b>-based chains!</p> -->
-				<p>Hop between Ethereum & any supported <b>Ethereum Virtual Machine</b>-based chain!</p>
-			</div>
-		</div>
-	</section>
-
-	<section>
-		<ContactForm />
-	</section>
-</main>
-
-<Preferences relevantPreferences={['theme', 'rpcNetwork', 'quoteCurrency']}/>

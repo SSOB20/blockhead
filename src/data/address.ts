@@ -1,4 +1,4 @@
-import type { Ethereum } from './networks/types'
-import type { BrandedString } from '../utils/branded'
+import type { Ethereum } from './networks/types';
+import type { BrandedString } from '../utils/branded';
 
-export type NetworkAccountAddress = Ethereum.Address | BrandedString<'NetworkAccountAddress'>
+export type NetworkAccountAddress = Ethereum.Address | BrandedString<'NetworkAccountAddress'>;

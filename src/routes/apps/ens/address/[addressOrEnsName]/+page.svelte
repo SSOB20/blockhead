@@ -1,21 +1,14 @@
 <script lang="ts">
-	import { networksByChainID } from '../../../../../data/networks'
+	import { networksByChainID } from '../../../../../data/networks';
 
+	import { page } from '$app/stores';
 
-	import { page } from '$app/stores'
+	$: addressOrEnsName = $page.params.addressOrEnsName;
 
-	$: addressOrEnsName = $page.params.addressOrEnsName
-
-
-	import EnsResolutionLoader from '../../../../../components/EnsResolutionLoader.svelte'
-	import EnsSearchLoader from '../../../../../components/EnsSearchLoader.svelte'
+	import EnsResolutionLoader from '../../../../../components/EnsResolutionLoader.svelte';
+	import EnsSearchLoader from '../../../../../components/EnsSearchLoader.svelte';
 </script>
 
-
-<EnsResolutionLoader
-	{addressOrEnsName}
-	passiveForwardResolution
-	let:ensName
->
+<EnsResolutionLoader {addressOrEnsName} passiveForwardResolution let:ensName>
 	<EnsSearchLoader network={networksByChainID[1]} searchQuery={ensName} />
 </EnsResolutionLoader>

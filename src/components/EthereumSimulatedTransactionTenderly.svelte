@@ -1,33 +1,13 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
+	import type { Ethereum } from '../data/networks/types';
 
-	
-	export let network: Ethereum.Network
-	export let contextualAddress: Ethereum.Address
+	export let network: Ethereum.Network;
+	export let contextualAddress: Ethereum.Address;
 
-	export let data
-
+	export let data;
 
 	// import EthereumTransactionEtherspot from './EthereumTransactionEtherspot.svelte'
 </script>
-
-
-<style>
-	dl {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0 var(--padding-inner);
-		font-size: 0.9em;
-	}
-	dl > span {
-		display: flex;
-    	gap: 0.6ch;
-	}
-	dt {
-		opacity: 0.6;
-	}
-</style>
-
 
 {#if data}
 	<!-- <EthereumTransactionEtherspot
@@ -66,7 +46,7 @@
 		</div>
 	</section>
 
-	<hr>
+	<hr />
 
 	<section>
 		<h4>Call Trace</h4>
@@ -81,3 +61,19 @@
 		</dl>
 	</section>
 {/if}
+
+<style>
+	dl {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 var(--padding-inner);
+		font-size: 0.9em;
+	}
+	dl > span {
+		display: flex;
+		gap: 0.6ch;
+	}
+	dt {
+		opacity: 0.6;
+	}
+</style>

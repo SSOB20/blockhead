@@ -5,9 +5,9 @@ export enum NetworkProvider {
 	Alchemy = 'Alchemy',
 	PocketNetwork = 'Pocket Network',
 	Figment = 'Figment',
-    Etherscan = 'Etherscan',
-    Moralis = 'Moralis',
-	QuickNode = 'QuickNode',
+	Etherscan = 'Etherscan',
+	Moralis = 'Moralis',
+	QuickNode = 'QuickNode'
 }
 
 export enum NetworkProviderConnectionType {
@@ -20,5 +20,5 @@ export enum NetworkProviderNodeType {
 	Default = 'Default',
 	Indexer = 'Indexer',
 	Archive = 'Archive',
-	Full = 'Full',
+	Full = 'Full'
 }

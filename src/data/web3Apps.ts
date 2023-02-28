@@ -1,45 +1,43 @@
-import type { Ethereum } from './networks/types'
-import type { DefiSDK } from '../api/zerion/defiSdk'
-import type { ZapperAppId } from '../api/zapper'
-import { erc20TokensByContractAddress, erc20TokensBySymbol } from './tokens'
-
+import type { Ethereum } from './networks/types';
+import type { DefiSDK } from '../api/zerion/defiSdk';
+import type { ZapperAppId } from '../api/zapper';
+import { erc20TokensByContractAddress, erc20TokensBySymbol } from './tokens';
 
 export type Web3AppConfig = {
-	name: Web3AppName,
-	slug: Web3AppSlug,
-	links?: string[],
-	colors?: string[],
-	views: Web3AppView[]
-}
+	name: Web3AppName;
+	slug: Web3AppSlug;
+	links?: string[];
+	colors?: string[];
+	views: Web3AppView[];
+};
 
 export type Web3AppView = {
-	name?: string,
-	slug?: string,
-	colors?: string[],
-	chainId: Ethereum.ChainID,
-	erc20Tokens?: Partial<Ethereum.ERC20Token[]>,
-	nfts?: Partial<Ethereum.NftContract[]>,
-	contracts?: Ethereum.Contract[],
+	name?: string;
+	slug?: string;
+	colors?: string[];
+	chainId: Ethereum.ChainID;
+	erc20Tokens?: Partial<Ethereum.ERC20Token[]>;
+	nfts?: Partial<Ethereum.NftContract[]>;
+	contracts?: Ethereum.Contract[];
 	tags?: {
-		name: '',
-		hash: ''
-	}[],
-	links?: string[],
+		name: '';
+		hash: '';
+	}[];
+	links?: string[];
 	providers?: {
-		theGraph?: string,
-		zapper?: ZapperAppId,
-		zerionDefiSDK?: DefiSDK.ProtocolName[],
-	},
+		theGraph?: string;
+		zapper?: ZapperAppId;
+		zerionDefiSDK?: DefiSDK.ProtocolName[];
+	};
 	embeds?: {
-		name: string,
-		description?: string,
-		src: string
-	}[],
-}
+		name: string;
+		description?: string;
+		src: string;
+	}[];
+};
 
-export type Web3AppName = string // typeof web3Apps[number]['name']
-export type Web3AppSlug = string // typeof web3Apps[number]['slug']
-
+export type Web3AppName = string; // typeof web3Apps[number]['name']
+export type Web3AppSlug = string; // typeof web3Apps[number]['slug']
 
 export const web3Apps: Web3AppConfig[] = [
 	{
@@ -293,10 +291,7 @@ export const web3Apps: Web3AppConfig[] = [
 				],
 				providers: {
 					theGraph: 'https://api.thegraph.com/subgraphs/name/in19farkt/akropolis-os-mainnet',
-					zerionDefiSDK: [
-						'Akropolis • ADEL Staking',
-						'Akropolis • AKRO Staking'
-					]
+					zerionDefiSDK: ['Akropolis • ADEL Staking', 'Akropolis • AKRO Staking']
 				}
 			}
 		]
@@ -400,8 +395,7 @@ export const web3Apps: Web3AppConfig[] = [
 				slug: 'v2',
 				links: ['https://homora-v2.alphafinance.io'],
 				chainId: 250,
-				erc20Tokens: [
-				],
+				erc20Tokens: [],
 				providers: {
 					zapper: 'homora-v2'
 				}
@@ -411,8 +405,7 @@ export const web3Apps: Web3AppConfig[] = [
 				slug: 'v2',
 				links: ['https://homora-v2.alphafinance.io'],
 				chainId: 43114,
-				erc20Tokens: [
-				],
+				erc20Tokens: [],
 				providers: {
 					zapper: 'homora-v2'
 				}
@@ -627,7 +620,7 @@ export const web3Apps: Web3AppConfig[] = [
 						symbol: 'ARCX',
 						decimals: 18
 					},
-					erc20TokensByContractAddress['0xed30dd7e50edf3581ad970efc5d9379ce2614adb'], // ARC Governance Old
+					erc20TokensByContractAddress['0xed30dd7e50edf3581ad970efc5d9379ce2614adb'] // ARC Governance Old
 				],
 				providers: {
 					zapper: 'arcx'
@@ -650,8 +643,8 @@ export const web3Apps: Web3AppConfig[] = [
 						name: 'ApeCoin',
 						symbol: 'APE',
 						decimals: 18
-					},
-				],
+					}
+				]
 			},
 			{
 				chainId: 5,
@@ -663,11 +656,11 @@ export const web3Apps: Web3AppConfig[] = [
 						name: 'ApeCoin',
 						symbol: 'APE',
 						decimals: 18
-					},
+					}
 				],
 				contracts: [
 					{
-						address: '0x831e0c7A89Dbc52a1911b78ebf4ab905354C96Ce',
+						address: '0x831e0c7A89Dbc52a1911b78ebf4ab905354C96Ce'
 					}
 				]
 			}
@@ -1056,11 +1049,7 @@ export const web3Apps: Web3AppConfig[] = [
 				providers: {
 					theGraph: 'https://api.thegraph.com/subgraphs/name/blocklytics/bancor',
 					zapper: 'bancor',
-					zerionDefiSDK: [
-						'Bancor',
-						'Bancor • Liquidity Protection',
-						'Bancor • Locked BNT'
-					]
+					zerionDefiSDK: ['Bancor', 'Bancor • Liquidity Protection', 'Bancor • Locked BNT']
 				}
 			}
 		]
@@ -1628,12 +1617,7 @@ export const web3Apps: Web3AppConfig[] = [
 				],
 				providers: {
 					zapper: 'bzx',
-					zerionDefiSDK: [
-						'bZx',
-						'bZx bZx',
-						'bZx • Staking',
-						'bZx • Vested Staking'
-					]
+					zerionDefiSDK: ['bZx', 'bZx bZx', 'bZx • Staking', 'bZx • Vested Staking']
 				}
 			}
 		]
@@ -1774,16 +1758,16 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'Comptroller',
-						address: '0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b',
+						address: '0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b'
 					},
 					{
 						name: 'Governance',
-						address: '0xc0da02939e1441f497fd74f78ce7decb17b66529',
+						address: '0xc0da02939e1441f497fd74f78ce7decb17b66529'
 					},
 					{
 						name: 'Timelock',
-						address: '0x6d903f6003cca6255d85cca4d3b5e5146dc33925',
-					},
+						address: '0x6d903f6003cca6255d85cca4d3b5e5146dc33925'
+					}
 				],
 				providers: {
 					zerionDefiSDK: ['Compound Governance']
@@ -2025,7 +2009,7 @@ export const web3Apps: Web3AppConfig[] = [
 		name: 'Curve',
 		slug: 'curve',
 		links: ['https://curve.fi'],
-		colors: [/*'#840000',*/ '#fd2700', '#f9ea02', '#91ff67'/*, '#0213fa'*/], // unofficial
+		colors: [/*'#840000',*/ '#fd2700', '#f9ea02', '#91ff67' /*, '#0213fa'*/], // unofficial
 		views: [
 			{
 				chainId: 1,
@@ -2553,34 +2537,34 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'trancheFactory',
-						address: '0x62F161BF3692E4015BefB05A03a94A40f520d1c0',
+						address: '0x62F161BF3692E4015BefB05A03a94A40f520d1c0'
 					},
 					{
 						name: 'userProxy',
-						address: '0xEe4e158c03A10CBc8242350d74510779A364581C',
+						address: '0xEe4e158c03A10CBc8242350d74510779A364581C'
 					},
 					{
 						name: 'balancerVault',
-						address: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+						address: '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
 					},
 					{
 						name: 'weightedPoolFactory',
-						address: '0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9',
+						address: '0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9'
 					},
 					{
 						name: 'convergentCurvePoolFactory',
-						address: '0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD',
+						address: '0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD'
 					},
 
 					// yearn lusd3crv-f
 					{
 						name: 'wrapped position',
-						address: '0xed279fdd11ca84beef15af5d39bb4d4bee23f0ca',
+						address: '0xed279fdd11ca84beef15af5d39bb4d4bee23f0ca'
 					},
 					{
 						name: 'vault',
-						address: '0x5fA5B62c8AF877CB37031e0a3B2f34A78e3C56A6',
-					},
+						address: '0x5fA5B62c8AF877CB37031e0a3B2f34A78e3C56A6'
+					}
 
 					// tranches
 				],
@@ -2843,9 +2827,7 @@ export const web3Apps: Web3AppConfig[] = [
 		views: [
 			{
 				chainId: 1,
-				erc20Tokens: [
-					erc20TokensBySymbol['FNX']
-				],
+				erc20Tokens: [erc20TokensBySymbol['FNX']],
 				providers: {
 					zerionDefiSDK: ['FinNexus']
 				}
@@ -2958,7 +2940,7 @@ export const web3Apps: Web3AppConfig[] = [
 						name: 'Frax',
 						symbol: 'FRAX',
 						decimals: 18
-					},
+					}
 					// erc20TokensBySymbol['FSX']
 				],
 				providers: {
@@ -3953,29 +3935,29 @@ export const web3Apps: Web3AppConfig[] = [
 				chainId: 1,
 				contracts: [
 					{
-						address: '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE',
+						address: '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
 					},
 					{
-						address: '0x1c87257f5e8609940bc751a07bb085bb7f8cdbe6',
+						address: '0x1c87257f5e8609940bc751a07bb085bb7f8cdbe6'
 					},
 					{
-						address: '0x6a65e062ce8290007301296f3c6ae446af7bdeec',
+						address: '0x6a65e062ce8290007301296f3c6ae446af7bdeec'
 					},
 					{
-						address: '0x306121f1344ac5f84760998484c0176d7bfb7134',
+						address: '0x306121f1344ac5f84760998484c0176d7bfb7134'
 					},
 					{
-						address: '0xce9874c42dce7fffbe5e48b026ff1182733266cb',
+						address: '0xce9874c42dce7fffbe5e48b026ff1182733266cb'
 					},
 					{
-						address: '0xd343d5dba2fba55eef58189619c05e33cab95ca1',
+						address: '0xd343d5dba2fba55eef58189619c05e33cab95ca1'
 					},
 					{
-						address: '0x1cf68Bbc2b6D3C6CfE1BD3590CF0E10b06a05F17',
+						address: '0x1cf68Bbc2b6D3C6CfE1BD3590CF0E10b06a05F17'
 					},
 					{
-						address: '0x61639D6eC06C13a96B5eB9560b359D7c648C7759',
-					},
+						address: '0x61639D6eC06C13a96B5eB9560b359D7c648C7759'
+					}
 				],
 				providers: {
 					zapper: 'kyber-dmm',
@@ -3989,29 +3971,29 @@ export const web3Apps: Web3AppConfig[] = [
 				chainId: 137,
 				contracts: [
 					{
-						address: '0x5f1fe642060b5b9658c15721ea22e982643c095c',
+						address: '0x5f1fe642060b5b9658c15721ea22e982643c095c'
 					},
 					{
-						address: '0x546C79662E028B661dFB4767664d0273184E4dD1',
+						address: '0x546C79662E028B661dFB4767664d0273184E4dD1'
 					},
 					{
-						address: '0xd8B9E9444fCBF26BEA4BAdd6142dD6a962BCA86A',
+						address: '0xd8B9E9444fCBF26BEA4BAdd6142dD6a962BCA86A'
 					},
 					{
-						address: '0x37e6449B0e99BeFD2A708eA048d970F4FF4dC65d',
+						address: '0x37e6449B0e99BeFD2A708eA048d970F4FF4dC65d'
 					},
 					{
-						address: '0x45963db838a070cF7BE8e7046fD63e23d376c665',
+						address: '0x45963db838a070cF7BE8e7046fD63e23d376c665'
 					},
 					{
-						address: '0x95D708e9eE04b0136b98579141624d19c89B9d68',
+						address: '0x95D708e9eE04b0136b98579141624d19c89B9d68'
 					},
 					{
-						address: '0x3904aC366D348636694CB6720aa1540e76441b1B',
+						address: '0x3904aC366D348636694CB6720aa1540e76441b1B'
 					},
 					{
-						address: '0x7018C0bd73255C8966d0B26634E0BC0c7595D255',
-					},
+						address: '0x7018C0bd73255C8966d0B26634E0BC0c7595D255'
+					}
 				]
 			},
 			{
@@ -4249,11 +4231,7 @@ export const web3Apps: Web3AppConfig[] = [
 	{
 		name: 'Loopring',
 		slug: 'loopring',
-		links: [
-			'https://loopring.org',
-			'https://loopring.io',
-			'https://exchange.loopring.io'
-		],
+		links: ['https://loopring.org', 'https://loopring.io', 'https://exchange.loopring.io'],
 		colors: ['#1c42ff'],
 		views: [
 			{
@@ -4435,7 +4413,7 @@ export const web3Apps: Web3AppConfig[] = [
 		name: 'Matic',
 		slug: 'matic',
 		links: ['https://wallet.matic.network/staking'],
-		colors: ['#8247e5', /*'#003cb2'*/],
+		colors: ['#8247e5' /*'#003cb2'*/],
 		views: [
 			{
 				chainId: 1,
@@ -4916,7 +4894,7 @@ export const web3Apps: Web3AppConfig[] = [
 						symbol: 'NFTX',
 						decimals: 18
 					},
-					erc20TokensByContractAddress['0x0fe629d1e84e171f8ff0c1ded2cc2221caa48a3f'], // NFTX Hashmasks Index
+					erc20TokensByContractAddress['0x0fe629d1e84e171f8ff0c1ded2cc2221caa48a3f'] // NFTX Hashmasks Index
 				],
 				providers: {
 					zapper: 'nftx'
@@ -5377,11 +5355,7 @@ export const web3Apps: Web3AppConfig[] = [
 				],
 				providers: {
 					zapper: 'pickle',
-					zerionDefiSDK: [
-						'Pickle Finance',
-						'Pickle Finance • Farms',
-						'Pickle Finance • Staking'
-					]
+					zerionDefiSDK: ['Pickle Finance', 'Pickle Finance • Farms', 'Pickle Finance • Staking']
 				}
 			}
 		]
@@ -5550,68 +5524,68 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'ConfigurationManager',
-						address: '0x2971c946d793f3b846A5AEC2Ac9EC945763a82a9',
+						address: '0x2971c946d793f3b846A5AEC2Ac9EC945763a82a9'
 					},
 					{
 						name: 'EmergencyStop',
-						address: '0x4Add3C66196945ad9c9B35Bf8391D145A65E3337',
+						address: '0x4Add3C66196945ad9c9B35Bf8391D145A65E3337'
 					},
 					{
 						name: 'CapProvider',
-						address: '0x3b2f5264ef121F7e269Be54b2A75d3E1c04b5430',
+						address: '0x3b2f5264ef121F7e269Be54b2A75d3E1c04b5430'
 					},
 					{
 						name: 'PodPutBuilder',
-						address: '0x19Cd96c3412E42EE1cAbD023e443aEdE7d209826',
+						address: '0x19Cd96c3412E42EE1cAbD023e443aEdE7d209826'
 					},
 					{
 						name: 'WPodPutBuilder',
-						address: '0x70a21cbB30DE94E21A84A62f5F060C2Cd4daf824',
+						address: '0x70a21cbB30DE94E21A84A62f5F060C2Cd4daf824'
 					},
 					{
 						name: 'PodCallBuilder',
-						address: '0x343E548a47c386C73fa8738bc3488F32b0bBbeec',
+						address: '0x343E548a47c386C73fa8738bc3488F32b0bBbeec'
 					},
 					{
 						name: 'WPodCallBuilder',
-						address: '0x3177D77699358e8015eFE1fFCB68a3C4ACa35547',
+						address: '0x3177D77699358e8015eFE1fFCB68a3C4ACa35547'
 					},
 					{
 						name: 'OptionFactory',
-						address: '0x35601f9C2458172D8d9f4B3Fa2CC33620af632f3',
+						address: '0x35601f9C2458172D8d9f4B3Fa2CC33620af632f3'
 					},
 					{
 						name: 'NormalDistribution',
-						address: '0x94ea57A96e02f2F1b3dcB18105Cd6cFa36FB8Ab2',
+						address: '0x94ea57A96e02f2F1b3dcB18105Cd6cFa36FB8Ab2'
 					},
 					{
 						name: 'BlackScholes',
-						address: '0xC6AB9Cdf5aaFDa905D9e2BE0692e5F575fcDc849',
+						address: '0xC6AB9Cdf5aaFDa905D9e2BE0692e5F575fcDc849'
 					},
 					{
 						name: 'IVGuesser',
-						address: '0xab5627f4ECb905cE535ECf704eBB1Dc9405D66eA',
+						address: '0xab5627f4ECb905cE535ECf704eBB1Dc9405D66eA'
 					},
 					{
 						name: 'IVProvider',
-						address: '0xC51e13FdcEfc232bFc4741B2C0C24483110B5028',
+						address: '0xC51e13FdcEfc232bFc4741B2C0C24483110B5028'
 					},
 					{
 						name: 'PriceProvider',
-						address: '0x7f105cC52d66d8664cDdC935f8A8AE7941032d18',
+						address: '0x7f105cC52d66d8664cDdC935f8A8AE7941032d18'
 					},
 					{
 						name: 'FeePoolBuilder',
-						address: '0x712a6E19Dc4e709E025DDB22C030f51CDeFdbC43',
+						address: '0x712a6E19Dc4e709E025DDB22C030f51CDeFdbC43'
 					},
 					{
 						name: 'OptionAMMFactory',
-						address: '0x7B4401FD0070cA78C7C93aa335D6000Ee0D629F7',
+						address: '0x7B4401FD0070cA78C7C93aa335D6000Ee0D629F7'
 					},
 					{
 						name: 'OptionHelper',
-						address: '0xB7dEF03006eC72Ef409C41fAEE2619e4bFdB547F',
-					},
+						address: '0xB7dEF03006eC72Ef409C41fAEE2619e4bFdB547F'
+					}
 				],
 				providers: {
 					theGraph: 'https://api.thegraph.com/subgraphs/name/pods-finance/pods'
@@ -6957,24 +6931,24 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'Resolver',
-						address: '0xE0cc76334405EE8b39213E620587d815967af39C',
+						address: '0xE0cc76334405EE8b39213E620587d815967af39C'
 					},
 					{
 						name: 'Host',
-						address: '0x3E14dC1b13c488a8d5D310918780c983bD5982E7',
+						address: '0x3E14dC1b13c488a8d5D310918780c983bD5982E7'
 					},
 					{
 						name: 'CFAv1',
-						address: '0x6EeE6060f715257b970700bc2656De21dEdF074C',
+						address: '0x6EeE6060f715257b970700bc2656De21dEdF074C'
 					},
 					{
 						name: 'IDAv1',
-						address: '0xB0aABBA4B2783A72C52956CDEF62d438ecA2d7a1',
+						address: '0xB0aABBA4B2783A72C52956CDEF62d438ecA2d7a1'
 					},
 					{
 						name: 'SuperTokenFactory',
-						address: '0x2C90719f25B10Fc5646c82DA3240C76Fa5BcCF34',
-					},
+						address: '0x2C90719f25B10Fc5646c82DA3240C76Fa5BcCF34'
+					}
 				],
 				providers: {
 					zapper: 'superfluid'
@@ -6994,29 +6968,29 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'Resolver',
-						address: '0xD2009765189164b495c110D61e4D301729079911',
+						address: '0xD2009765189164b495c110D61e4D301729079911'
 					},
 					{
 						name: 'Host',
-						address: '0x2dFe937cD98Ab92e59cF3139138f18c823a4efE7',
+						address: '0x2dFe937cD98Ab92e59cF3139138f18c823a4efE7'
 					},
 					{
 						name: 'CFAv1',
-						address: '0xEbdA4ceF883A7B12c4E669Ebc58927FBa8447C7D',
+						address: '0xEbdA4ceF883A7B12c4E669Ebc58927FBa8447C7D'
 					},
 					{
 						name: 'IDAv1',
-						address: '0x7888ac96F987Eb10E291F34851ae0266eF912081',
+						address: '0x7888ac96F987Eb10E291F34851ae0266eF912081'
 					},
 					{
 						name: 'SuperTokenFactory',
-						address: '0x23410e2659380784498509698ed70E414D384880',
+						address: '0x23410e2659380784498509698ed70E414D384880'
 					},
 
 					{
 						name: 'WORK SuperToken',
-						address: '0x0872d200f74e4a45e830eccc9e8b8f605df7ce06',
-					},
+						address: '0x0872d200f74e4a45e830eccc9e8b8f605df7ce06'
+					}
 				],
 				providers: {
 					zapper: 'superfluid'
@@ -7366,20 +7340,20 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'Oracle',
-						address: '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0',
+						address: '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 					},
 					{
 						name: 'Lens',
-						address: '0xB2b6c6232d38faE21656703cAC5A74e5314741D4',
+						address: '0xB2b6c6232d38faE21656703cAC5A74e5314741D4'
 					},
 					{
 						name: 'Fellowship (trusted addresses)',
-						address: '0xCA240cf523cD9163C2A8465B2642B04749704625',
+						address: '0xCA240cf523cD9163C2A8465B2642B04749704625'
 					},
 					{
 						name: 'Rivendell (voting logic)',
-						address: '0xd53412ff046B13318C05e923919d8dB07C3cB3E9',
-					},
+						address: '0xd53412ff046B13318C05e923919d8dB07C3cB3E9'
+					}
 				]
 			}
 		]
@@ -7586,7 +7560,7 @@ export const web3Apps: Web3AppConfig[] = [
 		name: 'TokenSets',
 		slug: 'tokensets',
 		links: ['https://www.tokensets.com'],
-		colors: ['#2D2CE5'/*, '#6BB1FF'*/],
+		colors: ['#2D2CE5' /*, '#6BB1FF'*/],
 		views: [
 			{
 				chainId: 1,
@@ -7802,8 +7776,8 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'Contract Registry',
-						address: '0xb2C6c4162c0d2B6963C62A9133331b4D0359AA34',
-					},
+						address: '0xb2C6c4162c0d2B6963C62A9133331b4D0359AA34'
+					}
 				]
 			}
 		]
@@ -7842,8 +7816,8 @@ export const web3Apps: Web3AppConfig[] = [
 				contracts: [
 					{
 						name: 'UniswapV3Factory',
-						address: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
-					},
+						address: '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+					}
 				]
 			},
 			{
@@ -7913,58 +7887,58 @@ export const web3Apps: Web3AppConfig[] = [
 					// Core
 					{
 						name: 'Vault',
-						address: '0xb1cFF81b9305166ff1EFc49A129ad2AfCd7BCf19',
+						address: '0xb1cFF81b9305166ff1EFc49A129ad2AfCd7BCf19'
 					},
 					{
 						name: 'USDP',
-						address: '0x1456688345527bE1f37E9e627DA0837D6f08C925',
+						address: '0x1456688345527bE1f37E9e627DA0837D6f08C925'
 					},
 					{
 						name: 'VaultParameters',
-						address: '0xB46F8CF42e504Efe8BEf895f848741daA55e9f1D',
+						address: '0xB46F8CF42e504Efe8BEf895f848741daA55e9f1D'
 					},
 					{
 						name: 'VaultManagerParameters',
-						address: '0x203153522B9EAef4aE17c6e99851EE7b2F7D312E',
+						address: '0x203153522B9EAef4aE17c6e99851EE7b2F7D312E'
 					},
 					{
 						name: 'LiquidationAuction02',
-						address: '0xaEF1ed4C492BF4C57221bE0706def67813D79955',
+						address: '0xaEF1ed4C492BF4C57221bE0706def67813D79955'
 					},
 					{
 						name: 'CDPManager01',
-						address: '0x0e13ab042eC5AB9Fc6F43979406088B9028F66fA',
+						address: '0x0e13ab042eC5AB9Fc6F43979406088B9028F66fA'
 					},
 					{
 						name: 'CDPManager01_Fallback',
-						address: '0xaD3617D11f4c1d30603551eA75e9Ace9CB386e15',
+						address: '0xaD3617D11f4c1d30603551eA75e9Ace9CB386e15'
 					},
 
 					// Helpers & Registries
 					{
 						name: 'OracleRegistry',
-						address: '0x75fBFe26B21fd3EA008af0C764949f8214150C8f',
+						address: '0x75fBFe26B21fd3EA008af0C764949f8214150C8f'
 					},
 					{
 						name: 'ParametersBatchUpdater',
-						address: '0x4DD1A6DB148BEcDADAdFC407D23b725eDd3cfB6f',
+						address: '0x4DD1A6DB148BEcDADAdFC407D23b725eDd3cfB6f'
 					},
 					{
 						name: 'AssetParametersViewer',
-						address: '0xd51F509Fb80b4fF4D4Bfb4144eEd877F0F499AF6',
+						address: '0xd51F509Fb80b4fF4D4Bfb4144eEd877F0F499AF6'
 					},
 					{
 						name: 'CollateralRegistry',
-						address: '0x3DB39B538Db1123389c77F888a213F1A6dd22EF3',
+						address: '0x3DB39B538Db1123389c77F888a213F1A6dd22EF3'
 					},
 					{
 						name: 'CDPRegistry',
-						address: '0x1a5Ff58BC3246Eb233fEA20D32b79B5F01eC650c',
+						address: '0x1a5Ff58BC3246Eb233fEA20D32b79B5F01eC650c'
 					},
 					{
 						name: 'ForceTransferAssetStore',
-						address: '0xF7633FA353E74Edb211B1d22e23c96aE4d7b24C0',
-					},
+						address: '0xF7633FA353E74Edb211B1d22e23c96aE4d7b24C0'
+					}
 				],
 				providers: {
 					zapper: 'unit'
@@ -7979,50 +7953,50 @@ export const web3Apps: Web3AppConfig[] = [
 					// Core
 					{
 						name: 'Vault',
-						address: '0xdacfeed000e12c356fb72ab5089e7dd80ff4dd93',
+						address: '0xdacfeed000e12c356fb72ab5089e7dd80ff4dd93'
 					},
 					{
 						name: 'USDP',
-						address: '0xdacd011a71f8c9619642bf482f1d4ceb338cffcf',
+						address: '0xdacd011a71f8c9619642bf482f1d4ceb338cffcf'
 					},
 					{
 						name: 'VaultParameters',
-						address: '0x56c7CA666d192332F72a5842E72eED5f59F0fb48',
+						address: '0x56c7CA666d192332F72a5842E72eED5f59F0fb48'
 					},
 					{
 						name: 'VaultManagerParameters',
-						address: '0x99f2B13C28A4183a5d5e0fe02B1B5aeEe85FAF5A',
+						address: '0x99f2B13C28A4183a5d5e0fe02B1B5aeEe85FAF5A'
 					},
 					{
 						name: 'LiquidationAuction02',
-						address: '0x852de08f3cD5b92dD8b3B92b321363D04EeEc39E',
+						address: '0x852de08f3cD5b92dD8b3B92b321363D04EeEc39E'
 					},
 					{
 						name: 'CDPManager01',
-						address: '0x1337daC01Fc21Fa21D17914f96725f7a7b73868f',
+						address: '0x1337daC01Fc21Fa21D17914f96725f7a7b73868f'
 					},
 
 					// Helpers & Registries
 					{
 						name: 'OracleRegistry',
-						address: '0xbea721ACe12e881cb44Dbe9361ffEd9141CE547F',
+						address: '0xbea721ACe12e881cb44Dbe9361ffEd9141CE547F'
 					},
 					{
 						name: 'CollateralRegistry',
-						address: '0xA1ad3602697c15113E089C2723c15eBF3038465C',
+						address: '0xA1ad3602697c15113E089C2723c15eBF3038465C'
 					},
 					{
 						name: 'CDPRegistry',
-						address: '0xE8372dcef80189c0F88631507f6466b3f60E24A4',
+						address: '0xE8372dcef80189c0F88631507f6466b3f60E24A4'
 					},
 					{
 						name: 'ForceTransferAssetStore',
-						address: '0x7815ed0f9B00E7b34f52543779783023c7621fA1',
+						address: '0x7815ed0f9B00E7b34f52543779783023c7621fA1'
 					},
 					{
 						name: 'PancakeV2Twap',
-						address: '0x11b1bd923f4D0669958e16A511567f540Bc21d2e',
-					},
+						address: '0x11b1bd923f4D0669958e16A511567f540Bc21d2e'
+					}
 				],
 				providers: {
 					zapper: 'unit'
@@ -8085,7 +8059,8 @@ export const web3Apps: Web3AppConfig[] = [
 					}
 				],
 				providers: {
-					theGraph: 'https://api.thegraph.com/subgraphs/name/upshot-tech/nft-analytics-axie-infinity'
+					theGraph:
+						'https://api.thegraph.com/subgraphs/name/upshot-tech/nft-analytics-axie-infinity'
 				}
 			},
 			{
@@ -8114,7 +8089,8 @@ export const web3Apps: Web3AppConfig[] = [
 					}
 				],
 				providers: {
-					theGraph: 'https://api.thegraph.com/subgraphs/name/upshot-tech/nft-analytics-cryptokitties'
+					theGraph:
+						'https://api.thegraph.com/subgraphs/name/upshot-tech/nft-analytics-cryptokitties'
 				}
 			},
 			{
@@ -8516,7 +8492,7 @@ export const web3Apps: Web3AppConfig[] = [
 		name: 'Yearn',
 		slug: 'yearn',
 		links: ['https://yearn.finance'],
-        colors: ['#0273f6', '#075fb9'], // unofficial
+		colors: ['#0273f6', '#075fb9'], // unofficial
 		views: [
 			{
 				chainId: 1,
@@ -8629,19 +8605,27 @@ export const web3Apps: Web3AppConfig[] = [
 			}
 		]
 	}
-] // as const
+]; // as const
 
-
-export const web3AppsBySlug = Object.fromEntries(web3Apps.map(web3AppConfig => [web3AppConfig.slug, web3AppConfig]))
+export const web3AppsBySlug = Object.fromEntries(
+	web3Apps.map((web3AppConfig) => [web3AppConfig.slug, web3AppConfig])
+);
 export const web3AppsByProviderName = {
-	zapper: Object.fromEntries(web3Apps.flatMap(web3AppConfig =>
-		web3AppConfig.views.map(view => view.providers?.zapper ? [view.providers.zapper, web3AppConfig] : [])
-	)),
-	zerionDefiSDK: Object.fromEntries(web3Apps.flatMap(web3AppConfig =>
-		web3AppConfig.views.flatMap(view => view.providers?.zerionDefiSDK?.map(name => [name, web3AppConfig]) ?? [])
-	))
-}
-
+	zapper: Object.fromEntries(
+		web3Apps.flatMap((web3AppConfig) =>
+			web3AppConfig.views.map((view) =>
+				view.providers?.zapper ? [view.providers.zapper, web3AppConfig] : []
+			)
+		)
+	),
+	zerionDefiSDK: Object.fromEntries(
+		web3Apps.flatMap((web3AppConfig) =>
+			web3AppConfig.views.flatMap(
+				(view) => view.providers?.zerionDefiSDK?.map((name) => [name, web3AppConfig]) ?? []
+			)
+		)
+	)
+};
 
 const infrastructureApps = [
 	'ens',
@@ -8649,9 +8633,9 @@ const infrastructureApps = [
 	'epns',
 	'chainlink',
 	'livepeer',
-	'tellor',
+	'tellor'
 	// 'umbrella',
-].map(slug => web3AppsBySlug[slug])
+].map((slug) => web3AppsBySlug[slug]);
 
 const decentralizedExchanges = [
 	'balancer',
@@ -8662,7 +8646,7 @@ const decentralizedExchanges = [
 	'sushi',
 	'uniswap',
 	'0x'
-].map(slug => web3AppsBySlug[slug])
+].map((slug) => web3AppsBySlug[slug]);
 
 const defiPrimitives = [
 	'aave',
@@ -8671,78 +8655,73 @@ const defiPrimitives = [
 	'superfluid',
 	'synthetix',
 	// 'uma',
-	'yearn',
-].map(slug => web3AppsBySlug[slug])
+	'yearn'
+].map((slug) => web3AppsBySlug[slug]);
 
-const crossChainInfrastructure = [
-	'matic',
-	'connext',
-	'etherspot',
-].map(slug => web3AppsBySlug[slug])
+const crossChainInfrastructure = ['matic', 'connext', 'etherspot'].map(
+	(slug) => web3AppsBySlug[slug]
+);
 
-const institutionalDefi = [
-	'circle',
-	'bitgo',
-	'nexus-mutual',
-].map(slug => web3AppsBySlug[slug])
+const institutionalDefi = ['circle', 'bitgo', 'nexus-mutual'].map((slug) => web3AppsBySlug[slug]);
 
 const socialApps = [
 	'audius',
 	// 'lens',
-	'rarible',
-].map(slug => web3AppsBySlug[slug])
+	'rarible'
+].map((slug) => web3AppsBySlug[slug]);
 
-const collectibleCommunities = [
-	'apecoin',
-].map(slug => web3AppsBySlug[slug])
+const collectibleCommunities = ['apecoin'].map((slug) => web3AppsBySlug[slug]);
 
 export const web3AppsBySection = [
 	{
 		title: 'Web3 Infrastructure',
 		apps: infrastructureApps,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Decentralized Exchanges',
 		apps: decentralizedExchanges,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'DeFi Primitives',
 		apps: defiPrimitives,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Institutional DeFi',
 		apps: institutionalDefi,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Cross-Chain Infrastructure',
 		apps: crossChainInfrastructure,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Social Apps',
 		apps: socialApps,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Collectible Communities',
 		apps: collectibleCommunities,
-		isFeatured: true,
+		isFeatured: true
 	},
 	{
 		title: 'Other Apps',
-		apps: web3Apps.filter(appConfig => ![
-			...infrastructureApps,
-			...crossChainInfrastructure,
-			...defiPrimitives,
-			...decentralizedExchanges,
-			...institutionalDefi,
-			...socialApps,
-			...collectibleCommunities
-		].includes(appConfig)),
+		apps: web3Apps.filter(
+			(appConfig) =>
+				![
+					...infrastructureApps,
+					...crossChainInfrastructure,
+					...defiPrimitives,
+					...decentralizedExchanges,
+					...institutionalDefi,
+					...socialApps,
+					...collectibleCommunities
+				].includes(appConfig)
+		),
 		isFeatured: false
 	}
-]
+];

@@ -1,48 +1,44 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import { availableNetworks, getNetworkRPC } from '../data/networks'
-	import { Account, getLocalPortfolios, connectedProviderAccounts } from '../state/portfolio-accounts'
-	import { usdStablecoinTokens } from '../data/tokens'
+	import type { Ethereum } from '../data/networks/types';
+	import { availableNetworks, getNetworkRPC } from '../data/networks';
+	import {
+		Account,
+		getLocalPortfolios,
+		connectedProviderAccounts
+	} from '../state/portfolio-accounts';
+	import { usdStablecoinTokens } from '../data/tokens';
 
+	import { getEthersProvider } from '../data/networkProviders';
+	import { preferences } from '../state/preferences';
 
-	import { getEthersProvider } from '../data/networkProviders'
-	import { preferences } from '../state/preferences'
+	import { Connext } from '../api/connext/swaps';
 
-	import { Connext } from '../api/connext/swaps'
-	
-	
-	export let transferSolution: 'Connext' | 'Etherspot' | '1inch' = 'Etherspot'
+	export let transferSolution: 'Connext' | 'Etherspot' | '1inch' = 'Etherspot';
 
+	let defaultToAccount: Partial<Account> = { id: '' };
 
-	let defaultToAccount: Partial<Account> = {id: ''}
+	let fromNetwork: Ethereum.Network;
+	let fromAccount: Account;
+	let fromToken: Ethereum.ContractAddress;
+	let fromTokenAmount: number = 0;
 
-	let fromNetwork: Ethereum.Network
-	let fromAccount: Account
-	let fromToken: Ethereum.ContractAddress
-	let fromTokenAmount: number = 0
-	
-	let toNetwork: Ethereum.Network
-	let toAccount: Account = defaultToAccount
-	let toToken: Ethereum.ContractAddress
-	let toTokenAmount: number = 0
-	
-	
-	const localPortfolios = getLocalPortfolios()
+	let toNetwork: Ethereum.Network;
+	let toAccount: Account = defaultToAccount;
+	let toToken: Ethereum.ContractAddress;
+	let toTokenAmount: number = 0;
 
+	const localPortfolios = getLocalPortfolios();
 
-	$: connextSwap = Connext.mainnetSwaps.find(({fromAssetId, toAssetId}) => fromAssetId === fromToken && toAssetId === toToken)
+	$: connextSwap = Connext.mainnetSwaps.find(
+		({ fromAssetId, toAssetId }) => fromAssetId === fromToken && toAssetId === toToken
+	);
 	$: conversionRate =
-		connextSwap && connextSwap.priceType === 'hardcoded' ?
-			connextSwap.hardcodedRate
-		:
-			undefined
+		connextSwap && connextSwap.priceType === 'hardcoded' ? connextSwap.hardcodedRate : undefined;
 
-
-	let fromTokenAmountInput: HTMLElement
-	let fromTokenSelect: HTMLElement
-	let toTokenAmountInput: HTMLElement
-	let toTokenSelect: HTMLElement
-
+	let fromTokenAmountInput: HTMLElement;
+	let fromTokenSelect: HTMLElement;
+	let toTokenAmountInput: HTMLElement;
+	let toTokenSelect: HTMLElement;
 
 	// import { startConnextTransfer } from '../api/connext'
 	// import { startEtherspotTransfer } from '../api/etherspot'
@@ -52,48 +48,45 @@
 		fromAccount,
 		fromToken,
 		fromTokenAmount,
-	
+
 		toNetwork,
 		toAccount,
 		toToken,
-		toTokenAmount,
+		toTokenAmount
 	}: {
-		fromNetwork: Ethereum.Network,
-		fromAccount: Account,
-		fromToken: Ethereum.ContractAddress,
-		fromTokenAmount: number
-	
-		toNetwork: Ethereum.Network,
-		toAccount: Account,
-		toToken: Ethereum.ContractAddress,
-		toTokenAmount: number
-	}){//console.log('onSubmit', 'transferSolution', transferSolution)
+		fromNetwork: Ethereum.Network;
+		fromAccount: Account;
+		fromToken: Ethereum.ContractAddress;
+		fromTokenAmount: number;
+
+		toNetwork: Ethereum.Network;
+		toAccount: Account;
+		toToken: Ethereum.ContractAddress;
+		toTokenAmount: number;
+	}) {
+		//console.log('onSubmit', 'transferSolution', transferSolution)
 		const fromNetworkProvider = await getEthersProvider({
 			network: fromNetwork,
 			networkProvider: $preferences.rpcNetwork
-		})
+		});
 		const toNetworkProvider = await getEthersProvider({
 			network: toNetwork,
 			networkProvider: $preferences.rpcNetwork
-		})
+		});
 
-
-		if(transferSolution === 'Connext'){
+		if (transferSolution === 'Connext') {
 			// await startConnextTransfer({
 			// 	fromNetwork,
 			// 	fromNetworkProvider,
 			// 	fromAccount,
 			// 	fromToken,
 			// 	fromTokenAmount,
-			
 			// 	toNetwork,
 			// 	toNetworkProvider,
 			// 	toAccount,
 			// 	toToken,
 			// 	toTokenAmount,
 			// })
-
-
 			// const { BrowserNode } = await import('@connext/vector-browser-node')
 			// const node = new BrowserNode({
 			// 	// routerPublicIdentifier, // optional, will set up channels if provided with supportedChains
@@ -106,15 +99,13 @@
 			// 	// messagingUrl, // defaults to prod https://messaging.connext.network
 			// })
 			// await node.init() // function to intialize browser node
-		}
-		else if(transferSolution === 'Etherspot'){
+		} else if (transferSolution === 'Etherspot') {
 			// await startEtherspotTransfer({
 			// 	fromNetwork,
 			// 	fromNetworkProvider,
 			// 	fromAccount,
 			// 	fromToken,
 			// 	fromTokenAmount,
-			
 			// 	toNetwork,
 			// 	toNetworkProvider,
 			// 	toAccount,
@@ -124,13 +115,197 @@
 		}
 	}
 
+	import AddressField from './AddressField.svelte';
 
-	import AddressField from './AddressField.svelte'
-
-
-	import { scale } from 'svelte/transition'
+	import { scale } from 'svelte/transition';
 </script>
 
+<form
+	class="column"
+	on:submit|preventDefault={() =>
+		onSubmit({
+			fromNetwork,
+			fromAccount,
+			fromToken,
+			fromTokenAmount,
+
+			toNetwork,
+			toAccount,
+			toToken,
+			toTokenAmount
+		})}
+>
+	<div class="columns">
+		<div class="card">
+			<h3>From</h3>
+
+			<div class="row">
+				<label class="column">
+					<span>Network</span>
+					<select bind:value={fromNetwork}>
+						{#each availableNetworks as network}
+							<option value={network}>{network.name}</option>
+						{/each}
+					</select>
+				</label>
+
+				<label class="column">
+					<span>Account</span>
+					<select bind:value={fromAccount}>
+						{#each $localPortfolios as { name, accounts }, i (i)}
+							<optgroup label={name}>
+								{#each accounts as account}
+									<option value={account}>{account.id}</option>
+								{/each}
+							</optgroup>
+						{/each}
+						{#each Object.entries($connectedProviderAccounts) as [providerName, accounts]}
+							{#if accounts?.length}
+								{#each accounts as account}
+									<optgroup label={providerName}>
+										<option value={account}>{account.id}</option>
+									</optgroup>
+								{/each}
+							{/if}
+						{/each}
+					</select>
+				</label>
+			</div>
+
+			<div class="row">
+				<label class="column">
+					<span>Amount</span>
+					<input
+						type="number"
+						bind:this={fromTokenAmountInput}
+						bind:value={fromTokenAmount}
+						min={0}
+						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount}
+						placeholder={0.0}
+						on:keydown={(e) => {
+							if (e.code.startsWith('Key')) {
+								fromTokenSelect.focus();
+								fromTokenSelect.dispatchEvent(new KeyboardEvent(e.type, e));
+							}
+							if (e.code === 'Space') fromTokenSelect.focus();
+						}}
+					/>
+					<input
+						type="range"
+						bind:value={fromTokenAmount}
+						min={0}
+						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount}
+						placeholder={0.0}
+					/>
+				</label>
+
+				<label class="column">
+					<span>Token</span>
+					<select bind:this={fromTokenSelect} bind:value={fromToken}>
+						<optgroup label="USD-Pegged Stablecoins">
+							{#each usdStablecoinTokens as token, i (token.address)}
+								<option value={token}>{token.symbol} ({token.name})</option>
+							{/each}
+						</optgroup>
+					</select>
+				</label>
+			</div>
+		</div>
+
+		{#if conversionRate !== undefined}
+			<div class="card" transition:scale>
+				<h3>Conversion Rate:</h3>
+				{conversionRate}
+			</div>
+		{/if}
+
+		<div class="card">
+			<h3>To</h3>
+
+			<div class="row">
+				<label class="column">
+					<span>Network</span>
+					<select bind:value={toNetwork}>
+						{#each availableNetworks as network}
+							<option value={network}>{network.name}</option>
+						{/each}
+					</select>
+				</label>
+
+				<label class="column">
+					<span>Account</span>
+					<select bind:value={toAccount}>
+						{#each $localPortfolios as { name, accounts }, i (i)}
+							<optgroup label={name}>
+								{#each accounts as account}
+									<option value={account}>{account.id}</option>
+								{/each}
+							</optgroup>
+						{/each}
+						{#each Object.entries($connectedProviderAccounts) as [providerName, accounts]}
+							{#if accounts?.length}
+								{#each accounts as account}
+									<optgroup label={providerName}>
+										<option value={account}>{account.id}</option>
+									</optgroup>
+								{/each}
+							{/if}
+						{/each}
+						<optgroup label="Other">
+							<option value={defaultToAccount}>Enter Address...</option>
+						</optgroup>
+					</select>
+					{#if toAccount === defaultToAccount}
+						<AddressField bind:value={defaultToAccount.id} required autofocus />
+					{/if}
+				</label>
+			</div>
+
+			<div class="row">
+				<label class="column">
+					<span>Amount</span>
+					<input
+						type="number"
+						bind:this={toTokenAmountInput}
+						bind:value={toTokenAmount}
+						min={0}
+						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount *
+							conversionRate}
+						placeholder={0.0}
+						on:keydown={(e) => {
+							if (e.code.startsWith('Key')) {
+								toTokenSelect.focus();
+								toTokenSelect.dispatchEvent(new KeyboardEvent(e.type, e));
+							}
+							if (e.code === 'Space') toTokenSelect.focus();
+						}}
+					/>
+					<input
+						type="range"
+						bind:value={toTokenAmount}
+						min={0}
+						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount *
+							conversionRate}
+						placeholder={0.0}
+					/>
+				</label>
+
+				<label class="column">
+					<span>Token</span>
+					<select bind:this={toTokenSelect} bind:value={toToken}>
+						<optgroup label="USD-Pegged Stablecoins">
+							{#each usdStablecoinTokens as token, i (token.address)}
+								<option value={token}>{token.symbol} ({token.name})</option>
+							{/each}
+						</optgroup>
+					</select>
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<button type="submit">Start Transfer</button>
+</form>
 
 <style>
 	.columns {
@@ -165,193 +340,7 @@
 		text-transform: uppercase;
 	}
 
-	input[type="range"] {
+	input[type='range'] {
 		display: block;
 	}
 </style>
-
-
-<form class="column" on:submit|preventDefault={() => onSubmit({
-	fromNetwork,
-	fromAccount,
-	fromToken,
-	fromTokenAmount,
-
-	toNetwork,
-	toAccount,
-	toToken,
-	toTokenAmount
-})}>
-	<div class="columns">
-		<div class="card">
-			<h3>From</h3>
-
-			<div class="row">
-				<label class="column">
-					<span>Network</span>
-					<select bind:value={fromNetwork}>
-						{#each availableNetworks as network}
-							<option value={network}>{network.name}</option>
-						{/each}
-					</select>
-				</label>
-
-				<label class="column">
-					<span>Account</span>
-					<select bind:value={fromAccount}>
-						{#each $localPortfolios as {name, accounts}, i (i)}
-							<optgroup label={name}>
-								{#each accounts as account}
-									<option value={account}>{account.id}</option>
-								{/each}
-							</optgroup>
-						{/each}
-						{#each Object.entries($connectedProviderAccounts) as [providerName, accounts]}
-							{#if accounts?.length}
-								{#each accounts as account}
-									<optgroup label={providerName}>
-										<option value={account}>{account.id}</option>
-									</optgroup>
-								{/each}
-							{/if}
-						{/each}
-					</select>
-				</label>
-			</div>
-
-			<div class="row">
-				<label class="column">
-					<span>Amount</span>
-					<input type="number"
-						bind:this={fromTokenAmountInput}
-						bind:value={fromTokenAmount}
-						min={0}
-						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount}
-						placeholder={0.00}
-						on:keydown={e => {
-							if(e.code.startsWith('Key')){
-								fromTokenSelect.focus()
-								fromTokenSelect.dispatchEvent(new KeyboardEvent(e.type, e))
-							}
-							if(e.code === 'Space')
-								fromTokenSelect.focus()
-						}}
-					/>
-					<input type="range"
-						bind:value={fromTokenAmount}
-						min={0}
-						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount}
-						placeholder={0.00}
-					/>
-				</label>
-
-				<label class="column">
-					<span>Token</span>
-					<select
-						bind:this={fromTokenSelect}
-						bind:value={fromToken}
-					>
-						<optgroup label="USD-Pegged Stablecoins">
-							{#each usdStablecoinTokens as token, i (token.address)}
-								<option value={token}>{token.symbol} ({token.name})</option>
-							{/each}
-						</optgroup>
-					</select>
-				</label>
-			</div>
-		</div>
-
-		{#if conversionRate !== undefined}
-			<div class="card" transition:scale>
-				<h3>Conversion Rate:</h3>
-				{conversionRate}
-			</div>
-		{/if}
-
-		<div class="card">
-			<h3>To</h3>
-
-			<div class="row">
-				<label class="column">
-					<span>Network</span>
-					<select bind:value={toNetwork}>
-						{#each availableNetworks as network}
-							<option value={network}>{network.name}</option>
-						{/each}
-					</select>
-				</label>
-
-				<label class="column">
-					<span>Account</span>
-					<select bind:value={toAccount}>
-						{#each $localPortfolios as {name, accounts}, i (i)}
-							<optgroup label={name}>
-								{#each accounts as account}
-									<option value={account}>{account.id}</option>
-								{/each}
-							</optgroup>
-						{/each}
-						{#each Object.entries($connectedProviderAccounts) as [providerName, accounts]}
-							{#if accounts?.length}
-								{#each accounts as account}
-									<optgroup label={providerName}>
-										<option value={account}>{account.id}</option>
-									</optgroup>
-								{/each}
-							{/if}
-						{/each}
-						<optgroup label="Other">
-							<option value={defaultToAccount}>Enter Address...</option>
-						</optgroup>
-					</select>
-					{#if toAccount === defaultToAccount}
-						<AddressField bind:value={defaultToAccount.id} required autofocus />
-					{/if}
-				</label>
-			</div>
-
-			<div class="row">
-				<label class="column">
-					<span>Amount</span>
-					<input type="number"
-						bind:this={toTokenAmountInput}
-						bind:value={toTokenAmount}
-						min={0}
-						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount * conversionRate}
-						placeholder={0.00}
-						on:keydown={e => {
-							if(e.code.startsWith('Key')){
-								toTokenSelect.focus()
-								toTokenSelect.dispatchEvent(new KeyboardEvent(e.type, e))
-							}
-							if(e.code === 'Space')
-								toTokenSelect.focus()
-						}}
-					/>
-					<input type="range"
-						bind:value={toTokenAmount}
-						min={0}
-						max={fromAccount?.tokenBalances?.[network.chainId]?.[fromAsset]?.amount * conversionRate}
-						placeholder={0.00}
-					/>
-				</label>
-
-				<label class="column">
-					<span>Token</span>
-					<select
-						bind:this={toTokenSelect}
-						bind:value={toToken}
-					>
-						<optgroup label="USD-Pegged Stablecoins">
-							{#each usdStablecoinTokens as token, i (token.address)}
-								<option value={token}>{token.symbol} ({token.name})</option>
-							{/each}
-						</optgroup>
-					</select>
-				</label>
-			</div>
-		</div>
-	</div>
-
-	<button type="submit">Start Transfer</button>
-</form>

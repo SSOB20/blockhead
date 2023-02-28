@@ -1,17 +1,22 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
+	import type { Ethereum } from '../data/networks/types';
 
+	export let transactionID: Ethereum.TransactionID;
+	export let network: Ethereum.Network;
+	export let format: 'full' | 'middle-truncated' = 'full';
+	export let linked = true;
 
-	export let transactionID: Ethereum.TransactionID
-	export let network: Ethereum.Network
-	export let format: 'full' | 'middle-truncated' = 'full'
-	export let linked = true
-
-
-	import { formatTransactionHash } from '../utils/formatTransactionHash'
-	$: formattedTransactionID = formatTransactionHash(transactionID, format)
+	import { formatTransactionHash } from '../utils/formatTransactionHash';
+	$: formattedTransactionID = formatTransactionHash(transactionID, format);
 </script>
 
+{#if linked}
+	<a class="transaction-id" href="/explorer/{network.slug}/{transactionID}" title={transactionID}
+		>{formattedTransactionID}</a
+	>
+{:else}
+	<span class="transaction-id" title={transactionID}>{formattedTransactionID}</span>
+{/if}
 
 <style>
 	.transaction-id {
@@ -23,10 +28,3 @@
 		text-overflow: ellipsis; */
 	}
 </style>
-
-
-{#if linked}
-	<a class="transaction-id" href="/explorer/{network.slug}/{transactionID}" title={transactionID}>{formattedTransactionID}</a>
-{:else}
-	<span class="transaction-id" title={transactionID}>{formattedTransactionID}</span>
-{/if}

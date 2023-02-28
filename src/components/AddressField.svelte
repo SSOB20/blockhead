@@ -1,21 +1,21 @@
 <script lang="ts">
-	import type { NetworkAccountAddress } from '../data/address'
-	
-	export let address: NetworkAccountAddress
+	import type { NetworkAccountAddress } from '../data/address';
 
-	export let autofocus = false
-	export let required = false
+	export let address: NetworkAccountAddress;
 
-	export let placeholder = 'Address (0xabcd...6789) / Transaction ID (0xabcdef...456789) / Block Number (12345678) / ENS Domain (vitalik.eth)'
+	export let autofocus = false;
+	export let required = false;
+
+	export let placeholder =
+		'Address (0xabcd...6789) / Transaction ID (0xabcdef...456789) / Block Number (12345678) / ENS Domain (vitalik.eth)';
 </script>
-
 
 <input
 	class="address-field"
 	type="search"
-	class:is-valid={address !== undefined} 
+	class:is-valid={address !== undefined}
 	{placeholder}
-	bind:value={address} 
+	bind:value={address}
 	{autofocus}
 	{required}
 />

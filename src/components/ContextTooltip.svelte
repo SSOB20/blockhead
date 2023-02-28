@@ -1,12 +1,16 @@
 <script lang="ts">
 	// const onMount = () => {
-		globalThis.window.onmousemove = ({x, y}) => {
-			globalThis.document.documentElement.style.setProperty('--mouseX', x.toString())
-			globalThis.document.documentElement.style.setProperty('--mouseY', y.toString())
-		}
+	globalThis.window.onmousemove = ({ x, y }) => {
+		globalThis.document.documentElement.style.setProperty('--mouseX', x.toString());
+		globalThis.document.documentElement.style.setProperty('--mouseY', y.toString());
+	};
 	// }
 </script>
 
+<div class="tooltip">
+	<!-- use:onMount -->
+	Whee
+</div>
 
 <!-- <svelte:window
 	on:mousemove={({x, y}) => {
@@ -14,8 +18,6 @@
 		globalThis.document.documentElement.style.setProperty('--mouseY', y.toString())
 	}}
 /> -->
-
-
 <style>
 	.tooltip {
 		position: sticky;
@@ -31,8 +33,3 @@
 		content: var(--title);
 	}
 </style>
-
-
-<div class="tooltip"><!-- use:onMount -->
-	Whee
-</div>

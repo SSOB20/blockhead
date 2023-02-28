@@ -1,27 +1,9 @@
 <script>
-	import { fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition';
 </script>
 
-<style>
-	main {
-		max-width: var(--one-column-width);
-		gap: 1.25rem;
-	}
-
-	.row {
-		display: flex;
-		align-items: stretch;
-		flex-wrap: wrap;
-		gap: var(--padding-inner);
-	}
-	.row > * {
-		flex: 1 20rem;
-		padding: var(--padding-outer);
-	}
-</style>
-
-<main in:fly={{x: 300}} out:fly={{x: -300}}>
-<!-- <main> -->
+<main in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
+	<!-- <main> -->
 	<h1>Trade</h1>
 
 	<p>Looking to explore different assets? Choose your adventure below!</p>
@@ -57,7 +39,10 @@
 
 	<div class="card">
 		<h2>Express Swap ⚡️</h2>
-		<p>Need to swap tokens right away? Let one of these fine travel agencies decide the optimal transport method for you!</p>
+		<p>
+			Need to swap tokens right away? Let one of these fine travel agencies decide the optimal
+			transport method for you!
+		</p>
 		<div class="row">
 			<div class="card">
 				<h3>1inch 🥊</h3>
@@ -71,3 +56,21 @@
 		</div>
 	</div>
 </main>
+
+<style>
+	main {
+		max-width: var(--one-column-width);
+		gap: 1.25rem;
+	}
+
+	.row {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: wrap;
+		gap: var(--padding-inner);
+	}
+	.row > * {
+		flex: 1 20rem;
+		padding: var(--padding-outer);
+	}
+</style>

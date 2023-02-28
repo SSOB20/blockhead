@@ -1,21 +1,24 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
-	import type { Vega } from '../api/vega'
+	import { onMount } from 'svelte';
+	import type { Vega } from '../api/vega';
 
-	let assets: Record<Vega.AssetID, Vega.Asset> = {}
-	let markets: Record<Vega.MarketID, Vega.Market> = {}
-	let transactionsStream
+	let assets: Record<Vega.AssetID, Vega.Asset> = {};
+	let markets: Record<Vega.MarketID, Vega.Market> = {};
+	let transactionsStream;
 	onMount(async () => {
-		const { getVegaAssets, getVegaMarkets, recentTransactionsStream } = await import('../api/vega')
-		transactionsStream = recentTransactionsStream(marketId, tx => Math.random() < samplePercentage / 100)
-		assets = await getVegaAssets()
-		markets = await getVegaMarkets()
-	})
+		const { getVegaAssets, getVegaMarkets, recentTransactionsStream } = await import('../api/vega');
+		transactionsStream = recentTransactionsStream(
+			marketId,
+			(tx) => Math.random() < samplePercentage / 100
+		);
+		assets = await getVegaAssets();
+		markets = await getVegaMarkets();
+	});
 
-	let marketId
-	let samplePercentage = 100
-	
-	import VegaTransactions from './VegaTransactions.svelte'
+	let marketId;
+	let samplePercentage = 100;
+
+	import VegaTransactions from './VegaTransactions.svelte';
 </script>
 
 <h1>Vega</h1>
@@ -41,5 +44,5 @@
 			</select>
 		</label>
 	</div>
-	<VegaTransactions {transactionsStream}/>
+	<VegaTransactions {transactionsStream} />
 </section>

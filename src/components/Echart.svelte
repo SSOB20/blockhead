@@ -1,26 +1,21 @@
 <script lang="ts">
-	import * as echarts from 'echarts/core'
+	import * as echarts from 'echarts/core';
 
 	import type {
 		BarSeriesOption,
 		LineSeriesOption,
 		SunburstSeriesOption,
 		TreemapSeriesOption
-	} from 'echarts/charts'
+	} from 'echarts/charts';
 
-	import {
-		BarChart,
-		LineChart,
-		SunburstChart,
-		TreemapChart
-	} from 'echarts/charts'
+	import { BarChart, LineChart, SunburstChart, TreemapChart } from 'echarts/charts';
 
 	import type {
 		TitleComponentOption,
 		TooltipComponentOption,
 		GridComponentOption,
-		LegendComponentOption,
-	} from 'echarts/components'
+		LegendComponentOption
+	} from 'echarts/components';
 
 	import {
 		DataZoomComponent,
@@ -32,9 +27,9 @@
 		ToolboxComponent,
 		TooltipComponent,
 		VisualMapComponent
-	} from 'echarts/components'
+	} from 'echarts/components';
 
-	import { SVGRenderer } from 'echarts/renderers'
+	import { SVGRenderer } from 'echarts/renderers';
 
 	// import { UniversalTransition } from 'echarts/features'
 
@@ -54,58 +49,50 @@
 		TooltipComponent,
 		VisualMapComponent,
 
-		SVGRenderer,
+		SVGRenderer
 
 		// UniversalTransition
-	])
-
+	]);
 
 	// import type { EChartsOption } from 'echarts/types/dist/shared'
 
 	export let options: echarts.ComposeOption<
-		& TitleComponentOption
-		& TooltipComponentOption
-		& GridComponentOption
-		& LegendComponentOption
-		& (
-			| BarSeriesOption
-			| LineSeriesOption
-			| SunburstSeriesOption
-			| TreemapSeriesOption
-		)
-	> // EChartsOption
+		TitleComponentOption &
+			TooltipComponentOption &
+			GridComponentOption &
+			LegendComponentOption &
+			(BarSeriesOption | LineSeriesOption | SunburstSeriesOption | TreemapSeriesOption)
+	>; // EChartsOption
 
-	
-	import { colorTheme } from '../utils/colorTheme'
+	import { colorTheme } from '../utils/colorTheme';
 
+	let chartContainer;
+	let chart: echarts.ECharts;
 
-	let chartContainer
-	let chart: echarts.ECharts
+	$: if (chartContainer) {
+		chart?.dispose();
 
-	$: if(chartContainer){
-		chart?.dispose()
-
-		chart = echarts.init(chartContainer, $colorTheme, {renderer: 'svg'})
+		chart = echarts.init(chartContainer, $colorTheme, { renderer: 'svg' });
 		chart.setOption({
 			backgroundColor: 'none',
 			textStyle: {
-				fontFamily: 'inherit',
-			},
-		})
+				fontFamily: 'inherit'
+			}
+		});
 	}
 
-	$: if(chart)
+	$: if (chart)
 		try {
-			chart.setOption(options)
-		}catch(e){
-			console.error(e)
+			chart.setOption(options);
+		} catch (e) {
+			console.error(e);
 		}
 
-
-	import { onDestroy } from 'svelte'
-	onDestroy(() => chart?.dispose())
+	import { onDestroy } from 'svelte';
+	onDestroy(() => chart?.dispose());
 </script>
 
+<div class="chart" bind:this={chartContainer} />
 
 <style>
 	.chart {
@@ -119,6 +106,3 @@
 		font-family: inherit !important;
 	}
 </style>
-
-
-<div class="chart" bind:this={chartContainer}></div>

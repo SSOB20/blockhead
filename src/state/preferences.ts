@@ -1,77 +1,75 @@
-import { localStorageWritable } from '../utils/localStorageWritable'
-import { cryptoQuoteCurrencies, fiatQuoteCurrencies } from '../data/currencies'
+import { localStorageWritable } from '../utils/localStorageWritable';
+import { cryptoQuoteCurrencies, fiatQuoteCurrencies } from '../data/currencies';
 
-import { NetworkProvider } from '../data/networkProviders/types'
-import { networkProviderConfigs } from '../data/networkProviders'
+import { NetworkProvider } from '../data/networkProviders/types';
+import { networkProviderConfigs } from '../data/networkProviders';
 
+type PreferenceOption<PreferenceOptionID extends string> = {
+	id: PreferenceOptionID;
+	name: string | ((preferences: SerializedPreferences<typeof preferencesConfig>) => string);
+	value?;
+	disabled?: boolean;
+};
 
-type PreferenceOption<
-	PreferenceOptionID extends string
-> = {
-	id: PreferenceOptionID,
-	name: string | ((preferences: SerializedPreferences<typeof preferencesConfig>) => string),
-	value?,
-	disabled?: boolean
-}
-
-type PreferenceOptionGroup<
-	PreferenceID extends string,
-	PreferenceOptionID extends string
-> = {
-	id: string,
-	name: string,
-	options: PreferenceOption<PreferenceOptionID>[] | PreferenceOptionGroup<PreferenceID, PreferenceOptionID>[]
-}
+type PreferenceOptionGroup<PreferenceID extends string, PreferenceOptionID extends string> = {
+	id: string;
+	name: string;
+	options:
+		| PreferenceOption<PreferenceOptionID>[]
+		| PreferenceOptionGroup<PreferenceID, PreferenceOptionID>[];
+};
 
 type Preference<
 	PreferenceID extends string,
 	PreferenceOptionID extends string
-> = PreferenceOptionGroup<PreferenceID, PreferenceOptionID> & ({
-	type: 'single',
-	defaultOption: PreferenceOptionID
-} | {
-	type: 'multiple',
-	defaultOption: PreferenceOptionID[]
-})
+> = PreferenceOptionGroup<PreferenceID, PreferenceOptionID> &
+	(
+		| {
+				type: 'single';
+				defaultOption: PreferenceOptionID;
+		  }
+		| {
+				type: 'multiple';
+				defaultOption: PreferenceOptionID[];
+		  }
+	);
 
 type PreferenceSection<
 	PreferenceSectionID extends string,
 	PreferenceID extends string,
 	PreferenceOptionID extends string = string
 > = {
-	id: PreferenceSectionID,
-	name: string,
-	preferences: (Preference<PreferenceID, PreferenceOptionID> /* | PreferenceSection<PreferenceSectionID, PreferenceID> */)[]
-}
+	id: PreferenceSectionID;
+	name: string;
+	preferences: Preference<
+		PreferenceID,
+		PreferenceOptionID
+	> /* | PreferenceSection<PreferenceSectionID, PreferenceID> */[];
+};
 
 type PreferencesConfig<
 	PreferenceSectionID extends string, // = typeof preferencesConfig[number]['id'],
 	PreferenceID extends string // = typeof preferencesConfig[number]['id']['preferences']['id']
-> = PreferenceSection<PreferenceSectionID, PreferenceID>[]
+> = PreferenceSection<PreferenceSectionID, PreferenceID>[];
 
 // interface SerializedPreferences<
 // 	TPreferencesConfig extends PreferencesConfig<infer PreferenceSectionID, infer PreferenceID>
 // > {[TPreferenceID]: any}
-type SerializedPreferences<T extends PreferencesConfig<infer TPreferenceSectionID, infer TPreferenceID>> = {
-	[_ in keyof T]
-}
+type SerializedPreferences<
+	T extends PreferencesConfig<infer TPreferenceSectionID, infer TPreferenceID>
+> = {
+	[_ in keyof T];
+};
 
 export const preferencesConfig: PreferencesConfig<
-	| 'appearance'
-	| 'blockchainNodes'
-	| 'accountData'
-	| 'analytics'
-	| 'web3',
-
+	'appearance' | 'blockchainNodes' | 'accountData' | 'analytics' | 'web3',
 	| 'theme'
 	// | 'tokenIcons'
-
 	| 'rpcNetwork'
 	| 'rpcNetworkSend'
 	| 'tokenBalancesProvider'
 	| 'defiProvider'
 	| 'nftProvider'
-
 	| 'currentPriceProvider'
 	| 'historicalPriceProvider'
 	| 'transactionProvider'
@@ -95,7 +93,7 @@ export const preferencesConfig: PreferencesConfig<
 					{ id: 'dark', name: 'Dark' },
 					{ id: 'light', name: 'Light' }
 				]
-			},
+			}
 			// {
 			// 	id: 'tokenIcons',
 			// 	name: 'Token Icons',
@@ -138,9 +136,9 @@ export const preferencesConfig: PreferencesConfig<
 					{ id: 'Pocket Network', name: 'Pocket Network' },
 					{ id: 'Alchemy', name: 'Alchemy' },
 					{ id: 'Infura', name: 'Infura' },
-					{ id: 'Moralis', name: 'Moralis' },
+					{ id: 'Moralis', name: 'Moralis' }
 				]
-			},
+			}
 		]
 	},
 	{
@@ -158,7 +156,7 @@ export const preferencesConfig: PreferencesConfig<
 						name: 'On-Chain',
 						options: [
 							// { id: 'RPC Provider', name: 'RPC Provider + Token List' },
-							{ id: 'QuickNode', name: 'QuickNode' },
+							{ id: 'QuickNode', name: 'QuickNode' }
 						]
 					},
 					{
@@ -181,16 +179,12 @@ export const preferencesConfig: PreferencesConfig<
 					{
 						id: 'onChain',
 						name: 'On-Chain',
-						options: [
-							{ id: 'Zerion DeFi SDK', name: 'Zerion DeFi SDK' }
-						]
+						options: [{ id: 'Zerion DeFi SDK', name: 'Zerion DeFi SDK' }]
 					},
 					{
 						id: 'offChain',
 						name: 'Off-Chain',
-						options: [
-							{ id: 'Zapper', name: 'Zapper' }
-						]
+						options: [{ id: 'Zapper', name: 'Zapper' }]
 					}
 				]
 			},
@@ -211,7 +205,7 @@ export const preferencesConfig: PreferencesConfig<
 						name: 'Off-Chain',
 						options: [
 							{ id: 'Covalent', name: 'Covalent' },
-							{ id: 'NFTPort',  name: 'NFTPort' }
+							{ id: 'NFTPort', name: 'NFTPort' }
 							// { id: 'Zapper', name: 'Zapper' },
 							// { id: 'Moralis', name: 'Moralis' },
 						]
@@ -228,7 +222,7 @@ export const preferencesConfig: PreferencesConfig<
 						id: 'onChain',
 						name: 'On-Chain',
 						options: [
-							{ id: 'RPC Provider', name: preferences => `On-Chain (${preferences.rpcNetwork})` },
+							{ id: 'RPC Provider', name: (preferences) => `On-Chain (${preferences.rpcNetwork})` }
 						]
 					},
 					{
@@ -236,7 +230,7 @@ export const preferencesConfig: PreferencesConfig<
 						name: 'Off-Chain',
 						options: [
 							{ id: 'Covalent', name: 'Covalent' },
-							{ id: 'Moralis', name: 'Moralis' },
+							{ id: 'Moralis', name: 'Moralis' }
 							// { id: 'Etherspot', name: 'Etherspot' },
 						]
 					}
@@ -251,21 +245,19 @@ export const preferencesConfig: PreferencesConfig<
 					{
 						id: 'web3',
 						name: 'Web3 Hosted',
-						options: [
-							{ id: 'Sourcify', name: 'Sourcify' },
-						]
+						options: [{ id: 'Sourcify', name: 'Sourcify' }]
 					},
 					{
 						id: 'centralized',
 						name: 'Centrally Hosted',
 						options: [
 							{ id: 'Etherscan', name: 'Etherscan' },
-							{ id: 'Tenderly', name: 'Tenderly' },
+							{ id: 'Tenderly', name: 'Tenderly' }
 						]
 					}
 				]
 			}
-		],
+		]
 	},
 	{
 		id: 'analytics',
@@ -281,7 +273,7 @@ export const preferencesConfig: PreferencesConfig<
 						id: 'onChain',
 						name: 'On-Chain',
 						options: [
-							{ id: 'Chainlink', name: 'Chainlink' },
+							{ id: 'Chainlink', name: 'Chainlink' }
 							// { id: 'Tellor', name: 'Tellor' },
 							// { id: 'Compound Price Feed', name: 'Open Price Feed' },
 						]
@@ -300,9 +292,7 @@ export const preferencesConfig: PreferencesConfig<
 					{
 						id: 'auto',
 						name: 'Auto',
-						options: [
-							{ id: 'auto', name: 'Auto' },
-						]
+						options: [{ id: 'auto', name: 'Auto' }]
 					}
 				]
 			},
@@ -341,7 +331,7 @@ export const preferencesConfig: PreferencesConfig<
 					{
 						id: 'fiat',
 						name: 'Fiat Currencies',
-						options: Object.values(fiatQuoteCurrencies).map(currency => ({
+						options: Object.values(fiatQuoteCurrencies).map((currency) => ({
 							id: currency.isoCode,
 							name: `${currency.name} (${currency.symbol})`,
 							value: currency.isoCode
@@ -350,7 +340,7 @@ export const preferencesConfig: PreferencesConfig<
 					{
 						id: 'crypto',
 						name: 'Cryptocurrencies',
-						options: Object.values(cryptoQuoteCurrencies).map(currency => ({
+						options: Object.values(cryptoQuoteCurrencies).map((currency) => ({
 							id: currency.isoCode,
 							name: `${currency.name} (${currency.symbol})`,
 							value: currency.isoCode
@@ -359,7 +349,7 @@ export const preferencesConfig: PreferencesConfig<
 				]
 			}
 		]
-	},
+	}
 	// {
 	// 	id: 'web3',
 	// 	name: 'Web 3.0',
@@ -393,8 +383,7 @@ export const preferencesConfig: PreferencesConfig<
 	// 		},
 	// 	]
 	// },
-] // as const
-
+]; // as const
 
 // V1
 // export const preferences.rpcNetwork = localStorageWritable<Ethereum.ProviderName>('preferred-ethereum-provider', 'Ethers')
@@ -406,7 +395,9 @@ export const preferencesConfig: PreferencesConfig<
 // export const preferences.theme = localStorageWritable<'auto' | 'dark' | 'light'>('preferred-color-scheme', 'auto')
 
 // V2
-export const localStoragePreferences = localStorageWritable<SerializedPreferences<typeof preferencesConfig>>(
+export const localStoragePreferences = localStorageWritable<
+	SerializedPreferences<typeof preferencesConfig>
+>(
 	'localPreferences',
 	{}
 	// Object.fromEntries(
@@ -414,20 +405,23 @@ export const localStoragePreferences = localStorageWritable<SerializedPreference
 	// 		.flatMap(preferenceGroup => preferenceGroup.preferences)
 	// 		.map(preference => [preference.id, preference.defaultOption])
 	// )
-)
+);
 const resolveDefaultPreferences = (preferences = {}) => {
-	for(const preferenceGroup of preferencesConfig)
-		for(const preference of preferenceGroup.preferences)
-			if(!preference.options
-				.flatMap(optionOrGroup => optionOrGroup.options ? optionOrGroup.options : optionOrGroup)
-				.find((option) => preferences[preference.id] === (option.id || option.value))
+	for (const preferenceGroup of preferencesConfig)
+		for (const preference of preferenceGroup.preferences)
+			if (
+				!preference.options
+					.flatMap((optionOrGroup) =>
+						optionOrGroup.options ? optionOrGroup.options : optionOrGroup
+					)
+					.find((option) => preferences[preference.id] === (option.id || option.value))
 			)
-				preferences[preference.id] = preference.defaultOption
+				preferences[preference.id] = preference.defaultOption;
 
-	return preferences
-}
-localStoragePreferences.update(resolveDefaultPreferences)
+	return preferences;
+};
+localStoragePreferences.update(resolveDefaultPreferences);
 
-export const resetPreferences = () => localStoragePreferences.set(resolveDefaultPreferences({}))
+export const resetPreferences = () => localStoragePreferences.set(resolveDefaultPreferences({}));
 
-export const preferences = localStoragePreferences
+export const preferences = localStoragePreferences;

@@ -1,22 +1,29 @@
 <script lang="ts">
-	export let trackId: string
-	export let isDownloadable = false
+	export let trackId: string;
+	export let isDownloadable = false;
 
+	export let isPlaying = false;
 
-	export let isPlaying = false
+	import { getTrackStreamURL } from '../api/audius';
 
+	let src;
+	$: if (trackId) getTrackStreamURL({ trackId }).then((_) => (src = _));
 
-	import { getTrackStreamURL } from '../api/audius'
-
-	let src
-	$: if(trackId)
-		getTrackStreamURL({trackId}).then(_ => src = _)
-
-	
-	let audioElement
-	$: isPlaying ? audioElement?.play() : audioElement?.pause()
+	let audioElement;
+	$: isPlaying ? audioElement?.play() : audioElement?.pause();
 </script>
 
+{#if src}
+	<audio
+		controls
+		bind:this={audioElement}
+		on:play={() => (isPlaying = true)}
+		on:pause={() => (isPlaying = false)}
+		download={isDownloadable}
+	>
+		<source {src} />
+	</audio>
+{/if}
 
 <style>
 	audio {
@@ -52,21 +59,16 @@
 		padding: 0;
 	}
 
-	::-webkit-media-controls-play-button, ::-internal-media-controls-button-hover-background {
+	::-webkit-media-controls-play-button,
+	::-internal-media-controls-button-hover-background {
 		border-radius: 0.5em;
 		color: inherit;
 	}
 
-	::-webkit-media-controls-current-time-display, ::-webkit-media-controls-time-remaining-display {
+	::-webkit-media-controls-current-time-display,
+	::-webkit-media-controls-time-remaining-display {
 		/* color: inherit; */
 		font: inherit;
 		text-shadow: none;
 	}
 </style>
-
-
-{#if src}
-	<audio controls bind:this={audioElement} on:play={() => isPlaying = true} on:pause={() => isPlaying = false} download={isDownloadable}>
-		<source {src} />
-	</audio>
-{/if}

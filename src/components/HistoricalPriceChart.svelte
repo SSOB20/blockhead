@@ -1,26 +1,16 @@
 <script lang="ts">
-	import type { Ethereum } from '../data/networks/types'
-	import type { QuoteCurrency, TickerSymbol } from '../data/currencies'
+	import type { Ethereum } from '../data/networks/types';
+	import type { QuoteCurrency, TickerSymbol } from '../data/currencies';
 
-	export let historicalPriceProvider = 'Covalent'
-	export let currencies: (TickerSymbol | Ethereum.ContractAddress)[]
-	export let quoteCurrency: QuoteCurrency
+	export let historicalPriceProvider = 'Covalent';
+	export let currencies: (TickerSymbol | Ethereum.ContractAddress)[];
+	export let quoteCurrency: QuoteCurrency;
 
+	import type { PriceScale } from './PriceChart.svelte';
+	let priceScale: PriceScale;
 
-	import type { PriceScale } from './PriceChart.svelte'
-	let priceScale: PriceScale
-
-
-	import CovalentPriceChart from './CovalentPriceChart.svelte'
+	import CovalentPriceChart from './CovalentPriceChart.svelte';
 </script>
-
-
-<style>
-	.options {
-		font-size: calc(var(--options-size, 1) * 1em);
-	}
-</style>
-
 
 <div class="bar">
 	<slot name="title">
@@ -29,12 +19,7 @@
 	<span class="card-annotation">{historicalPriceProvider}</span>
 </div>
 
-<CovalentPriceChart
-	{historicalPriceProvider}
-	{currencies}
-	{quoteCurrency}
-	{priceScale}
-/>
+<CovalentPriceChart {historicalPriceProvider} {currencies} {quoteCurrency} {priceScale} />
 
 <div class="options bar">
 	<h4>Show</h4>
@@ -47,3 +32,9 @@
 		</select>
 	</label>
 </div>
+
+<style>
+	.options {
+		font-size: calc(var(--options-size, 1) * 1em);
+	}
+</style>

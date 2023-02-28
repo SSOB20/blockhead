@@ -1,14 +1,35 @@
 <script lang="ts">
-	import { networksBySection, getNetworkColor } from '../../data/networks'
+	import { networksBySection, getNetworkColor } from '../../data/networks';
 
+	import NetworkIcon from '../../components/NetworkIcon.svelte';
 
-	import NetworkIcon from '../../components/NetworkIcon.svelte'
-
-
-	import { cardStyle } from '../../utils/card-background'
-	import { fly, scale } from 'svelte/transition'
+	import { cardStyle } from '../../utils/card-background';
+	import { fly, scale } from 'svelte/transition';
 </script>
 
+<div class="column" in:fly={{ x: 300 }} out:fly={{ x: -300 }}>
+	{#each networksBySection as { title, networks, isFeatured }, i}
+		<hr />
+
+		<h2>{title}</h2>
+
+		<section class="row" class:featured={isFeatured}>
+			{#each networks as network, i}
+				<a
+					href="/explorer/{network.slug}"
+					class="item card"
+					in:scale={{ delay: i * 10 }}
+					style={cardStyle([getNetworkColor(network)])}
+				>
+					<h3 class="row">
+						<NetworkIcon {network} />
+						<span>{network.name}</span>
+					</h3>
+				</a>
+			{/each}
+		</section>
+	{/each}
+</div>
 
 <style>
 	.column {
@@ -49,23 +70,3 @@
 		font-size: 0.9em;
 	}
 </style>
-
-
-<div class="column" in:fly={{x: 300}} out:fly={{x: -300}}>
-	{#each networksBySection as {title, networks, isFeatured}, i}
-		<hr>
-
-		<h2>{title}</h2>
-
-		<section class="row" class:featured={isFeatured}>
-			{#each networks as network, i}
-				<a href="/explorer/{network.slug}" class="item card" in:scale={{delay: i * 10}} style={cardStyle([getNetworkColor(network)])}>
-					<h3 class="row">
-						<NetworkIcon {network} />
-						<span>{network.name}</span>
-					</h3>
-				</a>
-			{/each}
-		</section>
-	{/each}
-</div>
