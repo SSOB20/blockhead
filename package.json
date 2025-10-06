@@ -22,7 +22,7 @@
 	"type": "module",
 	"dependencies": {
 		"@apollo/client": "^3.7.9",
-		"@coinbase/wallet-sdk": "^3.6.4",
+		"@coinbase/wallet-sdk": "^3.9.3",
 		"@fontsource/fira-code": "^4.5.13",
 		"@fontsource/ubuntu": "^4.5.11",
 		"@sveltestack/svelte-query": "^1.6.0",
